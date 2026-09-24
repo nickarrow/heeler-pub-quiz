@@ -120,14 +120,16 @@ ideal, which beats never.
 | Location | Holds | In git | Shipped |
 | --- | --- | --- | --- |
 | `.corpus/` | Raw fetched transcripts and articles | No | No |
-| `content/verification/` | Per question: source URL, and an excerpt capped at 40 words | Yes | No |
-| `content/rounds/` | The question bank | Yes | Yes |
+| `content/verification/` | Per question, as JSON: source URL and an excerpt capped at 40 words | Yes | No |
+| `src/content/rounds/` | The real question bank | Yes | Yes |
+| `src/content/fixtures/` | The fixture bank | Yes | In non-production builds |
 
 Transcripts are the show's dialogue regardless of who typed them up. Committing a transcript corpus to a public
 repository is the riskiest thing this project could do and it is entirely avoidable.
 
-`technical-design.md` covers what keeps the verification record out of the shipped bundle, and the two things that
-would break it.
+The banks sit under `src` so the TypeScript compiler actually checks them, and the verification records sit outside it
+and stay as data. `technical-design.md` explains both, and the two things that would leak a verification record into
+the shipped bundle.
 
 ## Two banks
 
@@ -152,6 +154,11 @@ anyone who opens developer tools can read them. The honour system covers that, a
 Content changes go straight to `main`, prefixed `content:`, with a message that names counts and which rounds were
 touched and **never quotes a question or an answer**.
 
-The reason is in `technical-design.md` under Git workflow: a pull request touching `content/rounds/` puts the answers
-in a diff the owner would read while reviewing it, which defeats the two-bank scheme entirely. Content is therefore
-not reviewed by the owner, by design, and the post-play sampling above is what replaces that review.
+The reason is in `technical-design.md` under Git workflow: a pull request touching the real bank puts the answers in a
+diff the owner would read while reviewing it, which defeats the two-bank scheme entirely. Content is therefore not
+reviewed by the owner, by design, and the post-play sampling above is what replaces that review.
+
+The same logic governs how the app gets verified while it is being built. The deployed site serves fixtures until the
+bank is complete, so no increment ever asks the owner to confirm something by reading real questions.
+`increments.md` carries that as a standing constraint, because the first version of the plan violated it in four
+consecutive steps.

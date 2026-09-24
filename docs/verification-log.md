@@ -115,3 +115,84 @@ turned out never to appear in the document.
   read, no device tested.
 - **Whether any Vite mechanism could make the two-bank split airtight against deliberate inspection.** The stated one
   was confirmed to fail; that no better one exists was not established, and the current design does not claim it.
+
+## 23 September 2026 — corrections after the second review
+
+A red team pass over `increments.md` and a mechanism pass over `increments.md` and `technical-design.md`, still before
+any code existed. 25 findings, 8 of them blocking. Nearly all were accepted, which reflects how quickly the first plan
+was written rather than anything about the reviewers.
+
+### The worst one
+
+**Four consecutive increments could only be verified by reading the question bank.** Increments 3 through 6 each said
+"play it and see", while the deploy workflow switched to real questions back in increment 3. Since the real bank only
+existed on the deployed site, confirming any of those increments meant reading real questions — which would have
+silently cancelled the error-rate sample in the final increment, and burned `served-rounds` before the first real
+evening.
+
+Fixed by moving one line: the workflow does not select the real bank until increment 8. Everything before that is
+verified against fixtures, and the real bank is verified structurally in CI. `increments.md` now carries this as a
+standing constraint rather than leaving it implicit.
+
+### Mechanism errors, each verified against the documentation
+
+**Relative alias paths do not work.** The corrected two-bank mechanism used `'./content/rounds/index.ts'`. Vite's
+documentation states that when aliasing to filesystem paths you must use absolute paths, and that relative values are
+used as-is and never resolved. The import would simply have failed. Now built with `resolve(import.meta.dirname, …)`.
+Read at [resolve.alias](https://vite.dev/config/shared-options.html), 23 September 2026.
+
+**The content types were never going to be checked.** `technical-design.md` claimed `satisfies Round` made the data
+model "a test that runs on every build". The scaffold's `tsconfig.app.json` ends with `"include": ["src"]`, and the
+banks were specified at the repository root, so the compiler would never have looked at them. Verified by reading
+[the template's tsconfig.app.json](https://raw.githubusercontent.com/vitejs/vite/main/packages/create-vite/template-react-ts/tsconfig.app.json)
+directly. Both banks now live under `src/content/`; verification records stay outside it as JSON, which is the
+stronger arrangement anyway.
+
+**`satisfies` was doing work it cannot do.** It checks shapes, not counts. It cannot enforce ten questions per round,
+id uniqueness across files, a forty-word excerpt cap, or a blurb check against its round's answers. All of those are
+runtime code now.
+
+**Tailwind's install method was unstated and would have been wrong.** Version 4 uses a first-party Vite plugin and
+CSS-based configuration, with no `tailwind.config.js` and no PostCSS step.
+
+**Pages deployment is two jobs with an artifact handoff**, not the single step sequence described, and needs specific
+`permissions`, a `needs` dependency and a `github-pages` environment. Also noted: the official action versions differ
+between GitHub's own documentation and the registry, so they get pinned deliberately.
+
+**No test runner was named anywhere** while CI had a test step. Now Vitest with a DOM environment and testing-library.
+
+### Design and plan errors
+
+**Voiding a question would have required rewriting scoring.** A running per-team total cannot retroactively drop a
+question. Scoring now stores per-question results and derives totals, stated as a constraint on the first app
+increment rather than discovered in the fifth.
+
+**Increment 1 validated content that did not exist.** The validation rules demanded verification records and a tier
+mix, and fixtures have neither, so the first CI gate would have failed or passed vacuously. Validation rules are now
+split: structural rules apply to any bank, provenance rules to the real bank only.
+
+**No-repeat testing needed twelve rounds and one increment had delivered one.** Twelve short fixture rounds are now an
+explicit deliverable.
+
+**The footer notice existed in the legal posture and in no increment**, while increment 1 published to the internet.
+
+**The first push had no credential path.** Password authentication for git operations is gone, so this needs Git
+Credential Manager, a token, or SSH — an owner action, now in the prerequisites.
+
+**Scaffolding would have stopped on the first command.** A dry run found that `npm create vite` into this directory is
+an interactive prompt, because the directory already holds documentation and a git repository, and that the scaffold's
+own `.gitignore` would overwrite the one carrying the corpus exclusion.
+
+**Increment 6 could not close the timer question.** It is one person with a keyboard; real pace needs real teams, so
+that question now closes in increment 9. And the real evening is the only dependency in the plan that cannot be
+scheduled by working harder, which is now said out loud.
+
+### Partially accepted, and what was folded
+
+One reviewer said the single-round survival measurement "cannot answer its question" because one round gives a data
+point rather than a rate. Right about the text, which overclaimed, and the increment is still worth having as a
+pipeline smoke test — the wording changed rather than the plan. A related finding, that three increments leave a
+deployed site that cannot start a game, is real but entirely downstream of the verification problem above and
+dissolves with the same fix, so it was folded rather than counted twice.
+
+One reviewer discarded three of their own suspicions on reading the files, which is the behaviour worth having.
