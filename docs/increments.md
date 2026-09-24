@@ -311,6 +311,20 @@ overscan.
 viewport-based sizing is exactly where that shows. For the human half, a screenshot pasted into chat still beats any
 description of a layout problem.
 
+**Done, 24 September 2026.** The room, on one local `feat:` commit, not pushed. The machine half was verified through
+Playwright MCP: the type scale is fluid and rem-based (heading 48px at 1080p, responds to zoom), scoring targets measure
+44x44 and carry team names, the stepper is a spinbutton announcing its value, the live region changes on every score,
+focus is visible on Tab, and the pausable countdown still works. The human half was verified by the owner, who viewed
+the app windowed and full-screen and pasted screenshots confirming legibility and layout. Four-reviewer pass; no
+blocking findings, and six should-fix findings were fixed — a contrast comment that overstated three ratios (all still
+AA; corrected to recomputed values), disabled stepper buttons that dimmed to an unreadable ~2.2:1 (raised to 60%
+opacity), a long prompt that could push the save button below the fold (type ceiling reduced), the setup submit button
+reimplementing the shared Button, the 44px target written five ways (extracted a constant), and an implicit
+secure-context check (made explicit). 99 tests, lint, validate and build all green; the two-bank guarantee holds. Two
+Tailwind-4 mechanism traps (font-size token namespace, comments in `@theme`) were caught by the build gate and fixed. A
+deliberate deviation — a rounded system-font stack rather than fetching Nunito — is recorded and owner-accepted. Details
+and what was deferred are in `verification-log.md` under the same date.
+
 ## 7. One real round through the whole pipeline
 
 A pipeline proof, not a content push.

@@ -1060,3 +1060,117 @@ Deferred, with reasons:
   (`flags.test.ts` toggles a question in and out of the voided set) and the mechanism is the same
   set-membership the Playwright void pass exercised; the browser pass verified voiding, not the un-void
   toggle.
+
+## 24 September 2026 — increment 6, the room
+
+Everything that makes the game work from a sofa rather than a desk. Delivers the fluid type scale, AA
+contrast, 44x44 scoring targets carrying team names, the list stepper announcing its value, score
+changes in a live region, the full keyboard map with visible focus, screen wake lock, and reduced
+motion respected. On one local `feat:` commit (all app and CSS, no content), not pushed. Everything
+below was observed rather than inferred, except where it says otherwise.
+
+### The two-halves verification
+
+**The machine half, through Playwright MCP against the running app at 1920x1080:**
+
+- **Type scale is fluid and rem-based.** The question heading renders at 48px at 1080p (the clamp
+  ceiling), with rem endpoints so text zoom still moves it (1.4.4). This caught a real Tailwind-4
+  mechanism trap mid-build: font-size tokens must be named `--text-*`, not `--font-size-*`, or no
+  utility is generated. The build gate failed on it, and separately on a comment inside the `@theme`
+  block (which accepts only custom properties); both fixed before anything shipped.
+- **Palette applied and contrast-checked.** Body renders cream (`rgb(253,246,227)`) with ink text
+  (`rgb(26,34,56)`) in the rounded sans stack. Ratios recomputed after review (see below).
+- **44x44 targets**, measured: the stepper buttons are exactly 44x44.
+- **Team names are the accessible names**: "Chilli scored", "Chilli points" resolve by role and name.
+- **The stepper is a spinbutton announcing its value**: `aria-valuenow` moved 0 to 1 on a bump and
+  `aria-valuetext` read "1 of 2 points".
+- **The live region exists and changes on every score**: empty before, "Chilli: 1 point" after both a
+  toggle score and a stepper step.
+- **Visible focus** on keyboard Tab: the focused input matched `:focus-visible` and showed a solid
+  ~3px blue-800 outline.
+- **The pausable countdown** (2.2.2) is unchanged from increment 3 and still works.
+- Wake lock and reduced motion are covered by unit tests; the headless browser reports no wake-lock
+  support, which exercises the degrade-silently path. Zero console errors throughout.
+
+**The human half, which the tool cannot do — the owner checked it.** The owner viewed the running app
+both windowed and full-screen and confirmed it is legible and the layout holds. Two screenshots were
+pasted into the session showing the reveal screen: cream/ink/blue palette, large question heading,
+fixture badge, round framing, per-team scoring controls, and the void/dispute/save controls, all
+well-proportioned. This closes the three-metre-legibility and overscan check that a 1080p window cannot
+emulate.
+
+### Deviations, recorded
+
+**A rounded system-font stack rather than fetching Nunito.** `design.md` names Nunito "such as"; the
+CSS uses `'Nunito', 'Segoe UI Rounded', 'SF Pro Rounded', ui-rounded, ...` so a page that has loaded
+keeps working with no network and puts no third-party CDN in a public bundle (consistent with
+`design.md` §8's no-service-worker-but-loaded-page-keeps-working posture). The owner saw the rendered
+result and accepted it.
+
+### The gates, observed
+
+- `tsc -b` exit 0.
+- `npm test`: 99 tests across 13 files passing (was 92; +7 for the wake lock hook, the live-region
+  announcement, and the non-secure-context guard).
+- `npm run lint`: oxlint clean, zero warnings.
+- `npm run validate:content`: 5 structural checks ran, 4 real-bank skipped, exit 0.
+- `npm run build`: green, 46 modules. Two-bank guarantee re-checked in the rebuilt bundle:
+  `content/rounds` absent.
+
+### The review, and what it found
+
+Four reviewers, each a different source: against the documents, against the mechanism, red team, and a
+senior-engineer whole-repo pass. Every finding was opened and confirmed against the code before acting.
+Acted on 6 clusters (all should-fix; no blocking), deferred the rest with reasons.
+
+Confirmed and fixed:
+
+- **The contrast comment overstated three ratios (source and red team both recomputed).** Most notably
+  orange-700 on cream is 4.66:1, not the claimed ~4.9:1. Every pairing still clears AA, but AGENTS.md
+  says report counts you actually computed, and the comment reported measured-looking numbers that were
+  wrong. Corrected all the ratios to the recomputed values and flagged the thin orange-700 margin (0.16
+  over 4.5) so a future palette tweak rechecks rather than assumes slack.
+- **Disabled stepper buttons dimmed to ~2.2:1 via opacity-40 (red team's headline).** WCAG exempts
+  disabled controls, but this happens constantly (every time a team is at 0 or the cap) and was
+  unreadable from three metres, defeating the increment's own stated intent. Raised the disabled opacity
+  to 60% across the shared Button and the steppers; verified live at opacity 0.6.
+- **A long question prompt at the type-scale ceiling could push the save button below the fold at 1080p
+  (red team).** The per-team controls stayed reachable and Space/right-arrow still saved, but a
+  mouse-only TV driver could have to scroll. Reduced the fluid-xl ceiling from 3.5rem to 3rem (still
+  large from three metres, verified at 48px) to buy vertical room.
+- **The setup submit button hand-reimplemented the primary Button (senior-eng).** Made it
+  `<Button variant="primary" type="submit">`, so the most important button follows the shared style.
+- **The 44px target was written five ways across four files (senior-eng).** Extracted a single
+  `TARGET_SIZE` constant on Button that the steppers and the raw inputs now import.
+- **Wake lock satisfied secure-context only implicitly (source reviewer).** Added an explicit
+  `isSecureContext` guard so the requirement is legible rather than resting on a swallowed rejection,
+  with a test for the non-secure path.
+
+Also fixed two cheap notes: a `min-w-0 break-words` guard on the team-name span against an adversarial
+long unbroken name, folded in while touching ScoringControls.
+
+Deferred, with reasons:
+
+- **Extract a shared `ConfirmInline` (senior-eng, standing since increment 4).** The two-step confirm is
+  now in two places. The reviewer's own guidance was "acceptable at two copies, extract before a third."
+  Deferred as a tracked decision rather than growing increment 6 into a refactor of earlier increments'
+  components.
+- **Button className/variant Tailwind source-order collision (mechanism, red team).** Latent only; no
+  live caller passes a conflicting background. Deferred.
+- **Live-region identical-message-not-reannounced (mechanism, red team).** The team-name-plus-value
+  message shape avoids real collisions in this UI, and the disabled-at-cap button prevents the
+  clamp-to-same case via mouse. Deferred.
+- **Overlapping wake-lock acquire leaking one sentinel across rapid hide/show (mechanism, red team).**
+  Both reviewers traced it and rated it benign — the platform auto-releases on the next hide and only one
+  lock is held per document. Deferred.
+
+### Not verified in this increment
+
+- **Conformance with assistive technology.** Deliberately not claimed anywhere. The machine half confirms
+  the accessibility tree (roles, names, live region, focus); it is not the same as a screen-reader user's
+  experience, and `technical-design.md` says so. Full conformance needs a person and a screen reader,
+  which has not happened.
+- **The wake lock and reduced motion in a real browser.** The headless browser reports no wake-lock
+  support (the degrade path), and there is effectively no motion to reduce; both are covered by unit
+  tests and by feature detection, not by a live observation of the screen staying awake.
+- **That local and CI run the same runtime.** Nothing is pushed; CI has not run.
