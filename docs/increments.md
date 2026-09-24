@@ -350,6 +350,41 @@ increment 8 authors it. The shortlist names themes, not questions, so choosing d
 
 **Needs from you.** Not reading the round. One decision: pick the eleventh theme from the shortlist above.
 
+**Done, 24 September 2026.** The Support Act round 1, ten questions, on `content:` commits, pushed; CI green. The
+real-bank provenance checks were turned on here — `validate:content` went from 5 checks with 4 real-bank skipped to
+the full set, 0 skipped. Twelve candidates authored, all twelve survived both checks (blind re-derivation with the
+answer withheld, then a second-source cross-anchor), ten shipped at tier mix 3/5/2 with a verification record each.
+That survival rate is what increment 8 authored against. The deploy still served fixtures, verified by bundle grep.
+The owner picked the eleventh theme (Where and When) and, separately, asked for For the Grown-Ups too as a test. What
+was verified is in `verification-log.md` under the same date.
+
+## 7a. The preview bank and the prompt-spoiler safeguard
+
+Inserted before authoring the bank, on the owner's 7a shape review. Not in the original plan; recorded here so the
+increment list matches what shipped.
+
+**Delivers.** A third bank the owner can read in full without spoiling anything the real bank will ever ship: eight
+preview questions, drawn from five episodes that the real bank must then avoid, listed in
+`content/preview-exclusions.json`. The bank selection becomes three-way through one tri-valued `HEELER_BANK` (unset
+falls to fixtures; `preview` and `real` are the two deliberate values), with a badge for the preview build and a
+`dev:preview` command. And the safeguard the shape review demanded: a content rule, `checkPromptsSpoilNothing`, that
+fails a build if any prompt contains its own answer as a substring, run on all three banks.
+
+**Deliberately not.** Any real-bank question. The preview set is disjoint from the real bank by the exclusion list.
+
+**How you know it worked.** The preview build shows the preview badge and preview questions; the default build shows
+fixtures; neither the default nor the preview build carries a real question. The spoiler rule fails on a deliberately
+spoiled question and passes the bank.
+
+**Needs from you.** The 7a shape review — done: the owner cleared the shape and flagged the answer-in-prompt case
+(Yoga Ball), which the rule now guards.
+
+**Done, 24 September 2026.** The three-way bank, eight preview questions, the exclusion list, and the prompt-spoiler
+rule, on `feat:`, `content:`, and `docs:` commits, pushed. Verified through Playwright MCP (preview badge in the
+preview build; fixtures by default) and by bundle grep (no real or preview question in the default build). The
+spoiler rule was negative-tested and later caught real cases in increment-8 authoring. What was verified is in
+`verification-log.md` under the same date.
+
 ## 8. The rest of the bank, then the switch
 
 **Delivers.** The remaining rounds at whatever survival rate increment 7 measured. Twelve shippable rounds is the
@@ -371,6 +406,22 @@ written by the same process doing the checking — there is nothing left to spoi
 do is report any question's content back to you.
 
 **Needs from you.** Nothing.
+
+**Done, 24 September 2026.** Eleven more real rounds (twelve total, 120 questions) and the deploy switch, on `content:`
+commits and one `feat:`, pushed to main; CI green on each. Counts were computed by loading the bank, not estimated:
+12 rounds, 120 questions, ten per round, unique ids, 120 verification records, tier mix 3/5/2 on eleven rounds and
+2/6/2 on where-and-when-1 (within the ±1 tolerance). The switch sets `HEELER_BANK: real` on the deploy build step
+only; built both ways locally to confirm the real bank ships with it and fixtures without it. The live site was
+smoke-checked through Playwright MCP: real bank served, ten questions per round, every reveal shows an answer and an
+episode, and three games dealt all twelve distinct rounds with no repeat (the app refused a fourth rather than
+repeat). No question content was reported back.
+
+Fifteen was not reached: three would-be rounds were dropped rather than shipped short, which `design.md` §5 sanctions
+— For the Grown-Ups (too little checkable), a merged Names/Titles/Alter Egos round (too few clean facts), and Family
+Trees round 2 (only three clean two-source non-reused family facts). A third Say That Again round reached the
+twelve-round floor. The four-reviewer fan-out fixed one guard-test gap (the deploy guard now fails if the real
+assignment is removed, not just if the comment stays) and logged the rest as recommendations. All of this is in
+`verification-log.md` under the same date.
 
 ## 9. Play it, then measure it
 

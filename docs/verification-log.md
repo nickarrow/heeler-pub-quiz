@@ -1174,3 +1174,177 @@ Deferred, with reasons:
   support (the degrade path), and there is effectively no motion to reduce; both are covered by unit
   tests and by feature detection, not by a live observation of the screen staying awake.
 - **That local and CI run the same runtime.** Nothing is pushed; CI has not run.
+
+## 24 September 2026 — increment 7a, the preview bank and the prompt-spoiler rule
+
+The gate before authoring: a third bank the owner can read without spoiling anything the real bank will
+ever ship, plus the safeguard the 7a shape review demanded. Delivers the three-way bank mechanism (one
+tri-valued `HEELER_BANK`, unset falling to fixtures), eight preview questions from five episodes the real
+bank must now avoid, the exclusion list those five episodes are written down in, and a content rule that
+fails a build if any prompt contains its own answer as a substring. On `feat:`, `content:`, and `docs:`
+commits, pushed. Observed rather than inferred except where noted.
+
+### The mechanism, observed
+
+- **The tri-valued selection resolves as specified.** `vite.config.ts` reads `HEELER_BANK`; `'real'`
+  selects `src/content/rounds`, `'preview'` selects `src/content/preview`, and anything else — unset or a
+  typo — falls to `src/content/fixtures`. Confirmed by building each way and grepping the bundle: the
+  default build carries no preview or real question.
+- **The preview badge shows in a preview build.** Playwright MCP against the preview build showed the
+  preview badge; the default build showed the fixture badge; neither showed real content.
+- **The exclusion list exists as data.** `content/preview-exclusions.json` names Camping, Grannies, Yoga
+  Ball, The Sleepover, Fairytale — the five episodes the eight preview questions were drawn from.
+
+### The prompt-spoiler rule, observed
+
+- **`checkPromptsSpoilNothing` fails a build when a prompt contains its own answer** (substring,
+  case-insensitive), run on all three banks. Negative-tested against a deliberately spoiled question; it
+  failed as intended. It caught real cases in later authoring ("sheep" inside "sheepdogs", an
+  episode name inside a Say-That-Again prompt) which were reworded.
+- **The shape review's flagged case was fixed.** The owner's 7a review flagged that an answer (Yoga Ball)
+  must never appear in its question text; pv-008 was corrected and the rule now guards the whole bank.
+
+### The gates, observed
+
+- `npm run validate:content`, `npm test`, `npm run build`, `npm run lint`: all green at the time of the 7a
+  commits. The prompt-spoiler rule is wired into the validator for all three banks.
+
+### Not verified in this increment
+
+- **That the preview set is exhaustively disjoint from the future real bank by machine.** Disjointness is
+  by the exclusion list plus author discipline; no gate reads the exclusion file (see increment 8's review,
+  which confirmed adherence in fact and logged the missing gate as a recommendation).
+
+## 24 September 2026 — increment 7, the first real round
+
+The pipeline proof: one full real round authored end to end, and the real-bank provenance rules turned on.
+Delivers The Support Act round 1 (ten questions) with a verification record per question, and flips the
+validator's real-bank checks from skipped to running. On `content:` commits, pushed; CI ran green.
+
+### Observed
+
+- **The real-bank validation went live.** `npm run validate:content` moved from 5 checks with 4 real-bank
+  skipped (increment 6) to the full set running, 0 skipped. The real bank now gets ten-per-round, tier mix,
+  and verification-record checks as hard gates.
+- **The round survived both checks.** Twelve candidates authored; each passed a blind re-derivation (answer
+  withheld, episode-anchored passage only) and a second-source cross-anchor. Ten shipped at tier mix
+  3/5/2. The survival count was the measured rate increment 8 then authored against.
+- **CI green.** The Build-and-deploy workflow ran to success on the increment-7 commit, still serving
+  fixtures (the switch was deliberately deferred to increment 8). Bundle grep confirmed no real question in
+  the default artifact.
+
+### Not verified in this increment
+
+- **The live site serving real content.** By design the deploy still served fixtures; the real bank ships
+  only at the increment-8 switch.
+
+## 24 September 2026 — increment 8, the rest of the bank and the switch
+
+The bulk author, then the flip. Delivers eleven more real rounds (twelve total, 120 questions), the deploy
+switch that puts the real bank on the public URL, and the drop of three would-be rounds the corpus could
+not support to the bar. On `content:` and one `feat:` commit, pushed to main; CI green on each. Counts
+below were computed by loading the bank, not estimated.
+
+### The bank, computed
+
+- **Twelve rounds, 120 questions, every round exactly ten.** Loaded `src/content/rounds/index.ts` in Node
+  and counted: 12 rounds, 120 questions, `n === 10` on every round, round ids unique.
+- **Tier mix 3/5/2 on eleven rounds; where-and-when-1 is 2/6/2**, within the validator's ±1 tolerance and
+  flagged in that file's own header.
+- **120 verification records**, one per question id, present in `content/verification/`; the validator
+  asserts each has a source, an episode matching the question's citation, both checks recorded, and a
+  ≤40-word excerpt.
+- **Themes: Support Act ×2, Where and When ×2, Games They Invented ×2, Family Trees ×1, Say That Again ×3,
+  Props Department ×2.** Three four-round games deal all twelve with no repeat.
+
+### The switch, observed
+
+- **`HEELER_BANK: real` is set on the build step only.** `deploy.yml` scopes it to the Build step's `env:`,
+  not the job or workflow. Built both ways locally: with the variable the bundle carries real answers and
+  grows (258KB→282KB); without it the bundle is fixtures with no real answer present.
+- **The guard test was strengthened after review.** The deploy-workflow guard now parses assignment lines
+  with comment lines excluded, so removing the `env:` line fails the guard even if the explanatory comment
+  stays — a gap the mechanism review found (the earlier `length > 0` matched the comment text). Verified the
+  comment-only case yields zero assignment lines. `npm test` 111 passing (was 110; the guard split into
+  three assertions).
+- **CI green on the switch commit**, and the live site was smoke-checked (below).
+
+### The live-site smoke, through Playwright MCP at 1920x1080
+
+Structural observations only; no question or answer text is recorded here or was reported to the owner.
+
+- **The real bank is served.** Setup reads "12 unplayed rounds available. A game plays 4."; round intros
+  show real theme titles. Not fixtures.
+- **Ten questions per round.** The question view reads "QUESTION n OF 10".
+- **Every reveal shows an answer and an episode.** The revealed view carries a labelled answer and an
+  episode citation in the form "<Episode> (series N, episode M)".
+- **Three games deal without repeating.** Played three full games; the app's `served-rounds` store ended
+  holding all twelve distinct round ids — 12 served, 12 unique, 0 duplicates (read back and counted). After
+  the third game the app refused a fourth ("Out of fresh rounds ... 0 unplayed remain") rather than repeat,
+  so the no-repeat property is enforced, not incidental.
+
+### The drops, recorded
+
+Three themes were investigated and dropped rather than shipped short, which `design.md` §5 sanctions ("a
+round that cannot reach ten survivors is dropped whole"):
+
+- **For the Grown-Ups** — only four to six checkable facts; the rest is opinion. Confirms the two earlier
+  drops of this theme.
+- **A merged Names/Titles/Alter Egos round** — roughly seven to eight clean facts; several names are
+  Trivia-section-only or over-lean on one episode.
+- **Family Trees round 2** — a corpus investigation found only three clean, two-source, non-reused
+  family-relationship facts (Bella is Coco's mum, Sheila is Lila's mum, Fido is Winnie's dad), far short of
+  ten. A third Say That Again round reached the twelve-round floor instead.
+
+### The review, and what it found
+
+Four reviewers, each a different source: against the corpus (a sample of the two newest rounds), against
+the mechanism (the deploy switch and bank selection), red team (the plan, the drops, the 12-vs-15 call),
+and a senior-engineer whole-repo pass. Every finding was opened and confirmed against the file before
+acting. One should-fix was acted on this increment; the rest were confirmed and deferred with reasons, or
+rejected.
+
+Confirmed and fixed this increment:
+
+- **The deploy-workflow guard did not fail if the `env: HEELER_BANK: real` line were removed** (mechanism).
+  The `HEELER_BANK=real` in the workflow's explanatory comment satisfied the old `length > 0` assertion, so
+  a regression that shipped fixtures to production would have passed green. Reworked the guard to exclude
+  comment lines and assert a real assignment is present; verified the comment-only case now fails.
+
+Confirmed and deferred, with reasons (reported to the owner, not silently changed):
+
+- **The exclusion list is honoured in fact but gated by nothing** (mechanism, red team). Grepped all twelve
+  rounds for the five excluded episodes: zero citations, so adherence holds — but by author discipline, not
+  a gate. A validator check that reads `preview-exclusions.json` is a real improvement and new scope;
+  recommended rather than added late in the session.
+- **`content-rules.ts` is 332 lines, over the 200–300 line ceiling** (senior-eng). Real; it has a clean
+  seam at the "structural" / "provenance" banner. Splitting a shared gate file right after a deploy is
+  risk I chose not to take mid-session; recommended with the exact seam.
+- **Theme imbalance: Say That Again ×3 vs Family Trees ×1, and dealing is unshuffled** (red team). With the
+  current bank order, game 2 deals two Say That Again rounds. No design text addresses theme spread within a
+  game. Reported to the owner as a decision (reorder the bank, add theme-aware dealing, or accept it) rather
+  than unilaterally changing deal logic.
+- **Seven of eight content rules have no unit test** (senior-eng); only the spoiler rule does. The rules run
+  in CI over real data, but nothing asserts they fail when they should. Recommended, highest value on
+  `checkVerificationRecords`.
+- **No gate on "answer never quoted in a commit message"** (red team). Author discipline only; recommended.
+
+Rejected:
+
+- **"Non-reused conflicts with the bank's episode reuse rate" as grounds to reconsider the Family Trees
+  drop** (red team, N2). Rejected: the Family Trees floor was three distinct *relationship facts*, not three
+  episodes; episode reuse across themes is expected and fine. The reviewer itself concluded the drop is
+  defensible. Kept the drop; noting the clarification.
+- **Substring-only prompt-spoiler check as an increment-8 defect** (red team N4, senior N-note). Rejected as
+  a defect: it is the documented, deliberate scope of the rule and predates this increment. No change.
+
+Findings dropped: two of the red team's items were reframings of the same theme-spread concern and the same
+untested-rules concern already listed, so they were folded in rather than double-counted.
+
+### Not verified in this increment
+
+- **That any answer is factually correct beyond the two checks.** The blind re-derivation and cross-anchor
+  are recorded claims a script cannot adjudicate; the against-the-corpus review re-checked the two newest
+  rounds (20 questions, 0 failures) but not all 120.
+- **Screen-reader conformance and TV-overscan**, unchanged from increment 6; not re-claimed here.
+- **CI and local sharing a runtime** beyond the observed green runs on the pushed commits.
