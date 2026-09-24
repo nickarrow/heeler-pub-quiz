@@ -631,3 +631,22 @@ move a second-round slot if a theme underdelivers in practice.
   broadcast subtitles was not checked and remains as it was in the earlier log entry.
 - **The three extra `Category:Episodes` entries individually.** They were identified as non-episode entries in
   aggregate (157 vs 154), not each read, because they do not affect the 154-episode pool.
+
+## 24 September 2026 — correction to the increment 2 entry: the Trivia sections are not a rich source
+
+The increment 2 entry above says the episode articles' `Trivia` sections are "the richest single vein for tier-2 and
+tier-3 facts." **That characterisation is withdrawn.** The owner read the Trivia sections directly and found them
+roughly half real-world and production material — which `design.md` §5 puts out of scope — and the rest largely
+nuanced, tiny details of the freeze-frame kind that §5 names as a failure mode rather than good difficulty. The
+measurement behind the original claim was that the sections exist (155 of 157) and are sizeable (~2.2 KB each). That
+measured their *size*, not their *usefulness*, and inferred richness from volume, which was wrong.
+
+What this does not change: none of increment 2's four headline answers rested on Trivia quality. The transcript count
+(206, of which 151 are 10 KB or more), the scope confirmation (154 episodes, 21 Bonus Bits, 21 minisodes), and the
+Contested Evidence finding all came from page enumeration, the Wikipedia tables, and a continuity-marker scan — not
+from mining trivia. The correction if anything strengthens the Contested Evidence conclusion: much of what first
+looked contested was animation goofs and dub differences living in exactly these sections, which were excluded.
+
+Standing steer for increment 7, recorded so authoring does not drift back to this source: **transcripts, episode
+recaps, and the articles' character and appearance data are the intended grounding. The Trivia sections are a
+last-resort supplementary source, used opportunistically and never as a theme's backbone.**
