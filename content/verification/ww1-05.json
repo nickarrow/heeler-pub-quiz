@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Pool",
+  "excerpt": "Bandit arrives with pool noodles to tell them that Uncle Stripe is in Bali, and they can use his pool.",
+  "episode": "The Pool",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Bali" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Pool/Script", "note": "The Pool transcript repeats that Stripe is in Bali and has lent the family his pool" }
+  }
+}

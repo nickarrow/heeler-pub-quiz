@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Pool",
+  "excerpt": "It's a very hot Queensland day and Chilli and the kids are hanging out in the lounge room.",
+  "episode": "The Pool",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Queensland" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Hairdressers", "note": "Hairdressers recap bills Bandit (Burt Handsome) as the most handsomest man in Queensland - a second in-universe Queensland reference" }
+  }
+}

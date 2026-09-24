@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Bin_Night/Script",
+  "excerpt": "The scene cuts to a wider view of the cul-de-sac. The Heelers' neighbour Doreen is putting out her bins.",
+  "episode": "Bin Night",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived cul-de-sac" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign", "note": "The Sign recap: Bandit throws the for-sale sign into the cul-de-sac, confirming the Heeler house sits on a cul-de-sac" }
+  }
+}

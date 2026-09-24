@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Curry_Quest",
+  "excerpt": "Mackenzie tells Bingo that Bandit is about to leave for a 6-week business trip to Indonesia the next day. The episode closes with Bandit leaving via the airport.",
+  "episode": "Curry Quest",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Indonesia" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Curry_Quest/Script", "note": "Curry Quest transcript states the six-week Indonesia trip and the airport farewell" }
+  }
+}

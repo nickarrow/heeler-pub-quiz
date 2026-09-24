@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Movies",
+  "excerpt": "It is Bluey's first trip to the cinema; Bandit takes them to see a movie called Chunky Chimp.",
+  "episode": "Movies",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Chunky Chimp" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Curry_Quest", "note": "Curry Quest references the Chunky Chimp film again (a bus advertisement for it), confirming it as the in-world cinema film" }
+  }
+}

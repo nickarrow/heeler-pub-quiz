@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Christmas_Swim",
+  "excerpt": "The Heelers celebrate Christmas at Stripe's, opening presents and swimming in the pool while Stripe barbecues poolside - a hot Australian summer Christmas.",
+  "episode": "Christmas Swim",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived swimming / summer Christmas" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Pool", "note": "The Pool establishes the hot Queensland summer climate consistent with a swimming Christmas" }
+  }
+}

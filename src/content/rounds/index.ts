@@ -1,5 +1,6 @@
 import type { Bank } from '../types.ts'
 import { theSupportActOne } from './the-support-act-1.ts'
+import { whereAndWhenOne } from './where-and-when-1.ts'
 
 // The real bank: the shippable question bank, drawn from the corpus and checked
 // two independent ways per question (content-pipeline.md §3). Selected only by
@@ -15,7 +16,7 @@ import { theSupportActOne } from './the-support-act-1.ts'
 
 export const bank = {
   kind: 'real',
-  rounds: [theSupportActOne],
+  rounds: [theSupportActOne, whereAndWhenOne],
 } satisfies Bank
 
 export default bank

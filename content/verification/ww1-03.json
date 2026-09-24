@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Hammerbarn",
+  "excerpt": "Pat shows off his pizza oven he purchased from Hammerbarn, so Bandit takes the family there to get their own. Bandit is told the location - aisle 300.",
+  "episode": "Hammerbarn",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Hammerbarn" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Hammerbarn_(Store)", "note": "The store has its own location article; the episode synopsis independently names the Hammerbarn trip for the pizza oven" }
+  }
+}

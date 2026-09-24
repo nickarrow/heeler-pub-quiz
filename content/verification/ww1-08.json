@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Takeaway",
+  "excerpt": "At a local Chinese takeaway, Bandit, Bluey, and Bingo have just pulled into the car park; the shop's Chinese characters read Golden Crown.",
+  "episode": "Takeaway",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Golden Crown" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Pool", "note": "The Pool reuses the same Chinese restaurant leaflet from Takeaway, tying the Golden Crown location across episodes" }
+  }
+}
