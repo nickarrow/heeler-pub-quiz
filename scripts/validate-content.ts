@@ -4,19 +4,26 @@
 // The rules split by bank, and that split is load-bearing. Structural rules
 // apply to any bank. Provenance rules apply to the real bank only, because
 // demanding source records of invented fixture questions would make this gate
-// either fail outright or pass vacuously — see docs/verification-log.md.
+// either fail outright or pass with nothing checked. See docs/verification-log.md.
 //
-// This script also refuses to be quietly vacuous: if the real bank is absent it
-// says so and names the rules it therefore did not apply.
+// Two properties of the output matter as much as the rules:
+//
+// 1. No failure message ever prints question or answer text. CI logs on a public
+//    repository are readable by the owner, who has opted out of reading the bank
+//    so that increment 9's error rate means something. A message that quotes an
+//    answer to be helpful would cancel that. Messages name ids and counts only.
+// 2. It refuses to be quietly empty: if the real bank is absent it says so and
+//    names the rules it therefore did not apply.
 
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import type { AnswerShape, Bank, Round } from '../src/content/types.ts'
+import { fixtureBankRelativePath, realBankRelativePath } from './bank-paths.ts'
 
 const repoRoot = resolve(import.meta.dirname, '..')
-const fixtureBankPath = resolve(repoRoot, 'src/content/fixtures/index.ts')
-const realBankPath = resolve(repoRoot, 'src/content/rounds/index.ts')
+const fixtureBankPath = resolve(repoRoot, fixtureBankRelativePath)
+const realBankPath = resolve(repoRoot, realBankRelativePath)
 const verificationDir = resolve(repoRoot, 'content/verification')
 
 const failures: string[] = []
@@ -44,6 +51,32 @@ function answerStrings(answer: AnswerShape): string[] {
     case 'contested':
       return answer.options.map((option) => option.answer)
   }
+}
+
+/** Every human-readable string in a bank, each labelled by where it lives. */
+function bankText(bank: Bank): { where: string; text: string }[] {
+  const entries: { where: string; text: string }[] = []
+  for (const round of bank.rounds) {
+    entries.push({ where: `round ${round.id} title`, text: round.title })
+    entries.push({ where: `round ${round.id} blurb`, text: round.blurb })
+    entries.push({ where: `round ${round.id} theme`, text: round.theme })
+    for (const question of round.questions) {
+      entries.push({ where: `question ${question.id} prompt`, text: question.prompt })
+      entries.push({ where: `question ${question.id} episode`, text: question.source.episode })
+      if (question.note !== undefined) {
+        entries.push({ where: `question ${question.id} note`, text: question.note })
+      }
+      for (const answer of answerStrings(question.answer)) {
+        entries.push({ where: `question ${question.id} answer`, text: answer })
+      }
+      if (question.answer.kind === 'contested') {
+        for (const option of question.answer.options) {
+          entries.push({ where: `question ${question.id} contested note`, text: option.why })
+        }
+      }
+    }
+  }
+  return entries
 }
 
 function countWords(text: string): number {
@@ -84,7 +117,10 @@ function checkBlurbsSpoilNothing(bank: Bank, label: string): void {
     for (const question of round.questions) {
       for (const answer of answerStrings(question.answer)) {
         if (answer.length > 0 && blurb.includes(answer.toLowerCase())) {
-          fail(`${label}: blurb for round "${round.id}" contains the answer "${answer}" from question ${question.id}`)
+          // Names the question, never the answer. See the note at the top.
+          fail(
+            `${label}: blurb for round "${round.id}" gives away an answer to question ${question.id} (text withheld)`,
+          )
         }
       }
     }
@@ -93,12 +129,35 @@ function checkBlurbsSpoilNothing(bank: Bank, label: string): void {
 
 function checkFixtureShapeCoverage(bank: Bank): void {
   checksRun.push('fixtures: at least one question of each answer shape')
-  const shapes = new Set(
+  // A Record keyed by the union, so adding a fourth answer shape to
+  // src/content/types.ts makes this object a type error rather than silently
+  // stopping short of requiring it.
+  const required: Record<AnswerShape['kind'], true> = { single: true, list: true, contested: true }
+  const present = new Set(
     bank.rounds.flatMap((round) => round.questions.map((question) => question.answer.kind)),
   )
-  for (const required of ['single', 'list', 'contested'] as const) {
-    if (!shapes.has(required)) {
-      fail(`fixtures: no question uses the "${required}" answer shape`)
+  for (const shape of Object.keys(required) as AnswerShape['kind'][]) {
+    if (!present.has(shape)) {
+      fail(`fixtures: no question uses the "${shape}" answer shape`)
+    }
+  }
+}
+
+function checkTextEncoding(bank: Bank, label: string): void {
+  checksRun.push(`${label}: no mis-encoded characters in any bank text`)
+  // This file was committed once carrying a double-encoded em dash. It matters
+  // beyond tidiness: the blurb check above compares by substring, so text
+  // encoded two different ways stops matching and that gate passes silently.
+  // Neither sequence below is ever legitimate in this bank's text.
+  const corrupt: { pattern: string; description: string }[] = [
+    { pattern: '\u00e2\u20ac', description: 'double-encoded UTF-8 (a dash or quote mangled)' },
+    { pattern: '\ufffd', description: 'Unicode replacement character' },
+  ]
+  for (const { where, text } of bankText(bank)) {
+    for (const { pattern, description } of corrupt) {
+      if (text.includes(pattern)) {
+        fail(`${label}: ${where} contains ${description}`)
+      }
     }
   }
 }
@@ -134,8 +193,10 @@ function checkTierMix(rounds: Round[]): void {
 /**
  * Verification records live outside `src` and stay as JSON, so they are data
  * read by this script rather than code the app could import. One file per
- * question id. The record shape is confirmed in increment 7, when the first
- * real round is authored and there is something to confirm it against.
+ * question id, holding `sourceUrl` and `excerpt`. The shape is provisional: it
+ * is confirmed in increment 7, when the first real round is authored and there
+ * is something to confirm it against. `content-pipeline.md` §2 also names the
+ * episode as recorded per question, which this does not yet require.
  */
 function checkVerificationRecords(rounds: Round[]): void {
   checksRun.push('real bank: verification record per question, excerpt of 40 words or fewer')
@@ -158,8 +219,10 @@ function checkVerificationRecords(rounds: Round[]): void {
       let record: { sourceUrl?: unknown; excerpt?: unknown }
       try {
         record = JSON.parse(readFileSync(recordPath, 'utf8')) as typeof record
-      } catch (error) {
-        fail(`real bank: verification record for ${question.id} is not valid JSON: ${String(error)}`)
+      } catch {
+        // The parse error is deliberately not reported. V8's JSON errors quote
+        // the offending region of the file, and that region is an excerpt.
+        fail(`real bank: verification record for ${question.id} is not valid JSON`)
         continue
       }
       if (typeof record.sourceUrl !== 'string' || record.sourceUrl.length === 0) {
@@ -190,6 +253,7 @@ async function main(): Promise<void> {
     checkIdsUnique(fixtures, 'fixtures')
     checkBlurbsSpoilNothing(fixtures, 'fixtures')
     checkFixtureShapeCoverage(fixtures)
+    checkTextEncoding(fixtures, 'fixtures')
   }
 
   if (existsSync(realBankPath)) {
@@ -199,6 +263,7 @@ async function main(): Promise<void> {
     }
     checkIdsUnique(real, 'real bank')
     checkBlurbsSpoilNothing(real, 'real bank')
+    checkTextEncoding(real, 'real bank')
     checkTenQuestionsPerRound(real.rounds)
     checkTierMix(real.rounds)
     checkVerificationRecords(real.rounds)
@@ -208,8 +273,8 @@ async function main(): Promise<void> {
     // that tells you what it skipped.
     checksSkipped.push('real bank: exactly ten questions per round')
     checksSkipped.push('real bank: tier mix 3 / 5 / 2 per round')
-    checksSkipped.push('real bank: verification record per question, excerpt ≤ 40 words')
-    checksSkipped.push('real bank: id uniqueness and blurb spoiler check')
+    checksSkipped.push('real bank: verification record per question, excerpt of 40 words or fewer')
+    checksSkipped.push('real bank: id uniqueness, blurb spoilers, text encoding')
   }
 
   for (const check of checksRun) {
@@ -229,7 +294,11 @@ async function main(): Promise<void> {
     for (const failure of failures) {
       console.error(`  - ${failure}`)
     }
-    process.exit(1)
+    // exitCode rather than process.exit(1). Node does not flush pending async
+    // writes on exit, and in CI both streams are pipes, so exiting here can
+    // truncate the list that was just printed.
+    process.exitCode = 1
+    return
   }
 
   console.log(`\nContent validation passed. ${checksRun.length} check(s) ran, ${checksSkipped.length} skipped.`)

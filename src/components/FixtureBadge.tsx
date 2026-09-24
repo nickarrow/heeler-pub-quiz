@@ -1,6 +1,7 @@
 /**
- * Shown whenever the loaded bank is the fixture bank, which is every build
- * except the deploy workflow's from increment 8 onward.
+ * Shown whenever the loaded bank is the fixture bank. As of increment 1 that is
+ * every build without exception; increment 8 is what makes the deploy workflow
+ * the one build that loads the real bank instead.
  *
  * `content-pipeline.md` asks for a visible badge so that a screenshot or a demo
  * link is never mistaken for the real thing. It reads off the bank's own

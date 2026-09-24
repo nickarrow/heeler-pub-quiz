@@ -25,9 +25,12 @@ describe('the real-bank switch', () => {
   const env = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env
 
   // Absence of the variable is what makes fixtures the default, so forgetting it
-  // produces the harmless outcome. It stays unset until increment 8, and even
-  // then it is set on the build step only, never job-wide, which is why this
-  // assertion is still correct after that switch is thrown.
+  // produces the harmless outcome. As of increment 1 it is set nowhere at all.
+  //
+  // Increment 8 sets it, and `technical-design.md` requires that to be on the
+  // build step rather than job-wide. If someone sets it job-wide instead, this
+  // test fails — which is the point, not a nuisance. Nothing else enforces that
+  // distinction.
   it('is not set in the test environment', () => {
     expect(env?.HEELER_REAL_BANK).toBeUndefined()
   })

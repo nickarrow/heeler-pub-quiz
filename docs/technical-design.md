@@ -283,7 +283,10 @@ Publishing to Pages from Actions is **two jobs with an artifact handoff**, not o
 described a single sequence, which is not the shape the platform uses.*
 
 - Workflow-level `permissions`: `contents: read`, `pages: write`, `id-token: write`.
-- Workflow-level `concurrency`: group `pages`, cancel in progress.
+- Workflow-level `concurrency`: group `pages`. *Corrected 24 September 2026: this said "cancel in progress" and that
+  was wrong. `actions/deploy-pages` has no cleanup step, so cancelling it mid-run can leave a deployment un-finalised
+  and the next run failing against it. GitHub's own Pages starter workflows set `cancel-in-progress: false` and say
+  why. The workflow now does too.*
 - **build** job: checkout, set up Node, `npm ci`, validate content, test, build, then upload the `dist` directory as a
   Pages artifact.
 - **deploy** job: `needs` the build job, declares the `github-pages` environment, and deploys the artifact.
@@ -309,8 +312,33 @@ reviewed by the owner, by design, and the post-play sampling in `content-pipelin
 
 **Never mix the two in one commit.** An app change that touches a content file is two commits.
 
-**Rollback** is `git revert` plus letting the workflow redeploy. Worth stating because content bypasses review, which
-makes CI the only gate in front of it.
+### Rollback
+
+*Rewritten 24 September 2026. This said "`git revert` plus letting the workflow redeploy", which is true of a content
+commit and not true in general. A review found the gap.*
+
+Two things make a revert insufficient on its own.
+
+**A revert does not unpublish.** Pages keeps serving the last *successful* deployment. So reverting into a state that
+fails a CI gate leaves the bad site live, looking as though the rollback worked because the commit is gone from `main`.
+Check the Actions tab after a revert, not just the git log.
+
+**Reverting a commit that contains the workflow deletes the workflow.** Increment 1 is a single commit and it added
+`.github/workflows/deploy.yml`. Reverting it leaves the push with nothing to run: no build, no artifact, no deploy, and
+no `workflow_dispatch` button either, because that is declared in the file just deleted. The site freezes on whatever
+was last deployed.
+
+So the procedure, in order:
+
+1. `git revert <sha>` the offending commit, or `git revert --no-commit` a range.
+2. Before pushing, confirm `.github/workflows/deploy.yml` still exists and still has the triggers. If the revert removed
+   or changed it, restore that file from `main` and commit it back — a revert of application code must not take the
+   pipeline with it.
+3. Push to `main` and watch the run in the Actions tab.
+4. Confirm the deployed site actually changed. A green run and a correct site are different claims.
+
+If the workflow file itself is what needs reverting, fix it forward in a new commit rather than reverting it. There is
+no way to run a workflow that does not exist on the default branch.
 
 ## What this design does not guarantee
 

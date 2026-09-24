@@ -1,12 +1,18 @@
-﻿import type { Bank, Round } from '../types.ts'
+import type { Bank, Round } from '../types.ts'
 
 // The fixture bank. Everything here is invented for testing and none of it is
-// about the show â€” that is the point. `content-pipeline.md` calls for fixtures
+// about the show, which is the point. `content-pipeline.md` calls for fixtures
 // written by hand rather than drawn from the corpus, covering all three answer
 // shapes so every code path is exercised by the set that is safe to look at.
 //
 // Increment 1 renders one of these. Increment 3 uses all three shapes for
 // scoring, and increment 4 grows this to twelve short rounds.
+//
+// Keep bank files free of typographic punctuation. This file was committed once
+// with a double-encoded em dash in it, and the spoiler check in
+// scripts/validate-content.ts compares answers to blurbs by substring, so text
+// encoded two different ways stops matching and the gate passes silently. There
+// is a validation rule guarding this now.
 
 const fixtureRoundOne = {
   id: 'fixture-1',

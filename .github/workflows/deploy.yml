@@ -17,9 +17,16 @@ permissions:
   pages: write
   id-token: write
 
+# One deploy at a time, and a running one is allowed to finish.
+#
+# `technical-design.md` originally specified cancel-in-progress, and that was
+# wrong: actions/deploy-pages has no cleanup step, so cancelling it mid-run can
+# leave a deployment un-finalised and the next run failing against it. GitHub's
+# own Pages starter workflows set this to false for exactly that reason. The
+# spec carries a dated correction.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:

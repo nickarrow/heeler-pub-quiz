@@ -258,12 +258,20 @@ registry's latest releases are `configure-pages` v6.0.0, `upload-pages-artifact`
 
 Chose the starter-workflow trio. The reasoning is that it is the only place a *combination* of the three is asserted to
 work together; the individual latest releases assert nothing about each other, and `upload-pages-artifact` v5.0.0
-bumped its internal `upload-artifact` to v7 with no corresponding statement about which `deploy-pages` consumes it. The
-one documented pairing constraint, from `upload-pages-artifact` v3.0.0, requires `deploy-pages@v4` or newer, which v5
-satisfies.
+bumped its internal `upload-artifact` to v7 with no corresponding statement about which `deploy-pages` consumes it.
 
-`checkout@v7` and `setup-node@v7` are latest major, since neither has a cross-pairing constraint. The breaking changes
-across checkout v5 to v7 concern `pull_request_target` checkout safety, which a push-to-main workflow does not touch.
+*Corrected 24 September 2026, after review.* This said "the one documented pairing constraint". There are two, pointing
+in opposite directions: `upload-pages-artifact` v3.0.0 requires `deploy-pages@v4` or newer, and `deploy-pages` v4.0.0
+requires artifacts from `upload-pages-artifact@v3` or newer. The chosen pair satisfies both, so the decision stands and
+only the count was wrong.
+
+`checkout@v7` and `setup-node@v7` are latest major, since neither has a cross-pairing constraint.
+
+*Corrected 24 September 2026, after review.* This said the breaking changes across checkout v5 to v7 concern
+`pull_request_target` checkout safety. That covers one of the three majors. v5.0.0 was a Node 24 runtime bump carrying a
+stated minimum runner version, v6.0.0 changed where credentials are persisted, and only v7.0.0 is the
+`pull_request_target` and `workflow_run` change. The conclusion survives — none of the three affects a push-to-main
+workflow on GitHub-hosted runners — but the reason given was too narrow to support it.
 
 ### Deviations from the documents, with reasons
 
@@ -310,9 +318,9 @@ everything. Two tests failed for that reason before it was added, and the failur
 
 **`increments.md`'s closing section is out of date and has been corrected in place with a dated note.** It says five
 commits exist and nothing has been pushed, which made the author-email decision cheap. Six commits were already on
-`origin/main` before this increment started, all six carrying `nick.arrow@gmail.com`, verified with
-`git log --format='%ae'`. That moment had already passed. Raised with the owner on 23 September 2026 and left
-unactioned, since git configuration is the owner's.
+`origin/main` before this increment started, all six carrying the owner's personal address, verified with
+`git log --format='%ae'`. That moment had already passed. Raised with the owner on 23 September 2026, who decided to
+leave it as it is; git configuration is theirs.
 
 **`increments.md` said increment 1 needed only the push credential from the owner.** It needed two more decisions: the
 wording of the footer notice, including whether it names the show, and permission to edit a user-level MCP config.
@@ -333,9 +341,13 @@ easy to forget and increment 1 publishes to the internet.
 
 ### Not verified in this increment
 
-- **That local and CI run the same runtime.** CI pins Node major `24`, which resolves to v24.21.0 on the runner, while
-  the machine runs v24.12.0 — nine patch releases apart on the same LTS line. "Green in CI" and "green locally" are
-  therefore not bit-identical claims. Latest 24.x read from `nodejs.org/dist/index.json` on 24 September 2026.
+- **That local and CI run the same runtime.** CI pins Node major `24` and the machine runs v24.12.0, so "green in CI"
+  and "green locally" are not bit-identical claims. *Corrected 24 September 2026, after review: this originally said the
+  runner "resolves to v24.21.0" and that the two were "nine patch releases apart". Two errors. v24.21.0 is the newest
+  24.x published on `nodejs.org/dist/index.json` as of 24 September 2026, which is not the same thing as what
+  `setup-node` selects — it resolves against its own version manifest, which can lag, and the CI logs were not read. And
+  the gap is twelve releases, counted, spanning nine **minor** versions, not patch releases. The original number was
+  stated as though computed and was not.*
 - **The CI logs themselves.** Step conclusions were read from the API; the log text was not, because the logs endpoint
   needs authentication. So "the validation gate ran and reported four checks" is verified locally and inferred in CI
   from a successful step.
@@ -349,3 +361,138 @@ easy to forget and increment 1 publishes to the internet.
 **One incidental observation.** Playwright MCP's `--output-dir=.playwright-mcp` resolves against the MCP server's own
 working directory rather than the workspace, so no `.playwright-mcp/` directory appears in the repository. The
 `.gitignore` entry for it is therefore currently guarding nothing. Harmless, and cheap to leave in place.
+
+## 24 September 2026 — the increment 1 review, and what it found
+
+Five reviewers, each anchored to a different source, per `.kiro/steering/review.md`: against the source, against the
+mechanism, cold as the reader, red team, and a senior-engineer pass over the whole repository. 52 findings as the
+reviewers numbered them. Every one was opened and confirmed before acting; three did not survive that and are recorded
+below, because the step that keeps this honest is the one that gets skipped.
+
+### One root cause with two symptoms, and it was mine
+
+`src/content/fixtures/index.ts` was committed carrying a double-encoded em dash **and** a UTF-8 byte-order mark. Both
+came from the same mistake: the negative test that proved the validation gate works used PowerShell 5.1's
+`Set-Content -Encoding utf8` to restore the file afterwards, and that writes a BOM and re-encodes non-ASCII on the way
+through. A byte sweep of all 32 tracked files found the damage confined to that one file; every other file was clean.
+
+It mattered more than tidiness. `checkBlurbsSpoilNothing` compares answers to blurbs by substring, so text encoded two
+different ways stops matching and that gate passes while checking nothing — and this is the file increment 7 copies to
+shape the real bank. There is now a validation rule that rejects double-encoded UTF-8 and replacement characters
+anywhere in a bank's text, negative-tested by planting `U+00E2 U+20AC U+201D` in a prompt and watching it fail. The BOM
+itself is cosmetic and was simply removed; no byte-level rule was added for it, because the data-level rule catches the
+case that does damage.
+
+**Lesson worth keeping:** on Windows, restore files with `Copy-Item` from a backup, or
+`[System.IO.File]::WriteAllText` with `UTF8Encoding($false)`. Not `Set-Content -Encoding utf8`.
+
+### The validation gate would have printed real answers into a public CI log
+
+The worst finding, and it was latent rather than live. The blurb check's failure message interpolated the answer:
+
+```
+blurb for round "X" contains the answer "Y" from question Z
+```
+
+That function runs against the real bank from increment 7. `increments.md` says content "bypasses your review by design,
+which makes CI the only gate in front of it", so the owner is exactly the person who reads that log — on a public
+repository. Printing an answer to be helpful would have cancelled the error-rate sample that the whole two-bank scheme
+exists to protect, and it would have done it silently.
+
+Fixed by naming the question id and withholding the text. A second instance of the same class was found in the same
+function while fixing it: the verification-record parser reported `String(error)` from a failed `JSON.parse`, and V8's
+JSON errors quote the offending region of the file, which is an excerpt. That message no longer includes the error.
+
+The rule is now stated at the top of the script rather than left to judgement: no failure message ever prints question or
+answer text, regardless of bank. A single rule that cannot leak beats a conditional one that might.
+
+One related claim was checked and **rejected** — see below.
+
+### Corrections to the increment 1 entry above
+
+Four factual errors, all in text written the same day, all corrected in place with dated notes: the "one documented
+pairing constraint" was two; the checkout reasoning covered one of three majors; the Node gap was reported as "nine patch
+releases" when it is twelve releases spanning nine minor versions, a number written as though computed and not computed;
+and the runner's resolved Node version was asserted as fact inside the section headed *Not verified*.
+
+### Code and pipeline changes
+
+- **`scripts/bank-paths.ts` is new**, holding the two bank paths that were previously duplicated in `vite.config.ts` and
+  `scripts/validate-content.ts`. Renaming the fixture bank failed loudly in both; renaming or moving the *real* bank and
+  updating only the Vite config did not — `existsSync` would go false, the provenance rules would report themselves
+  skipped, and the script would exit zero. From increment 8 that ships unchecked questions past a green gate. The
+  constants are relative fragments rather than resolved paths, because Vite bundles its config before running it and
+  `import.meta.dirname` inside an imported module cannot be trusted to point at the repository root. One duplicate
+  remains and cannot be removed: `tsconfig.app.json` maps `@bank` for the compiler and JSON cannot import anything.
+- **`process.exitCode = 1` replaces `process.exit(1)`** in the validator. Node does not flush pending async writes on
+  exit and in CI both streams are pipes, so the failure list it had just printed could be truncated.
+- **`AnswerText` has an explicit `ReactElement` return type.** Without it, adding a fourth answer shape lets the switch
+  fall through and return `undefined`, which React renders as nothing — a blank answer with no error. The shape-coverage
+  rule in the validator is now a `Record` keyed by the union for the same reason, so a fourth shape is a type error
+  rather than a rule that silently stops requiring it.
+- **`concurrency.cancel-in-progress` is now `false`.** `technical-design.md` specified cancelling and that was wrong:
+  `actions/deploy-pages` has no cleanup step, so cancelling mid-run can leave a deployment un-finalised. The spec carries
+  a dated correction.
+- **`engines` declares `node >=24.12.0`.** Not arbitrary: `validate:content` runs a TypeScript file directly, and Node's
+  own documentation gives v23.6.0 and v22.18.0 as where type stripping became default-on and **v24.12.0 and v25.2.0 as
+  where it became stable** — which is exactly the version this machine runs. Read at
+  [nodejs.org/api/typescript.html](https://nodejs.org/api/typescript.html), 24 September 2026. The same page confirms a
+  reviewer's point worth recording for increment 7: `tsconfig` `paths` aliases are explicitly unsupported by the
+  stripper, so a bank file importing through an alias would break this gate while leaving the app fine.
+- **Three comments that described increment 8's behaviour in the present tense** now say what is true as of increment 1
+  and what changes later. Read cold they had looked like descriptions of current behaviour.
+
+### Documentation changes
+
+- **`README.md` is new**, which three reviewers arrived at independently. Nothing said how to run the project, the five
+  npm scripts were undocumented, and the base path means bare `localhost:5173` is not the app. It also names the one
+  route to CI logs that needs no tooling — the Actions tab in a browser — since `gh` is not installed and the logs API
+  needs authentication, so both routes the documents did mention were closed.
+- **A real rollback procedure** is in `technical-design.md`. "`git revert` plus a redeploy" is true of a content commit
+  and false in general: a revert does not unpublish, because Pages keeps serving the last *successful* deployment, so
+  reverting into a state that fails a gate leaves the bad site live while the git log looks correct. And reverting the
+  commit that contains the workflow deletes the workflow, so the revert push has nothing to run — which is exactly the
+  shape of increment 1, a single commit that introduced `deploy.yml`.
+- **The owner's email address is out of the documents' prose.** It remains permanently public in six commits' metadata,
+  so this achieves little, but file text is indexed differently and removing one surface cost nothing.
+- **Document length is settled as a code concern, not a document one.** Three documents exceed the two-to-three-hundred
+  line target in `AGENTS.md` and the owner's ruling on 24 September 2026 is that the rule is about keeping code
+  reviewable and does not apply to documents. Recorded here rather than edited into `AGENTS.md`, which is the owner's to
+  change. Noted so the next review does not raise it a fourth time.
+
+### Three findings rejected
+
+**Mojibake in `.gitignore`.** Byte-checked: one clean `U+2014` and zero corrupt sequences. The reviewer read it through
+the same mangled console that has garbled output throughout this session, which is an instructive failure — the tool
+reporting the corruption was itself the corruption.
+
+**That `tsc` would echo real answers into CI logs.** Plausible and not active. Tested with a probe file containing a
+distinctive string: piped, non-TTY output prints only `file(line,col): error TSxxxx: message` with no source line, while
+`--pretty` echoes the offending line and its string contents. Actions `run:` steps are not TTYs, so pretty is off.
+Recorded as a live hazard only if someone forces `--pretty` in CI. Not verified on the runner itself.
+
+**That the `--allowed-origins` paragraph in `increments.md` is stale without a dated note.** The dated note is directly
+below it.
+
+Two more were downgraded rather than dropped: that two records of the author-email conversation disagreed — "accepted as
+fine" and "left unactioned" are compatible, though the wording is now aligned — and that the `deploy-pages` README
+showing a third version answer needed action, when it strengthens the existing pinning argument.
+
+### Deliberately not fixed, and whose problem it is
+
+Left for the increment that owns them, rather than widening this change: no written shape for the `game` and `flags`
+storage keys, which increment 3 needs and `technical-design.md` does not give; `flags` keyed on question ids with no bank
+marker, so fixture-era disputes from increments 3 to 6 would land in the same export that increment 9 computes an error
+rate from; `theme: string` and `id: string` both looser than the design, with round and question ids interchangeable to
+the compiler; lint absent from CI, which is harmless now and stops being harmless when increment 3 adds hooks and
+`react/rules-of-hooks` starts mattering; the `list` and `contested` branches of `AnswerText` untested; and the
+accumulation of up to forty words per verification record across 150 questions in a public repository, which
+`content-pipeline.md` never weighed against the reasoning that keeps `.corpus/` out of git.
+
+### Verified after the changes
+
+All four gates re-run and observed, not assumed: content validation 5 checks ran and 4 skipped, exit 0; 6 tests in 2
+files passing; build green; oxlint exit 0. The two-bank guarantee re-checked in the rebuilt bundle — `content/rounds`
+absent, `bank-paths` absent, fixture prompt and footer notice present, favicon rebased under the base path. Each of the
+four validation rules negative-tested again against the rewritten script, including the new encoding rule, and the blurb
+failure confirmed to print no answer text.

@@ -54,9 +54,11 @@ the only person who reads it in full is nobody.
 request. Content goes straight to `main` with a `content:` prefix and a message that names counts and never quotes an
 answer. The reasoning is in `technical-design.md`.
 
-**Rollback is `git revert` plus a redeploy.** Every deploy is a build from a commit on `main`, so reverting the commit
-and letting the workflow run again is the whole recovery path. Worth knowing because content bypasses your review by
-design, which makes CI the only gate in front of it.
+**Rollback starts with `git revert` and is not finished by it.** Worth knowing because content bypasses your review by
+design, which makes CI the only gate in front of it. *Corrected 24 September 2026: this said reverting the commit and
+letting the workflow run again "is the whole recovery path". It is not. A revert does not unpublish, because Pages keeps
+serving the last successful deployment; and reverting a commit that contains the workflow file deletes the workflow, so
+the revert has nothing to run. The full procedure is now in `technical-design.md` under Rollback.*
 
 **Any increment that changes the content design updates this document too**, not just `design.md`. The first version
 had increment 2 updating the design and leaving the plan above it untouched, which is the exact failure
@@ -336,12 +338,16 @@ and it is the price of not being in the authoring loop.
 
 > **Stale, 24 September 2026.** This section's premise no longer holds and it is left in place rather than deleted,
 > because the direction of the error matters. Six commits were already on `origin/main` before increment 1 began, all
-> six authored `nick.arrow@gmail.com`, confirmed with `git log --format='%ae'`. The cheap moment described below had
-> already passed by the time anybody read this. Raised with the owner on 23 September 2026 and accepted as fine; git
-> configuration is the owner's, and the address is public either way now. The remedy described at the end of this
-> section is no longer available without rewriting published history.
+> six carrying the owner's personal address, confirmed with `git log --format='%ae'`. The cheap moment described below
+> had already passed by the time anybody read this. Raised with the owner on 23 September 2026, who decided to leave it
+> as it is; git configuration is theirs, and the address is public either way now. The remedy at the end of this section
+> is no longer available without rewriting published history.
+>
+> The literal address has also been taken out of this document's prose. It remains permanently public in the commit
+> metadata, so this achieves little — but file text is indexed differently from commit metadata, and removing one
+> surface costs nothing.
 
-The five commits made so far carry `nick.arrow@gmail.com` as the author email, because that is what `user.email` is set
+The commits made so far carry the owner's personal address as the author email, because that is what `user.email` is set
 to globally. Pushing to a public repository publishes that address in the commit history, where it is readable and
 scrapeable.
 

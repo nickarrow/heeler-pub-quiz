@@ -1,15 +1,26 @@
+import type { ReactElement } from 'react'
 import { bank as loadedBank } from '@bank'
 import { FixtureBadge } from './components/FixtureBadge.tsx'
 import { FooterNotice } from './components/FooterNotice.tsx'
 import type { AnswerShape, Bank } from './content/types.ts'
 
-// Exactly one import of the bank, through the alias, never naming either file.
+// The app's only import of the bank, through the alias, never naming either
+// file. (The bank guard test imports it too, deliberately, to check what the
+// alias resolves to.)
+//
 // Widened to `Bank` on purpose: the app compiles identically whichever bank the
 // alias resolves to, so nothing here depends on having got the fixtures.
 const bank: Bank = loadedBank
 
-/** Increment 1 shows one question. The game loop is increment 3. */
-function AnswerText({ answer }: { answer: AnswerShape }) {
+/**
+ * Renders an answer of any of the three shapes.
+ *
+ * The explicit `ReactElement` return type is load-bearing. Without it, adding a
+ * fourth answer shape to `content/types.ts` lets this switch fall through and
+ * return `undefined`, which React renders as nothing at all — a blank answer and
+ * no error. With it, the missing case is a compile error.
+ */
+function AnswerText({ answer }: { answer: AnswerShape }): ReactElement {
   switch (answer.kind) {
     case 'single':
       return <span>{answer.answer}</span>
@@ -20,6 +31,7 @@ function AnswerText({ answer }: { answer: AnswerShape }) {
   }
 }
 
+/** Increment 1 shows one question. The game loop is increment 3. */
 export default function App() {
   const round = bank.rounds[0]
   const question = round?.questions[0]
@@ -32,7 +44,7 @@ export default function App() {
         {bank.kind === 'fixtures' ? <FixtureBadge /> : null}
 
         {question === undefined || round === undefined ? (
-          <p>No question available.</p>
+          <p>No question available. The loaded bank has no rounds, or its first round has no questions.</p>
         ) : (
           <article className="flex flex-col gap-3 rounded-lg border border-neutral-300 p-6">
             <p className="text-sm uppercase tracking-wide text-neutral-500">{round.title}</p>
