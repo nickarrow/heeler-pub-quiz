@@ -21,6 +21,7 @@ import {
   checkBlurbsSpoilNothing,
   checkFixtureShapeCoverage,
   checkIdsUnique,
+  checkPromptsSpoilNothing,
   checkTenQuestionsPerRound,
   checkTextEncoding,
   checkTierMix,
@@ -65,6 +66,7 @@ async function validateFixtureBank(): Promise<void> {
   }
   checkIdsUnique(fixtures, 'fixtures', report)
   checkBlurbsSpoilNothing(fixtures, 'fixtures', report)
+  checkPromptsSpoilNothing(fixtures, 'fixtures', report)
   checkFixtureShapeCoverage(fixtures, report)
   checkTextEncoding(fixtures, 'fixtures', report)
 }
@@ -84,6 +86,7 @@ async function validateRealBank(): Promise<void> {
   }
   checkIdsUnique(real, 'real bank', report)
   checkBlurbsSpoilNothing(real, 'real bank', report)
+  checkPromptsSpoilNothing(real, 'real bank', report)
   checkTextEncoding(real, 'real bank', report)
   checkTenQuestionsPerRound(real.rounds, report)
   checkTierMix(real.rounds, report)
@@ -104,6 +107,7 @@ async function validatePreviewBank(): Promise<void> {
   // Structural rules apply to any bank.
   checkIdsUnique(preview, 'preview bank', report)
   checkBlurbsSpoilNothing(preview, 'preview bank', report)
+  checkPromptsSpoilNothing(preview, 'preview bank', report)
   checkTextEncoding(preview, 'preview bank', report)
   // Provenance too: the preview questions went through the full pipeline, so the
   // owner is judging real-quality work. What does NOT apply is the shipped-round

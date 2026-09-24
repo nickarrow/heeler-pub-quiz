@@ -111,6 +111,35 @@ export function checkBlurbsSpoilNothing(bank: Bank, label: string, report: Repor
   }
 }
 
+export function checkPromptsSpoilNothing(bank: Bank, label: string, report: Report): void {
+  report.ran(`${label}: no question prompt contains its own answer`)
+  // A prompt that names its own answer gives the question away. The owner caught
+  // this in the 7a preview set: "Working from home in Yoga Ball ... What is it?"
+  // with the answer "a yoga ball" — the episode title in the framing was also the
+  // answer. This is the same failure as a blurb spoiling its round, one level
+  // down, so it is the same check: does any accepted answer string appear in the
+  // text a team reads before answering?
+  //
+  // Scope is deliberately just the answer-in-prompt case. Naming the source
+  // episode in a prompt is fine and often necessary framing ("In Fairytale, name
+  // Bandit's two brothers"); it only becomes a leak when the title IS the answer,
+  // and that case is caught here because the answer string is then in the prompt.
+  //
+  // Names the question id, never the answer text. See the note at the top.
+  for (const round of bank.rounds) {
+    for (const question of round.questions) {
+      const prompt = question.prompt.toLowerCase()
+      for (const answer of answerStrings(question.answer)) {
+        if (answer.length > 0 && prompt.includes(answer.toLowerCase())) {
+          report.fail(
+            `${label}: prompt for question ${question.id} gives away its own answer (text withheld)`,
+          )
+        }
+      }
+    }
+  }
+}
+
 export function checkFixtureShapeCoverage(bank: Bank, report: Report): void {
   report.ran('fixtures: at least one question of each answer shape')
   // A Record keyed by the union, so adding a fourth answer shape to
