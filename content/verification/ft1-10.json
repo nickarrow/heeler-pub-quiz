@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Faceytalk",
+  "excerpt": "Trixie appears to say hi to her nieces and remind Muffin to share with Socks; Trixie can't tend to her daughters at the moment.",
+  "episode": "Faceytalk",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived sisters" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bike", "note": "Bike notes Muffin appears without her sister Socks, confirming the two are sisters" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/BBQ",
+  "excerpt": "Bandit tells his brother Stripe a story while they cook the sausages, while their wives, Chilli and Trixie respectively, talk about a shampoo.",
+  "episode": "BBQ",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Stripe" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Christmas_Swim", "note": "Christmas Swim recap and Appearances present Stripe as Uncle Stripe, Bandit's brother, at the family gathering" }
+  }
+}

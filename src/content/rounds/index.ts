@@ -1,4 +1,5 @@
 import type { Bank } from '../types.ts'
+import { familyTreesOne } from './family-trees-1.ts'
 import { gamesTheyInventedOne } from './games-they-invented-1.ts'
 import { theSupportActOne } from './the-support-act-1.ts'
 import { whereAndWhenOne } from './where-and-when-1.ts'
@@ -17,7 +18,7 @@ import { whereAndWhenOne } from './where-and-when-1.ts'
 
 export const bank = {
   kind: 'real',
-  rounds: [theSupportActOne, whereAndWhenOne, gamesTheyInventedOne],
+  rounds: [theSupportActOne, whereAndWhenOne, gamesTheyInventedOne, familyTreesOne],
 } satisfies Bank
 
 export default bank

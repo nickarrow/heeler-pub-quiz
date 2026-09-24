@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Decider",
+  "excerpt": "Lucky's family (aside from his mum Janelle) arrive; Lucky's Mum has stayed home next door to support the Blues.",
+  "episode": "The Decider",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Janelle" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Pass_the_Parcel", "note": "Pass the Parcel names Janelle as Pat's wife and mother of their children" }
+  }
+}

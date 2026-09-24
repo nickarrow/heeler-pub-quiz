@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/BBQ",
+  "excerpt": "Bluey is cooking pretend sausages for her cousins Muffin and Socks.",
+  "episode": "BBQ",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Muffin and Socks" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Faceytalk", "note": "Faceytalk recap names Muffin and Socks as Trixie's daughters, the girls' cousins" }
+  }
+}

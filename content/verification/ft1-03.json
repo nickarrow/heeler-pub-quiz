@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Charades",
+  "excerpt": "Today Nana is looking after all the grandkids while the parents are out.",
+  "episode": "Charades",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Chris" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Baby_Race", "note": "Baby Race recap refers to Bandit's mum (Chris), establishing Nana Chris as the paternal grandmother" }
+  }
+}

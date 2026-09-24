@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Double_Babysitter",
+  "excerpt": "Uncle Rad turns up to babysit; Rad realizes his mum (Chris) had been the last babysitter. Christmas Swim: Uncle Rad and Aunt Frisky are calling.",
+  "episode": "Double Babysitter",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Rad" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Christmas_Swim", "note": "Christmas Swim recap and Appearances list Uncle Radley alongside Frisky as the girls' uncle" }
+  }
+}

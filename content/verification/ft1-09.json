@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Decider",
+  "excerpt": "the episode finishes with both of Chucky's parents hugging their youngest son; Lucky is the elder Labrador son.",
+  "episode": "The Decider",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Lucky" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Decider", "note": "The Decider Appearances lists the Labrador family with Lucky and Chucky as the two sons of Pat and Janelle" }
+  }
+}

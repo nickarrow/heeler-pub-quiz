@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Decider",
+  "excerpt": "Lucky's Dad, Lucky and Chucky have come over to the Heelers' house to watch a rugby final together.",
+  "episode": "The Decider",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Pat" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Pass_the_Parcel", "note": "Pass the Parcel identifies Pat as Lucky's Dad, head of the Labrador family" }
+  }
+}
