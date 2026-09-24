@@ -514,3 +514,120 @@ Then the deploy: workflow run 3 on commit `b6f35e6` green with every step report
 through Playwright — question, badge and footer notice in the accessibility tree, four requests all 200, zero console
 errors. The deployed asset hashes matched the local build exactly, which is incidental evidence that CI built the same
 thing this machine did.
+
+## 24 September 2026 — increment 2, the corpus fetch and reality check
+
+The first increment that reads real show content. It delivers a committed fetch script writing into `.corpus/` (which
+is gitignored — its output is never committed) and closes the open questions `design.md` §9 left for the fetch. It
+authors no questions. Everything below was computed from the fetched corpus or read from it directly, and each finding
+says how it was measured.
+
+### The fetch, and that it reproduces
+
+`scripts/fetch-corpus.ts` with `scripts/corpus-sources.ts` pulls three things into `.corpus/`: Wikipedia's
+`List of Bluey episodes` wikitext, the wiki's episode articles from `Category:Episodes`, and every non-redirect
+`/Script` transcript page. Both hosts are hardcoded — `en.wikipedia.org` and `blueypedia.fandom.com` — and every
+request URL is asserted against that allow-list before it leaves the machine, with `redirect: 'error'` so a redirect
+cannot smuggle the fetch onto a fanon host. There is no search step anywhere, which is the `content-pipeline.md` §1
+requirement that a search-driven fetch would violate by picking up the fanon wikis.
+
+`bluey.fandom.com` was found to redirect to `blueypedia.fandom.com`; the script names the canonical host directly so
+nothing depends on following that redirect.
+
+**Reproducibility was run, not asserted.** The script was run once, every content file SHA-256-hashed, then run a
+second time from clean, and the hashes compared. All 364 content files were byte-identical across the two runs, and
+the manifest was identical once its single date field was excluded. The script deletes `.corpus/` at the start of each
+run, so "reruns from clean" is a property of the run rather than a hope. Determinism comes from sorting every
+collection by title, writing a normalised trailing newline, and keeping only stable content — no revision ids, no
+per-request timestamps. The manifest carries one coarse `fetchedUtc` date (`2026-09-24`), which is the only field that
+changes across days and the only reason a rerun on a later date would differ without an editor having changed an
+article.
+
+The corpus that produced these findings was 365 files totalling roughly 4.3 MB. It is never committed; `git status`
+was confirmed to show only the two script files, and `git check-ignore` confirmed the corpus is excluded.
+
+### The transcript-page count, with a threshold and a date
+
+**206 non-redirect pages in the main namespace end in `/Script`, measured 24 September 2026.** Counted by walking
+`list=allpages` with `apnamespace=0&apfilterredir=nonredirects` and filtering titles ending `/Script`. This reconciles
+the earlier 206-vs-220 disagreement recorded above: **206 is the non-redirect count; the 220 figure counted redirects
+as well.**
+
+Sized by UTF-8 byte length of the wikitext, the distribution is: 202 pages at 1 KB or more, 194 at 2 KB or more, 166
+at 5 KB or more, and **151 at 10 KB or more.** That 151 matches exactly the stable sub-count the earlier passes agreed
+on ("151 exceed 10 KB"), which is independent corroboration that the fetch reached the same corpus those passes saw.
+Median script page is 13,064 bytes; the largest is 69,028.
+
+The `/Script` pages exceed the 154 aired episodes because they also cover shorts, minisodes, songs and specials. Of the
+154 aired episodes specifically, **153 have a `/Script` transcript** — only *Tickle Crabs* lacks one — so the
+transcript-dependent rounds have near-complete source coverage.
+
+### The scope assumption held
+
+Parsed from the Wikipedia episode-list tables: **Series 1 has 52 episodes, Series 2 has 52, Series 3 has 50, for 154
+aired episodes**, plus 21 Bonus Bits and 21 Minisodes, giving 196 populated synopsis rows in the one call. This
+confirms the three figures `design.md` §5 and this log had been carrying on trust — 154 episodes, 21 minisodes, 21
+Bonus Bits — and the "196 synopses in one API call" claim. Nothing in the scope assumption broke on contact with the
+corpus. No fourth series appears; the canon is closed as the design assumes.
+
+The wiki's `Category:Episodes` holds 157 article pages, three more than 154 because it includes a small number of
+non-episode entries (an episode guide, the 2016 pilot, and similar). 155 of the 157 carry a `Trivia` section, averaging
+roughly 2.2 KB each, which is the richest single vein for tier-2 and tier-3 facts.
+
+### Contested Evidence does not survive as a full round
+
+This is the finding the increment existed to produce, and it closes the biggest open risk in the content plan. **The
+corpus does not support ten questions where two sources genuinely disagree or the show contradicts itself.**
+
+The method: scan every episode article's prose for contradiction, continuity and ambiguity markers, then exclude the
+three categories that look contested but are not usable. Animation goofs are freeze-frame trivia, which `design.md` §5
+rules out as a failure mode. International dub and broadcast edits — a shot cut for one broadcaster, a character
+renamed in a dub — are real-world and meta, which §5 puts out of scope. Live-tour scheduling changes are neither
+in-universe nor about the show. What survives all three exclusions and meets §5's "two defensible answers" bar is a
+handful: **roughly three to five genuine candidates, not ten.** The specific facts are withheld here, per the repo's
+public-and-no-answers rule; what matters for the plan is the count and that it is well below ten.
+
+The reason is structural, not a gap in the fetch: the wiki documents plot, appearances and production trivia, and
+records in-universe self-contradiction only rarely. The famous fan-argued topics that might have filled the round are
+barely present in the article prose — Bandit's occupation is mentioned in one article, exact character ages in one or
+two.
+
+Consequence, per the path §5 already specified: Contested Evidence stops being a standalone round. Its three-to-five
+survivors fold into other rounds as individual contested questions, and the vacated slot goes to an eleventh theme.
+`design.md` §5 and §9 and `increments.md` are updated to record this rather than leaving it as an expectation.
+
+### Which themes have real depth
+
+Reported honestly as two different things: **locator counts, which were computed**, and a **depth judgment, which is
+mine from reading** and is not a question count. A locator hit means an episode article contains a keyword for the
+theme; it does not mean a groundable question exists. Across the 157 episode articles:
+
+| Theme | Episodes with a locator hit | Depth judgment |
+| --- | --- | --- |
+| The Support Act | 157 | Deep — minor characters saturate the corpus |
+| Say That Again | 153/154 have a transcript | Deep — dialogue is almost fully covered |
+| Games They Invented | 124 | Deep |
+| For the Grown-Ups | 120 | Present but hard to ground — subtext resists a single checkable answer |
+| Where and When | 111 | Moderate |
+| Props Department | 103 | Deep enough for a second round |
+| Family Trees | 102 | Deep enough for a second round |
+| Alter Egos | 55 | Thin |
+| Full Names and Formalities | 36 | Thinnest |
+
+The design's guessed five second-round themes were The Support Act, Games They Invented, Say That Again, For the
+Grown-Ups and Alter Egos. The evidence keeps the first three and replaces the last two: For the Grown-Ups is hard to
+author as checkable fact rather than opinion, and Alter Egos is thin at 55 articles. **On the evidence the five second
+rounds go to The Support Act, Say That Again, Games They Invented, Props Department and Family Trees.** This is a
+recommendation from depth signals, not from authored questions; increment 7 authors against one round and can still
+move a second-round slot if a theme underdelivers in practice.
+
+### Not verified in this increment
+
+- **That any of the three-to-five contested candidates actually yields a sound question.** This increment counted and
+  categorised; it did not author or check. Whether a candidate survives blind re-derivation is an increment-7 question.
+- **That the depth ranking predicts survival.** Locator hits and Trivia richness are a proxy for how many facts exist,
+  not for how many pass both checks. The second-round allocation is a starting position, revisable in increment 7.
+- **Transcript accuracy against broadcast.** The `/Script` pages are fan transcriptions; whether their wording matches
+  broadcast subtitles was not checked and remains as it was in the earlier log entry.
+- **The three extra `Category:Episodes` entries individually.** They were identified as non-episode entries in
+  aggregate (157 vs 154), not each read, because they do not affect the 154-episode pool.

@@ -118,6 +118,11 @@ Bits". **The 154 aired episodes are the question pool.** Shorts are a later deci
 "No fourth series announced" is deliberately weaker than the first draft's "not in production" — see
 `verification-log.md`.
 
+The three counts above were confirmed against the fetched corpus on 24 September 2026: the Wikipedia episode tables
+give 52 + 52 + 50 = 154 aired episodes, plus 21 Bonus Bits and 21 minisodes. Nothing in the scope assumption broke on
+contact with the corpus, and 153 of the 154 episodes have a transcript to author against. Details and method are in
+`verification-log.md` under that date.
+
 ### Difficulty
 
 Three tiers, mixed inside every round at three, five and two:
@@ -137,7 +142,9 @@ having genuinely watched.
 
 ### Rounds
 
-Ten themes, drawn from how the owner actually phrased their own example questions:
+Ten themes were drawn from how the owner actually phrased their own example questions. Nine survive as rounds; the
+tenth, Contested Evidence, was cut to a scattered question type by the 24 September 2026 reality check (below), and an
+eleventh theme takes its round slot.
 
 | Theme | What it asks about |
 | --- | --- |
@@ -150,16 +157,23 @@ Ten themes, drawn from how the owner actually phrased their own example question
 | Say That Again | A line of dialogue, name the episode |
 | Family Trees | Relationships, cousins, grandparents |
 | Props Department | Specific objects and what happens to them |
-| Contested Evidence | Questions with two defensible answers, on purpose |
+| Contested Evidence | Questions with two defensible answers, on purpose. No longer a round — see below |
 
-Fifteen rounds, so five themes get a second one. Which five is a guess, not a finding: the expectation is The Support
-Act, Games They Invented, Say That Again, For the Grown-Ups and Alter Egos, and the corpus may say otherwise. The
-first authoring pass reports on which themes actually have depth before the allocation is fixed.
+Fifteen rounds, so five themes get a second one. The first draft guessed The Support Act, Games They Invented, Say
+That Again, For the Grown-Ups and Alter Egos. The corpus reality check on 24 September 2026 kept the first three and
+replaced the last two: For the Grown-Ups is subtext that resists a single checkable answer, and Alter Egos is thin
+(pretend-play personas appear in only about a third of episodes). **On the evidence the five second rounds go to The
+Support Act, Say That Again, Games They Invented, Props Department and Family Trees.** This is a recommendation from
+depth signals rather than from authored questions, so increment 7 may still move a slot if a theme underdelivers in
+practice. The per-theme depth table is in `verification-log.md`.
 
-**Contested Evidence is the biggest open risk in the content plan.** It assumes ten questions exist where two sources
-genuinely disagree, or the show contradicts itself, and nobody has verified that. If the corpus yields four rather
-than ten, the theme becomes a handful of questions distributed across other rounds and the slot goes to an eleventh
-theme. Deciding that needs the fetch, so it is recorded in §9 as a question rather than buried here as a plan.
+**Contested Evidence does not survive as a round.** It assumed ten questions where two sources genuinely disagree or
+the show contradicts itself. The fetch found roughly three to five once animation goofs, dub and broadcast edits, and
+scheduling noise are excluded — well below ten, because the wiki documents plot rather than recording in-universe
+self-contradiction. So the theme becomes those three-to-five questions distributed across other rounds, and the
+vacated slot goes to an eleventh theme. The eleventh theme is chosen in increment 7 or 8, when authoring shows which
+of the deeper themes can carry the extra questions. This closes the risk this paragraph used to carry; the finding and
+its method are in `verification-log.md`, 24 September 2026.
 
 Where a question is contested, the reveal shows both answers, says why they conflict, and states which ones score. So
 a reveal can never be a single word.
@@ -284,7 +298,12 @@ everybody has actually seen. Later decision.
 1. **Default timer length.** 45 seconds is the placeholder.
 2. **Tiebreaks.** Three reserve rounds exist. Whether a draw needs more than "play another round" is undecided.
 3. **Whether three games is the finish line** or the first milestone of a larger bank.
-4. **Whether Contested Evidence survives as a round**, which needs the fetch — see §5.
-5. **Which five themes get a second round**, likewise.
+
+Closed by the 24 September 2026 corpus fetch (see §5 and `verification-log.md`):
+
+4. ~~Whether Contested Evidence survives as a round.~~ **Closed: it does not.** The corpus yields roughly three to
+   five genuinely contested facts, not ten. They scatter across other rounds and an eleventh theme takes the slot.
+5. ~~Which five themes get a second round.~~ **Closed on the evidence:** The Support Act, Say That Again, Games They
+   Invented, Props Department and Family Trees. Revisable in increment 7 if authoring contradicts the depth signal.
 
 Settled since the first draft: the product name and the published repository name, both `heeler-pub-quiz`.

@@ -172,6 +172,23 @@ document, and `verification-log.md` all get updated with answers instead of expe
 
 **Needs from you.** Nothing.
 
+**Done, 24 September 2026.** `scripts/fetch-corpus.ts` and `scripts/corpus-sources.ts` fetch Wikipedia's episode list
+and the wiki's episode articles and `/Script` transcript pages into `.corpus/`, pinned to `en.wikipedia.org` and
+`blueypedia.fandom.com` with no search step. Reproducibility was run rather than asserted: two fetches from clean
+produced byte-identical content across all 364 content files. `git status` showed only the two scripts, never the
+corpus. The four open questions closed with computed numbers:
+
+- **206 non-redirect `/Script` pages** (151 at 10 KB or more), which reconciles the earlier 206-vs-220 disagreement —
+  220 had counted redirects.
+- **Contested Evidence does not survive as a round:** roughly three to five genuine contested facts exist, not ten. It
+  becomes a scattered question type and an eleventh theme takes the slot.
+- **The five second rounds go to** The Support Act, Say That Again, Games They Invented, Props Department and Family
+  Trees, on depth evidence rather than the first draft's guess.
+- **The scope assumption held:** 52 + 52 + 50 = 154 aired episodes, 21 Bonus Bits, 21 minisodes, all confirmed against
+  the corpus.
+
+What was measured, how, and what was left unverified are in `verification-log.md` under the same date.
+
 ## 3. The game loop, on fixtures
 
 **Delivers.** All six phases from setup to podium. Two to four teams. All three answer shapes and their scoring. The
@@ -328,8 +345,8 @@ and it is the price of not being in the authoring loop.
 
 | Question | Closes in |
 | --- | --- |
-| Whether Contested Evidence survives as a round | 2 |
-| Which five themes get a second round | 2 |
+| Whether Contested Evidence survives as a round | 2 — **closed: it does not.** See the increment 2 note above |
+| Which five themes get a second round | 2 — **closed on evidence.** Support Act, Say That Again, Games, Props, Family Trees |
 | Default timer length | 9 — it needs real pace, which means real teams. Increment 6 is one person with a keyboard |
 | Whether three games is the finish line | 9 |
 | Tiebreaks | Still open, not blocking |
