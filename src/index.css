@@ -85,7 +85,18 @@
 }
 
 body {
+  /* Restyle move 3: a sunny sky that warms down into the cream the cards sit on.
+     The cream stop is placed so the app's content area is over cream, not over
+     the blue — cards stay legible and the blue reads as sky at the very top. A
+     solid cream fallback under the gradient covers any area past its last stop. */
   background-color: var(--color-cream);
+  background-image: linear-gradient(
+    180deg,
+    var(--color-sky) 0%,
+    #eaf4ff 34%,
+    var(--color-cream) 64%
+  );
+  background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-size: var(--text-fluid-base);

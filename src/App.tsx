@@ -2,6 +2,7 @@ import { useState, type ReactElement } from 'react'
 import { Button } from './components/Button.tsx'
 import { BankBadge } from './components/BankBadge.tsx'
 import { Card } from './components/Card.tsx'
+import { Scenery } from './components/Scenery.tsx'
 import { FooterNotice } from './components/FooterNotice.tsx'
 import { QuestionScreen } from './components/QuestionScreen.tsx'
 import { ReviewScreen } from './components/ReviewScreen.tsx'
@@ -27,8 +28,13 @@ export default function App(): ReactElement {
   const inGame = game.state.phase !== 'setup' && game.state.phase !== 'final'
   useWakeLock(inGame)
 
+  // The backdrop calms behind the live question and reveal so it never competes
+  // with reading the prompt; full everywhere else.
+  const calmScenery = game.state.phase === 'question' || game.state.phase === 'reveal'
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="relative flex min-h-screen flex-col">
+      <Scenery calm={calmScenery} />
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-stretch gap-6 px-4 py-8 sm:px-6">
         <h1 className="text-fluid-lg font-bold text-blue-800">Heeler Pub Quiz</h1>
         <BankBadge kind={game.state.bankKind} />
