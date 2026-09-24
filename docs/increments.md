@@ -19,11 +19,20 @@ Checked rather than assumed, 23 September 2026:
 | --- | --- |
 | Node | v24.12.0, present |
 | npm | 11.6.2, present |
-| GitHub repository | Exists, blank: `nickarrow/heeler-pub-quiz` |
-| Pages source set to GitHub Actions | **Done** |
-| GitHub CLI (`gh`) | Not installed |
-| A credential for the first push | **Not established** |
-| Playwright MCP | Package verified working at 0.0.82. Config needs pasting into `.kiro/settings/mcp.json` |
+| GitHub repository | Exists and empty: `nickarrow/heeler-pub-quiz`. **Public**, which is what makes Pages free |
+| Pages source set to GitHub Actions | Done |
+| A credential for the first push | Done. Git Credential Manager, verified by a dry-run push |
+| GitHub CLI (`gh`) | Not installed, and not needed — plain `git` authenticates fine |
+| Playwright MCP | Connected, pinned at 0.0.82 |
+
+Nothing outstanding. Increment 1 can start.
+
+Repository visibility matters more than it looks: `design.md` §6 claims hosting costs nothing, and that claim depends
+on the repository being public. It is, confirmed by fetching it unauthenticated. A red team pass flagged that the
+design asserted free hosting without ever stating the visibility it rests on.
+
+Public also means every commit's author email is publicly visible once anything is pushed. Nothing has been pushed
+yet, so this is the one cheap moment to decide about that — see the note at the end of this document.
 
 The last row is the only one that still blocks increment 1. Password authentication for git operations no longer
 exists, so the first HTTPS push needs one of: Git Credential Manager, which ships with Git for Windows and opens a
@@ -305,3 +314,20 @@ and it is the price of not being in the authoring loop.
 | Default timer length | 9 — it needs real pace, which means real teams. Increment 6 is one person with a keyboard |
 | Whether three games is the finish line | 9 |
 | Tiebreaks | Still open, not blocking |
+
+## One decision before the first push
+
+The five commits made so far carry `nick.arrow@gmail.com` as the author email, because that is what `user.email` is set
+to globally. Pushing to a public repository publishes that address in the commit history, where it is readable and
+scrapeable.
+
+That may be entirely fine and deliberate — plenty of people commit to public repositories under a real address. It is
+raised here only because **nothing has been pushed yet, which makes this the last cheap moment**. Afterwards the
+address is out regardless of what the repository does later.
+
+If it should change, the sequence is: turn on email privacy in GitHub's settings to get a `users.noreply.github.com`
+address, set `user.email` to it, and rewrite the five existing commits' author. All five are local and unpushed, so
+that rewrite is safe and touches nothing anybody else has seen. Doing it after a push means rewriting published
+history, which is a different and worse conversation.
+
+Recorded as a decision rather than acted on: git configuration is the owner's to change.
