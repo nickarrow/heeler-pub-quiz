@@ -92,7 +92,7 @@ export const previewRound: Round = {
     },
     {
       id: 'pv-008',
-      prompt: 'Working from home in Yoga Ball, Bandit uses one large object as his computer chair, which the kids keep stealing. What is it?',
+      prompt: 'When Bandit works from home, he sits on one large inflatable object as his computer chair, which the kids keep stealing. What is it?',
       tier: 1,
       answer: { kind: 'single', answer: 'A yoga ball', alsoAccept: ['Yoga ball', 'The yoga ball', 'Exercise ball'] },
       source: { episode: 'Yoga Ball', series: 1, episodeInSeries: 16 },
