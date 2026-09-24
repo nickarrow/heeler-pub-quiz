@@ -109,6 +109,58 @@ describe('persistence and restore', () => {
   })
 })
 
+describe('dealing and exhaustion', () => {
+  const SERVED_KEY = 'heeler-pub-quiz/v1/served-rounds'
+
+  it('shows how many unplayed rounds remain on the setup screen', () => {
+    render(<App />)
+    // Twelve fixture rounds, none served yet.
+    expect(screen.getByText(/12 unplayed rounds available/i)).toBeInTheDocument()
+  })
+
+  it('marks the dealt rounds served on deal, before any question is played', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText(/team 1 name/i), 'Alpha')
+    await user.type(screen.getByLabelText(/team 2 name/i), 'Bravo')
+    await user.click(screen.getByRole('button', { name: /start game/i }))
+    // We are on the first round intro, no question played yet.
+    expect(screen.getByRole('button', { name: /begin round/i })).toBeInTheDocument()
+    // served-rounds already holds a full game's worth of rounds — served on deal,
+    // not on finish, so an abandoned evening does not recycle them.
+    const served = JSON.parse(localStorage.getItem(SERVED_KEY) ?? 'null')
+    expect(Array.isArray(served)).toBe(true)
+    expect(served).toHaveLength(4)
+    expect(served).toContain('fixture-1')
+  })
+
+  it('offers a reset behind a confirmation when the pool cannot fill a game', async () => {
+    const user = userEvent.setup()
+    // Serve all but three rounds, so a four-round game cannot be dealt.
+    const nearlyAll = [
+      'fixture-1', 'fixture-2', 'fixture-3', 'fixture-4', 'fixture-5',
+      'fixture-6', 'fixture-7', 'fixture-8', 'fixture-9',
+    ]
+    localStorage.setItem(SERVED_KEY, JSON.stringify(nearlyAll))
+    render(<App />)
+    // Name two teams and try to start — the deal should fail for want of rounds.
+    await user.type(screen.getByLabelText(/team 1 name/i), 'Alpha')
+    await user.type(screen.getByLabelText(/team 2 name/i), 'Bravo')
+    await user.click(screen.getByRole('button', { name: /start game/i }))
+
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(/out of fresh rounds/i)
+    expect(screen.getByText(/not enough unplayed rounds/i)).toBeInTheDocument()
+
+    // Reset is behind a confirmation.
+    await user.click(screen.getByRole('button', { name: /^reset the rounds$/i }))
+    await user.click(screen.getByRole('button', { name: /yes, reset the rounds/i }))
+
+    // Back to a fresh setup with the full pool available again.
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(/set up the game/i)
+    expect(screen.getByText(/12 unplayed rounds available/i)).toBeInTheDocument()
+  })
+})
+
 describe('playing through to a reveal and scoring', () => {
   async function startTwoTeams(): Promise<ReturnType<typeof userEvent.setup>> {
     const user = userEvent.setup()

@@ -87,4 +87,23 @@ describe('served-rounds key', () => {
     expect(loadServedRounds()).toEqual({ ok: false, reason: 'absent' })
     expect(localStorage.getItem(SERVED_ROUNDS_KEY)).toBeNull()
   })
+
+  // Valid JSON of the wrong shape must be rejected, not trusted. Left unchecked,
+  // a stored object or null reaches `served.includes(...)` in the hook and throws
+  // on every render, bricking the app the way an incoherent game key would.
+  it('rejects a stored value that is not an array of strings', () => {
+    for (const bad of ['{}', 'null', '42', '"fixture-1"', '[1,2,3]', '["a",2]']) {
+      localStorage.setItem(SERVED_ROUNDS_KEY, bad)
+      expect(loadServedRounds()).toEqual({ ok: false, reason: 'unparseable' })
+    }
+  })
+
+  it('accepts a well-formed array of round ids', () => {
+    localStorage.setItem(SERVED_ROUNDS_KEY, JSON.stringify(['fixture-1', 'fixture-2']))
+    const loaded = loadServedRounds()
+    expect(loaded.ok).toBe(true)
+    if (loaded.ok) {
+      expect(loaded.value).toEqual(['fixture-1', 'fixture-2'])
+    }
+  })
 })

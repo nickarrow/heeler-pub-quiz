@@ -100,9 +100,34 @@ export function clearGame(): void {
 }
 
 export function loadServedRounds(): ReadResult<string[]> {
-  return readJson<string[]>(SERVED_ROUNDS_KEY)
+  const result = readJson<unknown>(SERVED_ROUNDS_KEY)
+  if (!result.ok) {
+    return result
+  }
+  // `readJson` only guarantees the JSON parsed, not its shape. A key holding
+  // valid non-array JSON (an older build, a hand-edit, a truncated write) would
+  // otherwise reach `served.includes(...)` in the hook and throw on every render,
+  // bricking the app the same way an incoherent game key would. So validate here
+  // and treat a wrong shape as unparseable — discard and start fresh.
+  const value = result.value
+  if (!Array.isArray(value) || !value.every((item): item is string => typeof item === 'string')) {
+    return { ok: false, reason: 'unparseable' }
+  }
+  return { ok: true, value }
 }
 
 export function saveServedRounds(roundIds: string[]): WriteResult {
   return writeJson(SERVED_ROUNDS_KEY, roundIds)
+}
+
+export function clearServedRounds(): void {
+  const store = storage()
+  if (store === undefined) {
+    return
+  }
+  try {
+    store.removeItem(SERVED_ROUNDS_KEY)
+  } catch {
+    // A failed clear is harmless and must not interrupt play.
+  }
 }

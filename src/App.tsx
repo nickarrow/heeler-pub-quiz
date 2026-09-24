@@ -6,30 +6,24 @@ import { SetupScreen } from './components/SetupScreen.tsx'
 import { Standings } from './components/Standings.tsx'
 import { StorageNotice } from './components/StorageNotice.tsx'
 import { currentQuestion, currentRound } from './game/state.ts'
-import { useGame } from './game/useGame.ts'
+import { useGame, type Game } from './game/useGame.ts'
 import { useKeyboard } from './game/useKeyboard.ts'
 
-// Increment 3: the whole game loop on fixtures. Six phases held in state, no
-// router (`technical-design.md`), nothing auto-advancing (`design.md` §4). The
-// bank is imported once through the alias inside useGame, never named here.
+// The whole game loop on fixtures. Six phases held in state, no router
+// (`technical-design.md`), nothing auto-advancing (`design.md` §4). Increment 4
+// adds dealing over unserved rounds and the exhaustion path. The bank is imported
+// once through the alias inside useGame, never named here.
 export default function App(): ReactElement {
   const game = useGame()
-  const { state, rounds, dispatch, startNewGame, resetToSetup } = game
 
   return (
     <div className="flex min-h-screen flex-col bg-white text-neutral-900">
       <main className="flex flex-1 flex-col items-start gap-6 px-6 py-8">
         <h1 className="text-3xl font-semibold">Heeler Pub Quiz</h1>
-        {state.bankKind === 'fixtures' ? <FixtureBadge /> : null}
+        {game.state.bankKind === 'fixtures' ? <FixtureBadge /> : null}
         <StorageNotice notice={game.storageNotice} />
 
-        <Phases
-          state={state}
-          rounds={rounds}
-          dispatch={dispatch}
-          startNewGame={startNewGame}
-          resetToSetup={resetToSetup}
-        />
+        <Phases game={game} />
       </main>
 
       <FooterNotice />
@@ -37,19 +31,21 @@ export default function App(): ReactElement {
   )
 }
 
-function Phases({
-  state,
-  rounds,
-  dispatch,
-  startNewGame,
-  resetToSetup,
-}: Pick<ReturnType<typeof useGame>, 'state' | 'rounds' | 'dispatch' | 'startNewGame' | 'resetToSetup'>): ReactElement {
+function Phases({ game }: { game: Game }): ReactElement {
+  const { state, rounds, dispatch } = game
   const round = currentRound(state, rounds)
   const question = currentQuestion(state, rounds)
 
   switch (state.phase) {
     case 'setup':
-      return <SetupScreen onStart={startNewGame} />
+      return (
+        <SetupScreen
+          onStart={game.startNewGame}
+          lastDeal={game.lastDeal}
+          unservedRoundCount={game.unservedRoundCount}
+          onResetServedRounds={game.resetServedRounds}
+        />
+      )
 
     case 'round-intro':
       return (
@@ -91,12 +87,13 @@ function Phases({
         <RoundBreak
           state={state}
           roundNumber={state.cursor.round + 1}
+          roundCount={state.roundIds.length}
           onNext={() => dispatch({ type: 'NEXT_ROUND' })}
         />
       )
 
     case 'final':
-      return <FinalScreen state={state} onNewGame={resetToSetup} />
+      return <FinalScreen state={state} onNewGame={game.resetToSetup} />
   }
 }
 
@@ -133,17 +130,20 @@ function RoundIntro({
 function RoundBreak({
   state,
   roundNumber,
+  roundCount,
   onNext,
 }: {
-  state: ReturnType<typeof useGame>['state']
+  state: Game['state']
   roundNumber: number
+  roundCount: number
   onNext: () => void
 }): ReactElement {
   useKeyboard({ onAdvance: onNext })
+  const lastRound = roundNumber >= roundCount
   return (
     <section className="flex flex-col gap-4" aria-labelledby="break-heading">
       <h2 id="break-heading" className="text-2xl font-medium">
-        Standings after round {roundNumber}
+        Standings after round {roundNumber} of {roundCount}
       </h2>
       <Standings state={state} />
       <button
@@ -151,7 +151,7 @@ function RoundBreak({
         className="self-start rounded bg-blue-700 px-4 py-2 font-medium text-white"
         onClick={onNext}
       >
-        Continue
+        {lastRound ? 'See the final standings' : 'Continue to the next round'}
       </button>
     </section>
   )
@@ -161,7 +161,7 @@ function FinalScreen({
   state,
   onNewGame,
 }: {
-  state: ReturnType<typeof useGame>['state']
+  state: Game['state']
   onNewGame: () => void
 }): ReactElement {
   const [confirming, setConfirming] = useState(false)

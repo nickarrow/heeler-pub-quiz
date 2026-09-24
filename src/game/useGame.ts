@@ -10,11 +10,15 @@
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { bank as loadedBank } from '@bank'
 import type { Bank, Round } from '../content/types.ts'
-import { gameReducer, initialState, type GameAction } from './reducer.ts'
+import { dealRounds, markServed, type Deal } from './dealing.ts'
+import type { StorageNotice } from './notice.ts'
+import type { GameAction } from './reducer.ts'
+import { gameReducer } from './reducer.ts'
+import { readInitial } from './restore.ts'
 import type { GameState, Team } from './state.ts'
 import {
   clearGame,
-  loadGame,
+  clearServedRounds,
   loadServedRounds,
   saveGame,
   saveServedRounds,
@@ -22,91 +26,32 @@ import {
 
 const bank: Bank = loadedBank
 
-/** A degraded-storage notice, or null when persistence is healthy. Shown once,
- * quietly; it never interrupts play. */
-export type StorageNotice =
-  | null
-  | 'discarded-unparseable-game'
-  | 'in-memory-only'
+export type { StorageNotice }
+
+/** The outcome of the last attempt to start a game: either it started, or the
+ * pool was exhausted (fewer than a full game's worth of unserved rounds remain).
+ * Null before any attempt this session. */
+export type LastDeal = null | { ok: true } | { ok: false; unservedRemaining: number }
 
 export type Game = {
   state: GameState
   rounds: Round[]
   dispatch: (action: GameAction) => void
-  /** Deal a fresh game: pick rounds, mark them served, and start. Increment 3
-   * deals the single fixture round. */
+  /** Deal a fresh game: choose four unserved rounds, mark them served on deal,
+   * and start. If the pool cannot fill a whole game, does NOT start — sets
+   * `lastDeal` to an exhausted result instead, so the UI can offer a reset. */
   startNewGame: (teams: Team[], timerLengthSeconds: number) => void
   /** Abandon the current game and return to setup, clearing the saved game. Does
    * not touch served-rounds: those rounds were dealt and stay served. */
   resetToSetup: () => void
+  /** Clear the served-rounds pool so every round is dealable again. This is the
+   * reset the exhaustion screen offers, and the UI puts it behind a confirmation
+   * (`increments.md` §4). Also returns to setup. */
+  resetServedRounds: () => void
+  /** How many rounds have never been dealt, for the setup and exhaustion screens. */
+  unservedRoundCount: number
+  lastDeal: LastDeal
   storageNotice: StorageNotice
-}
-
-/**
- * Is a parsed game structurally coherent against the CURRENT bank? A game
- * persisted by an older build, or hand-edited, can parse cleanly yet reference
- * rounds or a cursor that no longer exist — and left unchecked that lands the UI
- * on a dead "No question available." screen with no way back, which a reload
- * only re-restores. `loadGame` guarantees the JSON parsed; this guarantees it
- * makes sense here. Anything that fails is discarded to a fresh start, which is
- * the failure table's "treat as a fresh start" applied to a stale rather than an
- * absent key.
- *
- * It checks the essentials the render path dereferences, not every field: the
- * shape of teams and cursor, and that a mid-game phase's cursor resolves to a
- * real round and question in this bank. A setup-phase game needs no dealt rounds.
- */
-function isCoherent(game: GameState, rounds: Round[]): boolean {
-  if (!Array.isArray(game.teams) || !Array.isArray(game.roundIds) || !Array.isArray(game.results)) {
-    return false
-  }
-  if (typeof game.cursor?.round !== 'number' || typeof game.cursor?.question !== 'number') {
-    return false
-  }
-  if (game.phase === 'setup') {
-    return true
-  }
-  // Every dealt round id must exist in the current bank.
-  for (const id of game.roundIds) {
-    if (!rounds.some((round) => round.id === id)) {
-      return false
-    }
-  }
-  const round = rounds.find((r) => r.id === game.roundIds[game.cursor.round])
-  if (round === undefined) {
-    return false
-  }
-  // The question cursor may sit one past the last question only in phases that
-  // do not dereference it (round-break, final). In question and reveal it must
-  // point at a real question.
-  if (game.phase === 'question' || game.phase === 'reveal') {
-    if (round.questions[game.cursor.question] === undefined) {
-      return false
-    }
-  }
-  return true
-}
-
-// Module-scope, so both lazy state initialisers below can read it without a ref
-// touched during render. An unparseable OR incoherent game is discarded (the
-// failure table's "discard that key" / "fresh start") and surfaced through the
-// notice. Reads storage on each call; `loadGame` is a pure read and `clearGame`
-// is idempotent, so being invoked once per initialiser is harmless.
-function readInitial(): { state: GameState; notice: StorageNotice } {
-  const loaded = loadGame()
-  if (loaded.ok) {
-    if (isCoherent(loaded.value, bank.rounds)) {
-      return { state: loaded.value, notice: null }
-    }
-    // Parsed but stale or malformed against this bank: discard rather than brick.
-    clearGame()
-    return { state: initialState(bank.kind), notice: 'discarded-unparseable-game' }
-  }
-  if (loaded.reason === 'unparseable') {
-    clearGame()
-    return { state: initialState(bank.kind), notice: 'discarded-unparseable-game' }
-  }
-  return { state: initialState(bank.kind), notice: null }
 }
 
 export function useGame(): Game {
@@ -118,11 +63,19 @@ export function useGame(): Game {
   // perform is idempotent, so the notice and the restored state always agree on
   // the outcome. Kept as two calls rather than a shared ref because a ref read
   // during render is its own lint and correctness hazard.
-  const [notice, setNotice] = useState<StorageNotice>(() => readInitial().notice)
+  const [notice, setNotice] = useState<StorageNotice>(() => readInitial(bank.rounds, bank.kind).notice)
+  const [lastDeal, setLastDeal] = useState<LastDeal>(null)
+  // The served set as React state so the setup/exhaustion screens re-render when
+  // it changes. Seeded once from storage; storage stays the source of truth and
+  // is written alongside every change to this.
+  const [served, setServed] = useState<string[]>(() => {
+    const loaded = loadServedRounds()
+    return loaded.ok ? loaded.value : []
+  })
   const [state, rawDispatch] = useReducer(
     (current: GameState, action: GameAction) => gameReducer(current, action, rounds),
     undefined,
-    () => readInitial().state,
+    () => readInitial(bank.rounds, bank.kind).state,
   )
 
   // Persist after every change. A failed write degrades to an in-memory notice
@@ -140,25 +93,42 @@ export function useGame(): Game {
 
   const startNewGame = useCallback(
     (teams: Team[], timerLengthSeconds: number) => {
-      // Increment 3: one round, dealt and marked served on deal. Increment 4
-      // replaces this with selection over unserved rounds.
-      const dealt = rounds.slice(0, 1).map((round) => round.id)
-      const served = loadServedRounds()
-      const already = served.ok ? served.value : []
-      const merged = Array.from(new Set([...already, ...dealt]))
+      const deal: Deal = dealRounds(rounds, new Set(served))
+      if (!deal.ok) {
+        // Pool exhausted: do not start a short game. Record it so the UI can
+        // offer the reset, and leave the current (setup) state untouched.
+        setLastDeal({ ok: false, unservedRemaining: deal.unservedRemaining })
+        return
+      }
+      // Mark served ON DEAL, before the game starts, so an abandoned evening does
+      // not put half-seen rounds back in the pool.
+      const merged = markServed(served, deal.roundIds)
+      setServed(merged)
       const writeResult = saveServedRounds(merged)
       if (!writeResult.ok) {
         setNotice('in-memory-only')
       }
-      rawDispatch({ type: 'START_GAME', teams, roundIds: dealt, timerLengthSeconds })
+      setLastDeal({ ok: true })
+      rawDispatch({ type: 'START_GAME', teams, roundIds: deal.roundIds, timerLengthSeconds })
     },
-    [rounds],
+    [rounds, served],
   )
 
   const resetToSetup = useCallback(() => {
     clearGame()
+    setLastDeal(null)
     rawDispatch({ type: 'RESET_TO_SETUP' })
   }, [])
+
+  const resetServedRounds = useCallback(() => {
+    clearServedRounds()
+    setServed([])
+    clearGame()
+    setLastDeal(null)
+    rawDispatch({ type: 'RESET_TO_SETUP' })
+  }, [])
+
+  const unservedRoundCount = rounds.filter((round) => !served.includes(round.id)).length
 
   return {
     state,
@@ -166,6 +136,9 @@ export function useGame(): Game {
     dispatch: rawDispatch,
     startNewGame,
     resetToSetup,
+    resetServedRounds,
+    unservedRoundCount,
+    lastDeal,
     storageNotice: notice,
   }
 }
