@@ -946,3 +946,117 @@ Deferred, with reasons:
   not 120 — the 120 figure assumes ten-question rounds throughout. The no-repeats property is a function of
   rounds dealt, not questions played, so 36 cycles across twelve distinct rounds proves it; the larger
   number would only re-exercise scoring, which increment 3 already covered.
+
+## 24 September 2026 — increment 5, dispute, void, and the review screen
+
+The error-discovery mechanism, built before any real content so the first real evening cannot happen
+without it. Delivers the `flags` key, dispute (records a question and a note without interrupting),
+void (drops a question from scoring for every team), and a review screen that lists flags and exports
+them. On one local `feat:` commit (all app code, no new fixture content), not pushed. Everything below
+was observed rather than inferred, except where it says otherwise.
+
+### The flags shape, and the bank marker the increment-1 review left for here
+
+`{ flags: [{ questionId, bankKind: 'fixtures' | 'real', kind: 'dispute' | 'void', note?, at }] }`. The
+`bankKind` marker is the load-bearing piece: the increment-1 review flagged that without it, fixture-era
+disputes from increments 3 to 6 would land in the same export increment 9 computes a real-bank error
+rate from. Every flag carries its bank, sourced from `state.bankKind` (which reads the loaded bank's own
+`kind`, so it cannot claim fixtures while serving real questions), and the export both preserves the
+marker per flag and precomputes a summary with `real` and `fixtures` counts. A consumer filters on
+`bankKind: 'real'` and the fixture disputes stay out of the sample. The concern is solved, not annotated.
+
+Void is a reversible flag, not a mutation: `toggleVoid` adds or removes a void flag and never touches
+`state.results`, and totals derive around the voided set through `teamTotals`, which has taken a
+`voidedQuestionIds` argument since increment 3. So the increment-3 scoring constraint is what makes void
+work, exactly as the design said it would.
+
+### What the running app does
+
+Driven through Playwright MCP against the dev server at 1920x1080, fixtures only:
+
+- **Void drops for every team, read from the accessibility tree.** Scored both Chilli and Bandit on the
+  single-answer question 1, then voided it. At the round break the standings read "Chilli total 0" and
+  "Bandit total 0" — both dropped, not only the disputing team. This is the load-bearing check from
+  `increments.md` §5, and it passed against what the screen actually shows, not just the reducer.
+- **Dispute interrupts nothing.** Disputed question 2 with a note; the app stayed on the same reveal with
+  its Save-and-continue control still present.
+- **The review screen lists both flags with their markers.** At the final, "Review flagged questions (2)"
+  opened a screen showing "1 dispute and 1 void recorded", a void on `fx-001 (fixtures)` and a dispute on
+  `fx-002 (fixtures)` carrying its note. The `(fixtures)` marker is visible on every flag.
+- **The export works end to end.** The Export button produced a downloaded file
+  `heeler-pub-quiz-flags-2026-09-24.json` that parsed to the expected structure: `exportedAt` present,
+  summary `{ total: 2, real: 0, fixtures: 2, disputes: 1, voids: 1 }`, both flags carrying `bankKind`.
+  The stored flags key matched. Captured via a Playwright download listener and parsed, not eyeballed.
+- Zero console errors across the session.
+
+### The gates, observed
+
+- `tsc -b` exit 0.
+- `npm test`: 92 tests across 12 files passing (was 72; +20 for flags logic, the export, flags storage
+  validation, the void-drops-all-teams and dispute integration paths, the ReviewScreen export test, and
+  the cross-game no-bleed regression).
+- `npm run lint`: oxlint clean, zero warnings.
+- `npm run validate:content`: 5 structural checks ran, 4 real-bank skipped, exit 0.
+- `npm run build`: green, 43 modules. Two-bank guarantee re-checked in the rebuilt bundle:
+  `content/rounds` absent.
+
+### The review, and what it found
+
+Four reviewers, each a different source: against the documents, against the mechanism, red team, and a
+senior-engineer whole-repo pass. Every finding was opened and confirmed against the code before acting.
+Acted on 4 clusters, rejected 1 (a blocking rating), deferred 4 with reasons.
+
+The disagreement worth recording: the red team rated a **cross-game void bleed** as blocking — a void
+flag survives the New-game reset (`resetToSetup` keeps flags), fixture ids are stable, so in principle a
+later game could re-present a voided question already flagged. I traced it and **rejected the blocking
+rating**: re-dealing a round requires `served-rounds` to be cleared, and the only reset that clears served
+(`resetServedRounds`) also clears flags, while the reset that keeps flags (`resetToSetup`) also keeps
+served — so the two always move together and no path re-deals a round whose void survives. The red team
+missed that served gates re-dealing. But the reviewer surfaced a real latent fragility: the safety is an
+implicit coupling. Converted it to an explicit invariant with a comment and a regression test that plays
+a full game, voids a question, starts a new game, and asserts the second game deals a different first
+round — so a stale void cannot recur.
+
+Confirmed and fixed:
+
+- **`useFlags.degraded` surfaced nowhere (red team, mechanism, senior-eng — all three).** A failed flags
+  write latched a `degraded` flag that no UI read, so a player whose voids were not persisting was never
+  told — and voids affect scoring. Folded flags degradation into the existing `in-memory-only` storage
+  notice, so the one notice now covers all three keys.
+- **The export download leaked its object URL on throw and had no test (mechanism, senior-eng — both).**
+  Extracted the download into a `download.ts` helper with a `try/finally` that revokes the object URL
+  even if the click path throws, and added a ReviewScreen test that stubs `URL.createObjectURL` and
+  asserts every created URL is revoked. (happy-dom does not perform a real save on `anchor.click`, so the
+  test asserts the object-URL lifecycle rather than a downloaded file.)
+- **`resetServedRounds` had an unstable `[flags]` dependency (mechanism, senior-eng).** `flags` is a
+  fresh object each render, defeating the `useCallback`. Changed to depend on the stable `clearAllFlags`.
+
+Rejected:
+
+- **The cross-game void bleed as blocking** — see above; not reachable, hardened with an invariant test.
+
+Deferred, with reasons:
+
+- **Storage-key boilerplate factory and confirm-dialog extraction (senior-eng NOTE).** Three keys now
+  repeat load/save/clear/validate, and the two-step confirm appears three times. Real duplication, but the
+  reviewer's own guidance was to log these as tracked decisions rather than refactor mid-increment;
+  `storage.ts` is under the length target and a shared `ConfirmInline` spans three increments' components
+  and is better as its own change.
+- **`voidedQuestionIds` recomputed unmemoised each render (mechanism, senior-eng NOTE).** No consumer
+  memoises on it and the sets are tiny; safe at this scale. Deferred.
+- **The user-typed dispute note is the one un-scrubbed channel to the owner (source reviewer NOTE).** The
+  export carries only ids, markers, notes and timestamps — no question prompt or answer text — so the app
+  never quotes the bank, honouring the no-answer-leak rule. But a disputer could paraphrase an answer into
+  a free-text note, and that note reaches the owner's export in increment 9. No document forbids it and
+  the field is labelled "What is wrong with this question?", not "the answer". Recorded as a known property
+  for the owner to weigh before increment 9 rather than fixed, because scrubbing free text is both futile
+  and hostile to the disputer. This is a genuine judgment call, surfaced rather than decided.
+
+### Not verified in this increment
+
+- **Anything about a television, and accessibility beyond roles and accessible names.** Increment 6.
+- **That local and CI run the same runtime.** Nothing is pushed; CI has not run.
+- **Un-void through the browser specifically.** The reversibility is covered by unit tests
+  (`flags.test.ts` toggles a question in and out of the voided set) and the mechanism is the same
+  set-membership the Playwright void pass exercised; the browser pass verified voiding, not the un-void
+  toggle.

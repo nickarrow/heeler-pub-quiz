@@ -270,6 +270,19 @@ another, finish the game, and confirm it appears on the review screen and in the
 
 **Needs from you.** Nothing.
 
+**Done, 24 September 2026.** The flags key, dispute, void, and the review screen with export, on one local `feat:`
+commit, not pushed. Verified through Playwright MCP exactly as this section specifies: scored a question for two teams,
+voided it, and read both totals back from the accessibility tree as zero (the increment-3 scoring constraint doing its
+job); disputed another without interrupting the reveal; finished the game and confirmed both flags on the review screen
+with their `(fixtures)` bank markers, then captured the export download and parsed it to confirm the summary and that
+every flag carries its bank marker. The bank marker that keeps fixture-era disputes out of increment 9's error-rate
+export is the increment-1-review concern this increment was to solve, and it is solved. Four-reviewer pass; a
+blocking-rated cross-game void bleed was traced and rejected as unreachable (served gates re-dealing) but hardened with
+an invariant test, and three real should-fix findings (a silent flags-degradation notice, an export object-URL leak on
+throw with no test, an unstable callback dependency) were fixed. 92 tests, lint, validate and build all green; the
+two-bank guarantee holds. Details, what was fixed, rejected or deferred, and what was left unverified are in
+`verification-log.md` under the same date.
+
 ## 6. The room
 
 Everything that makes it work from a sofa rather than from a desk.
