@@ -534,14 +534,16 @@ requirement that a search-driven fetch would violate by picking up the fanon wik
 `bluey.fandom.com` was found to redirect to `blueypedia.fandom.com`; the script names the canonical host directly so
 nothing depends on following that redirect.
 
-**Reproducibility was run, not asserted.** The script was run once, every content file SHA-256-hashed, then run a
-second time from clean, and the hashes compared. All 364 content files were byte-identical across the two runs, and
-the manifest was identical once its single date field was excluded. The script deletes `.corpus/` at the start of each
-run, so "reruns from clean" is a property of the run rather than a hope. Determinism comes from sorting every
-collection by title, writing a normalised trailing newline, and keeping only stable content — no revision ids, no
-per-request timestamps. The manifest carries one coarse `fetchedUtc` date (`2026-09-24`), which is the only field that
-changes across days and the only reason a rerun on a later date would differ without an editor having changed an
-article.
+**The transform is deterministic; the corpus is a dated snapshot.** This distinction is worth stating precisely,
+because the first phrasing of this entry ("reruns from clean and produces the same corpus") claimed more than the test
+shows. The script was run once, every content file SHA-256-hashed, then run a second time from clean, and the hashes
+compared. All 364 content files were byte-identical across the two runs, and the manifest was identical once its
+single date field was excluded. That proves the *normalisation* is deterministic — sorting every collection by title,
+a normalised trailing newline, and keeping only stable content, no revision ids and no per-request timestamps — and
+that the wiki did not change in the minutes between the two runs. It does **not** prove the corpus reproduces for all
+time: the source is a live wiki with no revision pinning (deliberately, since pinning would trade away the
+determinism), so a rerun weeks later can differ if an article was edited, with no code change. The committed, stable
+artefact is the script; the corpus is a snapshot dated by the manifest's `fetchedUtc` (`2026-09-24`).
 
 The corpus that produced these findings was 365 files totalling roughly 4.3 MB. It is never committed; `git status`
 was confirmed to show only the two script files, and `git check-ignore` confirmed the corpus is excluded.
@@ -549,14 +551,18 @@ was confirmed to show only the two script files, and `git check-ignore` confirme
 ### The transcript-page count, with a threshold and a date
 
 **206 non-redirect pages in the main namespace end in `/Script`, measured 24 September 2026.** Counted by walking
-`list=allpages` with `apnamespace=0&apfilterredir=nonredirects` and filtering titles ending `/Script`. This reconciles
-the earlier 206-vs-220 disagreement recorded above: **206 is the non-redirect count; the 220 figure counted redirects
-as well.**
+`list=allpages` with `apnamespace=0&apfilterredir=nonredirects` and filtering titles ending `/Script`. A redirect page
+is one whose only content is a pointer to another page (a rename or an alternate spelling), holding no transcript of
+its own; excluding them counts each transcript once. This reconciles the earlier 206-vs-220 disagreement recorded
+above: **206 is the non-redirect count; the 220 figure counted redirect pages as well as real ones.**
 
 Sized by UTF-8 byte length of the wikitext, the distribution is: 202 pages at 1 KB or more, 194 at 2 KB or more, 166
 at 5 KB or more, and **151 at 10 KB or more.** That 151 matches exactly the stable sub-count the earlier passes agreed
 on ("151 exceed 10 KB"), which is independent corroboration that the fetch reached the same corpus those passes saw.
-Median script page is 13,064 bytes; the largest is 69,028.
+The largest script page is 69,028 bytes. The median is 13,081 bytes — the mean of the two middle values of the 206
+sorted sizes. *(Corrected 24 September 2026: this first read "13,064", a number stated as computed that matched neither
+the true median nor the value the script printed. Recomputed from the manifest: sorted, the two middle sizes are
+13,065 and 13,097, so the median is 13,081.)*
 
 The `/Script` pages exceed the 154 aired episodes because they also cover shorts, minisodes, songs and specials. Of the
 154 aired episodes specifically, **153 have a `/Script` transcript** — only *Tickle Crabs* lacks one — so the
@@ -598,11 +604,13 @@ survivors fold into other rounds as individual contested questions, and the vaca
 
 ### Which themes have real depth
 
-Reported honestly as two different things: **locator counts, which were computed**, and a **depth judgment, which is
-mine from reading** and is not a question count. A locator hit means an episode article contains a keyword for the
-theme; it does not mean a groundable question exists. Across the 157 episode articles:
+The table below holds two different kinds of thing, and they must not be read as one. The middle column is a
+**computed number**: how many of the 157 episode articles contain a keyword for the theme. The right column is **my
+judgment from reading**, not a number and not a question count. A high locator count does not mean a theme is deep —
+it means the word appears — so the right column can disagree with the left, and where it does, the judgment is the one
+that drove the allocation. A locator hit does not mean a groundable question exists.
 
-| Theme | Episodes with a locator hit | Depth judgment |
+| Theme | Articles with a locator hit (computed) | Depth (my judgment from reading) |
 | --- | --- | --- |
 | The Support Act | 157 | Deep — minor characters saturate the corpus |
 | Say That Again | 153/154 have a transcript | Deep — dialogue is almost fully covered |
@@ -615,11 +623,21 @@ theme; it does not mean a groundable question exists. Across the 157 episode art
 | Full Names and Formalities | 36 | Thinnest |
 
 The design's guessed five second-round themes were The Support Act, Games They Invented, Say That Again, For the
-Grown-Ups and Alter Egos. The evidence keeps the first three and replaces the last two: For the Grown-Ups is hard to
-author as checkable fact rather than opinion, and Alter Egos is thin at 55 articles. **On the evidence the five second
-rounds go to The Support Act, Say That Again, Games They Invented, Props Department and Family Trees.** This is a
-recommendation from depth signals, not from authored questions; increment 7 authors against one round and can still
-move a second-round slot if a theme underdelivers in practice.
+Grown-Ups and Alter Egos. The recommendation kept the first three and replaced the last two, with a reason for each of
+the four changes rather than only the cuts:
+
+- *For the Grown-Ups* dropped — 120 articles hit the locator, but the subtext behind them resists a single checkable
+  answer, so questions read as opinion.
+- *Alter Egos* dropped — thin at 55 articles.
+- *Props Department* added (103 articles) — specific objects and what happens to them are named concretely in the
+  episode recaps and transcripts, which is the kind of material a checkable question needs, so the count converts to
+  questions better than a bare 103 suggests.
+- *Family Trees* added (102 articles) — relationships across the extended Heeler and Cattle families are documented in
+  roughly two-thirds of articles, deep enough to carry ten questions.
+
+**The owner ratified this set on 24 September 2026:** The Support Act, Say That Again, Games They Invented, Props
+Department and Family Trees. It remains a recommendation from depth signals rather than from authored questions, so
+increment 7 brings a slot back to the owner if a theme underdelivers once questions are written.
 
 ### Not verified in this increment
 

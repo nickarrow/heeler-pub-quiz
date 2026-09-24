@@ -174,16 +174,18 @@ document, and `verification-log.md` all get updated with answers instead of expe
 
 **Done, 24 September 2026.** `scripts/fetch-corpus.ts` and `scripts/corpus-sources.ts` fetch Wikipedia's episode list
 and the wiki's episode articles and `/Script` transcript pages into `.corpus/`, pinned to `en.wikipedia.org` and
-`blueypedia.fandom.com` with no search step. Reproducibility was run rather than asserted: two fetches from clean
-produced byte-identical content across all 364 content files. `git status` showed only the two scripts, never the
-corpus. The four open questions closed with computed numbers:
+`blueypedia.fandom.com` with no search step. What was verified is that the **transform is deterministic**: two fetches
+from clean produced byte-identical content across all 364 content files. That is not the same as the corpus being
+reproducible for all time — the source is a live wiki with no revision pinning, so a rerun on a later date can differ
+if an article was edited. The corpus is a dated snapshot; the script that produces it is what is committed and stable.
+`git status` showed only the two scripts, never the corpus. The four open questions were answered with computed numbers:
 
 - **206 non-redirect `/Script` pages** (151 at 10 KB or more), which reconciles the earlier 206-vs-220 disagreement —
-  220 had counted redirects.
+  220 had counted redirect pages as well as real ones.
 - **Contested Evidence does not survive as a round:** roughly three to five genuine contested facts exist, not ten. It
-  becomes a scattered question type and an eleventh theme takes the slot.
-- **The five second rounds go to** The Support Act, Say That Again, Games They Invented, Props Department and Family
-  Trees, on depth evidence rather than the first draft's guess.
+  becomes a scattered question type, and an eleventh theme — an owner choice, surfaced in increment 7 — takes the slot.
+- **The five second rounds, ratified by the owner:** The Support Act, Say That Again, Games They Invented, Props
+  Department and Family Trees, on depth evidence rather than the first draft's guess.
 - **The scope assumption held:** 52 + 52 + 50 = 154 aired episodes, 21 Bonus Bits, 21 minisodes, all confirmed against
   the corpus.
 
@@ -291,13 +293,18 @@ instead of at the end.
 **How you know it worked.** Content validation passes on a real round with real verification records, in CI, without
 anybody reading the questions.
 
-**Needs from you.** Nothing, and specifically not reading the round.
+**The eleventh-theme choice surfaces here.** Increment 2 cut Contested Evidence as a round and left an open slot;
+`design.md` §5 says which theme fills it is the owner's call, not an authoring one. So this increment also hands the
+owner a shortlist of themes deep enough to carry a second round, with the depth signal behind each. The owner picks;
+increment 8 authors it. The shortlist names themes, not questions, so choosing does not require reading the bank.
+
+**Needs from you.** Not reading the round. One decision: pick the eleventh theme from the shortlist above.
 
 ## 8. The rest of the bank, then the switch
 
 **Delivers.** The remaining rounds at whatever survival rate increment 7 measured. Twelve shippable rounds is the
-floor and buys three games; fifteen if the corpus allows. If the corpus came up short in increment 2, the eleventh
-theme substitution from `design.md` §5 happens here.
+floor and buys three games; fifteen if the corpus allows. The eleventh theme — the one that replaces Contested
+Evidence as a round, chosen by the owner in increment 7 from the shortlist — is authored here.
 
 **Then the switch.** The deploy workflow starts setting the real-bank variable. This is the single line that was
 sitting in increment 3 of the first version and causing the whole verification problem.
@@ -346,7 +353,8 @@ and it is the price of not being in the authoring loop.
 | Question | Closes in |
 | --- | --- |
 | Whether Contested Evidence survives as a round | 2 — **closed: it does not.** See the increment 2 note above |
-| Which five themes get a second round | 2 — **closed on evidence.** Support Act, Say That Again, Games, Props, Family Trees |
+| Which five themes get a second round | 2 — **answered and owner-ratified**, revisable in 7 if a theme underdelivers |
+| Which eleventh theme replaces Contested Evidence | 7 — owner picks from a shortlist; authored in 8 |
 | Default timer length | 9 — it needs real pace, which means real teams. Increment 6 is one person with a keyboard |
 | Whether three games is the finish line | 9 |
 | Tiebreaks | Still open, not blocking |

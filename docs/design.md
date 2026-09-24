@@ -160,20 +160,31 @@ eleventh theme takes its round slot.
 | Contested Evidence | Questions with two defensible answers, on purpose. No longer a round — see below |
 
 Fifteen rounds, so five themes get a second one. The first draft guessed The Support Act, Games They Invented, Say
-That Again, For the Grown-Ups and Alter Egos. The corpus reality check on 24 September 2026 kept the first three and
-replaced the last two: For the Grown-Ups is subtext that resists a single checkable answer, and Alter Egos is thin
-(pretend-play personas appear in only about a third of episodes). **On the evidence the five second rounds go to The
-Support Act, Say That Again, Games They Invented, Props Department and Family Trees.** This is a recommendation from
-depth signals rather than from authored questions, so increment 7 may still move a slot if a theme underdelivers in
-practice. The per-theme depth table is in `verification-log.md`.
+That Again, For the Grown-Ups and Alter Egos. The corpus reality check on 24 September 2026 recommended keeping the
+first three and replacing the last two. **The owner ratified the five second rounds on 24 September 2026: The Support
+Act, Say That Again, Games They Invented, Props Department and Family Trees.**
+
+The reasoning for each change, so it can be argued with:
+
+- *For the Grown-Ups* dropped — the subtext is real but resists a single checkable answer, so it reads as opinion
+  rather than fact.
+- *Alter Egos* dropped — thin, with pretend-play personas appearing in only about a third of episodes.
+- *Props Department* added — specific objects and their fates are named concretely in the episode recaps and
+  transcripts, which is exactly the material a checkable question needs.
+- *Family Trees* added — the show's relationships (cousins, grandparents, the extended Heeler and Cattle families) are
+  documented across roughly two-thirds of episode articles, deep enough to carry ten questions.
+
+This rests on depth signals rather than on authored questions, so increment 7 may still bring a slot back to the owner
+if a theme underdelivers once questions are actually written. The per-theme depth table is in `verification-log.md`.
 
 **Contested Evidence does not survive as a round.** It assumed ten questions where two sources genuinely disagree or
 the show contradicts itself. The fetch found roughly three to five once animation goofs, dub and broadcast edits, and
 scheduling noise are excluded — well below ten, because the wiki documents plot rather than recording in-universe
 self-contradiction. So the theme becomes those three-to-five questions distributed across other rounds, and the
-vacated slot goes to an eleventh theme. The eleventh theme is chosen in increment 7 or 8, when authoring shows which
-of the deeper themes can carry the extra questions. This closes the risk this paragraph used to carry; the finding and
-its method are in `verification-log.md`, 24 September 2026.
+vacated slot goes to an eleventh theme. **Which eleventh theme is an owner decision, not an authoring one.** Increment
+7 surfaces a shortlist of the themes deep enough to carry a second round, the owner picks, and only then does increment
+8 author it — the choice does not get made silently inside authoring. This closes the risk this paragraph used to
+carry; the finding and its method are in `verification-log.md`, 24 September 2026.
 
 Where a question is contested, the reveal shows both answers, says why they conflict, and states which ones score. So
 a reveal can never be a single word.
@@ -299,11 +310,14 @@ everybody has actually seen. Later decision.
 2. **Tiebreaks.** Three reserve rounds exist. Whether a draw needs more than "play another round" is undecided.
 3. **Whether three games is the finish line** or the first milestone of a larger bank.
 
-Closed by the 24 September 2026 corpus fetch (see §5 and `verification-log.md`):
+Resolved by the 24 September 2026 corpus fetch (see §5 and `verification-log.md`):
 
 4. ~~Whether Contested Evidence survives as a round.~~ **Closed: it does not.** The corpus yields roughly three to
-   five genuinely contested facts, not ten. They scatter across other rounds and an eleventh theme takes the slot.
-5. ~~Which five themes get a second round.~~ **Closed on the evidence:** The Support Act, Say That Again, Games They
-   Invented, Props Department and Family Trees. Revisable in increment 7 if authoring contradicts the depth signal.
+   five genuinely contested facts, not ten — a count low enough that the conclusion does not depend on the exact
+   number. They scatter across other rounds and an eleventh theme, itself an owner choice, takes the slot.
+5. ~~Which five themes get a second round.~~ **Answered and ratified by the owner:** The Support Act, Say That Again,
+   Games They Invented, Props Department and Family Trees. Held open in one respect: it rests on depth signals rather
+   than authored questions, so increment 7 brings a slot back to the owner if a theme underdelivers in practice. Not a
+   prediction that has been tested, so not fully closed.
 
 Settled since the first draft: the product name and the published repository name, both `heeler-pub-quiz`.
