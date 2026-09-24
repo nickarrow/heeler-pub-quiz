@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Sticky_Gecko",
+  "excerpt": "Chilli holds up Wendy as a model of kindness: after Bluey's birth she made the Heelers five lasagnas.",
+  "episode": "Sticky Gecko",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived lasagnas" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Sticky_Gecko/Script", "note": "Sticky Gecko transcript has Chilli praise Wendy's five lasagnas after Bluey was born" }
+  }
+}

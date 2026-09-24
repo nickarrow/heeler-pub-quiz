@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Pirates",
+  "excerpt": "Bluey, Bingo, and their young friend Missy turn the hammock swing into a pirate ship; Missy promises to be brave.",
+  "episode": "Pirates",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Missy" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bob_Bilby", "note": "Missy debuts in Bob Bilby and recurs as Bingo's regular friend; Pirates has her as the pirate-crew third member" }
+  }
+}

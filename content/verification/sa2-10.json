@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign",
+  "excerpt": "Winton gives another example of a sad real-life thing: how his father got divorced from his mother.",
+  "episode": "The Sign",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Winton" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign/Script", "note": "The Sign transcript has Winton share that his parents divorced in the classroom scene" }
+  }
+}

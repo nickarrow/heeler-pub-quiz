@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign",
+  "excerpt": "Asked for a sad real-life thing, Pretzel gives an example about his guinea pig running away.",
+  "episode": "The Sign",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Pretzel" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign/Script", "note": "The Sign transcript has Pretzel mention his guinea pig running away in the classroom scene" }
+  }
+}

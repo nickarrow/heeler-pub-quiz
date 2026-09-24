@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Cricket",
+  "excerpt": "Snickers attempts to return the ball but unfortunately his small dachshund arms are unable to throw it very far.",
+  "episode": "Cricket",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived dachshund" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Doctor", "note": "Snickers recurs as a dachshund classmate across episodes (e.g. The Doctor)" }
+  }
+}

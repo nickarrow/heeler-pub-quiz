@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Bike",
+  "excerpt": "Bentley tries jumping for the monkey bars but misses and tears up, then is able to climb onto the frame and reach the monkey bars.",
+  "episode": "Bike",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Bentley" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bike/Script", "note": "Bike transcript has Bentley struggle at the monkey bars alongside Bluey learning her bike" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign",
+  "excerpt": "They see Bucky Dunstan, who is trying to sell the house to two sheepdogs; later Bucky tells Bandit the Sheepdogs want to buy it.",
+  "episode": "The Sign",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Bucky Dunstan" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Dragon", "note": "Dragon has Bandit note Bucky Dunstan is a real estate agent, corroborating the role" }
+  }
+}

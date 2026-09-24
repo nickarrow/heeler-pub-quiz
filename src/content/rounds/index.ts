@@ -6,6 +6,7 @@ import { propsDepartmentOne } from './props-department-1.ts'
 import { sayThatAgainOne } from './say-that-again-1.ts'
 import { sayThatAgainTwo } from './say-that-again-2.ts'
 import { theSupportActOne } from './the-support-act-1.ts'
+import { theSupportActTwo } from './the-support-act-2.ts'
 import { whereAndWhenOne } from './where-and-when-1.ts'
 
 // The real bank: the shippable question bank, drawn from the corpus and checked
@@ -31,6 +32,7 @@ export const bank = {
     propsDepartmentOne,
     sayThatAgainTwo,
     gamesTheyInventedTwo,
+    theSupportActTwo,
   ],
 } satisfies Bank
 

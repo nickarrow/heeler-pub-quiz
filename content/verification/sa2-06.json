@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Markets",
+  "excerpt": "Indy can't have the sauce, nor barbeque, nor mustard; Indy can't eat wheat, sugar, gluten or dairy.",
+  "episode": "Markets",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived wheat/sugar/gluten/dairy" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Markets/Script", "note": "Markets transcript lists Indy's dietary restrictions at the food stalls" }
+  }
+}

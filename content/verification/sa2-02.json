@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Muffin_Cone",
+  "excerpt": "Trixie catches Muffin sucking her thumb, tells her to stop because it's not good for her teeth, and when she refuses, out comes the cone of shame.",
+  "episode": "Muffin Cone",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived thumb-sucking" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Muffin_Cone/Script", "note": "Muffin Cone transcript is built around Muffin's thumb-sucking and the cone" }
+  }
+}

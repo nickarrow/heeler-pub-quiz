@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Explorers",
+  "excerpt": "Lulu notices a kangaroo crossing sign; Jack's dad buys a punnet of strawberries for Lulu on the drive to school.",
+  "episode": "Explorers",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Lulu" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Army", "note": "Army Appearances lists Lulu Russell as Jack's little sister (debut)" }
+  }
+}
