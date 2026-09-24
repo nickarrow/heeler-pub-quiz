@@ -16,23 +16,37 @@ describe('the deploy workflow cannot select the preview bank', () => {
     'utf8',
   )
 
+  // The lines that actually SET the variable, comments excluded. A YAML comment
+  // (`# ...`) never sets an env var, so it must not count when we assert the
+  // switch is present — an increment-8 review found the earlier version passed
+  // on the explanatory comment alone, meaning deleting the real `env:` line
+  // would have shipped fixtures to production with a green guard. We still scan
+  // the raw text, comments included, for the preview value: a comment naming
+  // preview is a lie worth failing on.
+  const assignmentLines = workflow
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => !line.startsWith('#'))
+    .filter((line) => /HEELER_BANK\s*[:=]\s*['"]?\w+/i.test(line))
+
   it('never sets HEELER_BANK to preview anywhere in the workflow', () => {
-    // No assignment of the preview value, in any of the forms a YAML env or an
-    // inline shell assignment could take.
+    // No assignment of the preview value, in any form a YAML env or inline shell
+    // assignment could take. Scans the whole file, comments included.
     expect(workflow).not.toMatch(/HEELER_BANK\s*[:=]\s*['"]?preview/i)
   })
 
-  it('selects only the real bank if it selects any bank at all', () => {
-    // Every HEELER_BANK assignment in the workflow must name the real bank.
-    // Increment 8 added one, on the build step (the deploy switch); this allows
-    // that and forbids any assignment naming another bank. Comment text counts
-    // here too, which is fine: the constraint is that nothing selects a
-    // non-real bank, and a comment that named 'preview' would be a lie worth
-    // failing on.
-    const assignments = workflow.match(/HEELER_BANK\s*[:=]\s*['"]?(\w+)/gi) ?? []
-    expect(assignments.length).toBeGreaterThan(0)
-    for (const assignment of assignments) {
-      expect(assignment).toMatch(/real/i)
+  it('actually sets the real bank on a step, not just in a comment', () => {
+    // At least one real assignment line (comments excluded). This fails if the
+    // `env: HEELER_BANK: real` line is removed even if the comment mentioning it
+    // stays — the gap the review found.
+    expect(assignmentLines.length).toBeGreaterThan(0)
+  })
+
+  it('selects only the real bank on every assignment line', () => {
+    // Every real (non-comment) assignment must name the real bank; none may name
+    // fixtures or preview.
+    for (const line of assignmentLines) {
+      expect(line).toMatch(/HEELER_BANK\s*[:=]\s*['"]?real\b/i)
     }
   })
 })
