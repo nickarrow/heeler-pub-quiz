@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Doctor/Script",
+  "excerpt": "Rusty runs into the doctor game: he swallowed a hippopotamus and now burps up baby hippos, jumping the queue ahead of Honey.",
+  "episode": "The Doctor",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the scene only; named The Doctor with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Doctor", "note": "The Doctor recap: Rusty swallowed a hippopotamus and burps up baby hippos among the escalating waiting-room cases" }
+  }
+}

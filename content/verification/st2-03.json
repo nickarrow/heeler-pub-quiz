@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Rain",
+  "excerpt": "During a summer downpour, Bluey is determined to dam the water in the front yard while Mum tries to stop her tracking mud inside; the episode is almost wordless.",
+  "episode": "Rain",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the scene only; named Rain with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Rain/Script", "note": "Rain transcript is almost all stage directions - the near-wordless dam-building episode" }
+  }
+}

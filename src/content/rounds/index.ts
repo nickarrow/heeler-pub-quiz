@@ -3,6 +3,7 @@ import { familyTreesOne } from './family-trees-1.ts'
 import { gamesTheyInventedOne } from './games-they-invented-1.ts'
 import { propsDepartmentOne } from './props-department-1.ts'
 import { sayThatAgainOne } from './say-that-again-1.ts'
+import { sayThatAgainTwo } from './say-that-again-2.ts'
 import { theSupportActOne } from './the-support-act-1.ts'
 import { whereAndWhenOne } from './where-and-when-1.ts'
 
@@ -27,6 +28,7 @@ export const bank = {
     familyTreesOne,
     sayThatAgainOne,
     propsDepartmentOne,
+    sayThatAgainTwo,
   ],
 } satisfies Bank
 

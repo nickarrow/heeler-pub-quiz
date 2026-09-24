@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Unicorse/Script",
+  "excerpt": "Bluey: Well, I'll take everyone's bed to the dump! Bandit: They'll probably just sleep on the couch. Bluey: I'll take the couches too!",
+  "episode": "Unicorse",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Unicorse (not The Dump) with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Unicorse", "note": "Unicorse recap: the bedtime stalling with Bluey resisting sleep frames the Unicorse puppet story" }
+  }
+}

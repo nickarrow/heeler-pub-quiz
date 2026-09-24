@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Grandad",
+  "excerpt": "Grandad digs mud from the creek, smudges it on his face and says she can't find what she can't see; the kids copy him.",
+  "episode": "Grandad",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Grandad with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Grandad/Script", "note": "Grandad transcript has Mort smear mud and say the line while hiding from Chilli" }
+  }
+}

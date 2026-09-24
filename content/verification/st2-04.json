@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Bingo_(Episode)",
+  "excerpt": "Bingo loses the New Zealand piece of her world-map puzzle and puts up missing posters for it around the house.",
+  "episode": "Bingo",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the scene only; named Bingo with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bingo_(Episode)/Script", "note": "Bingo transcript has her draw missing posters for the lost world-map puzzle piece" }
+  }
+}

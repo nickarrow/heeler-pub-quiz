@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Chickenrat",
+  "excerpt": "In the restaurant game the girls turn Chickenrat Bandit loose to lay an egg in the laundry basket - a chickenrat egg.",
+  "episode": "Chickenrat",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the scene only; named Chickenrat with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Chickenrat/Script", "note": "Chickenrat transcript has the girls make Bandit lay a chickenrat egg" }
+  }
+}

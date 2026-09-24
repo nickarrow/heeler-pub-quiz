@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Takeaway",
+  "excerpt": "The fortune on Bluey's cookie reads, Flowers may bloom again, but a person never has a chance to be young again.",
+  "episode": "Takeaway",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Takeaway with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Takeaway/Script", "note": "Takeaway transcript contains the fortune-cookie line verbatim" }
+  }
+}

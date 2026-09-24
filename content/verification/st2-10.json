@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Exercise",
+  "excerpt": "Bingo pretends to be Bluey's new employee in the middle of Dad's backyard workout, introducing herself as Larn.",
+  "episode": "Exercise",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the scene only; named Exercise with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Exercise/Script", "note": "Exercise transcript has Bingo introduce herself as Larn, the new employee" }
+  }
+}

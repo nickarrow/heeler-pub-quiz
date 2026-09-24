@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Flat_Pack/Script",
+  "excerpt": "Having finished the flat-pack porch swing, Bandit rests on it at sunset and remarks: This is heaven.",
+  "episode": "Flat Pack",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Flat Pack with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Flat_Pack", "note": "Flat Pack recap ends with Bandit on the completed porch swing remarking This is heaven" }
+  }
+}

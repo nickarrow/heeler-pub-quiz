@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Dance_Mode/Script",
+  "excerpt": "Bandit scabs Bingo's last chip. To make it up, the family let her name her price; Bluey suggests Dance Mode, dancing on command.",
+  "episode": "Dance Mode",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted scene only; named Dance Mode with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Dance_Mode", "note": "Dance Mode recap: Bandit eats Bingo's last chip and she gets three Dance Modes as payback" }
+  }
+}
