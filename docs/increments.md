@@ -212,6 +212,16 @@ time the loop changes.
 
 **Needs from you.** Nothing.
 
+**Done, 24 September 2026.** All six phases play through on fixtures, on two local commits (a `content:` commit for the
+ten-question fixture round and a `feat:` commit for the app, never mixed), not pushed. Verified through Playwright MCP
+rather than asserted: named two teams, played all ten questions across all three answer shapes, scored each, reached the
+podium, and the standings read out of the accessibility tree derived correctly (Chilli 3, Bandit 1) and survived a
+mid-round reload. Pause holds the timer, the keyboard drives the whole loop, and the two-bank guarantee still holds in
+the rebuilt bundle. Five-reviewer pass; the blocking finding (a team-id counter that reset on reload) and the
+brick-on-reload paths were fixed, the two untested load-bearing paths (timer, persistence) got tests, and 61 tests, lint,
+validate and build are all green. What was observed, what was fixed, what was rejected or deferred, and what was left
+unverified are in `verification-log.md` under the same date.
+
 ## 4. Multiple rounds and the dealing logic
 
 **Delivers.** Twelve short fixture rounds, written by hand — the first version of this plan needed twelve rounds to

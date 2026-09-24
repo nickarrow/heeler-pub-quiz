@@ -668,3 +668,152 @@ looked contested was animation goofs and dub differences living in exactly these
 Standing steer for increment 7, recorded so authoring does not drift back to this source: **transcripts, episode
 recaps, and the articles' character and appearance data are the intended grounding. The Trivia sections are a
 last-resort supplementary source, used opportunistically and never as a theme's backbone.**
+
+## 24 September 2026 — increment 3, the game loop on fixtures
+
+The first increment with a playable game. Delivers all six phases (setup, round intro, question,
+reveal, round break, final), two to four teams, all three answer shapes and their scoring, a pausable
+countdown, the `game` and `served-rounds` storage keys, and one ten-question fixture round covering
+every answer shape. On two local commits: `content:` for the fixture round expansion, `feat:` for the
+app, never mixed. Not pushed — the backlog is deliberately held for one push at the end of increment 6.
+
+Everything below was observed rather than inferred, except where it says otherwise.
+
+### The storage-key shapes, agreed before building
+
+The increment-1 review left the `game` and `flags` key shapes unspecified and named them as increment
+3's to shape. Agreed with the owner before writing code:
+
+- **`game`**: `{ bankKind, teams: [{ id, name }], roundIds: string[], phase, cursor: { round, question },
+  results: [{ questionId, awarded: Record<teamId, number> }], timerLengthSeconds }`. Totals are always
+  derived by summing `awarded` across `results` through the single `teamTotals()` function, which takes
+  the set of voided ids as input — never a running per-team number. This is the load-bearing scoring
+  constraint, and it is built now so increment 5's void changes what set is passed to `teamTotals`,
+  not how totals are computed. A `TeamId` is separate from the display name.
+- **`flags`** (increment 5, shaped here for the record): `{ flags: [{ questionId, bankKind, kind, note?,
+  at }] }`. The `bankKind` marker is the increment-1 review's unfixed concern — it is what will keep
+  fixture-era disputes out of increment 9's real-bank error-rate export.
+- **Keyboard**: Space / right arrow advances or reveals, left arrow goes back where safe (never
+  un-reveals), P pauses, E extends, S skips, digits 1 to 4 score each team on the reveal. The digits and
+  E/S go beyond `technical-design.md`'s named set; the owner approved them explicitly.
+- **List stepper**: a `spinbutton` whose value 0..maxPoints is the points awarded. Timer default 45s,
+  clamped to 5..600.
+
+### What the running app actually does
+
+Driven through Playwright MCP against the dev server at `http://localhost:5173/heeler-pub-quiz/`, at the
+1920x1080 viewport, on fixtures only:
+
+- Setup screen carries the fixture badge, the teams group (2 to 4), the timer field defaulting to 45,
+  a disabled Start until two non-blank names, and the footer notice naming the rights holders.
+- Named two teams (Chilli, Bandit) and played all ten questions. All three answer shapes rendered and
+  scored: `fx-001` single (a per-team `switch` whose accessible name is the team name — "Chilli scored"),
+  `fx-002` list (a per-team `spinbutton` "Chilli points" 0/2, whose "More" disabled at the cap of 2),
+  `fx-003` contested (answer shown, plus the line "Scoring: either answer scores").
+- **Pause holds the timer.** Clicked Pause at ~39s, waited two seconds, timer still read 39s; the button
+  read "Resume". This is the WCAG 2.2.2 requirement met and observed, not asserted.
+- **The keyboard drives the whole loop.** Pressing digit "2" toggled Bandit's switch to checked; Space
+  advanced through reveal and continue; the remaining questions were played entirely from the keyboard.
+- **Mid-round reload restores the game.** On question 3, reloaded the page; landed back on question 3
+  with the same prompt. The countdown reset to a fresh 45 (it is ephemeral by design; only game state
+  persists).
+- **Standings are derived and correct.** Read from the accessibility tree at the round break and again
+  on the final podium: Chilli 3 (1 from the single + 2 from the list), Bandit 1 (the contested via the
+  digit key). These survived the reload and are summed from per-question results, so the scoring
+  constraint is proven end to end.
+- **New game returns to setup.** Zero console errors and zero warnings across the whole session.
+
+### The gates, observed
+
+- `tsc -b` exit 0.
+- `npm test`: 61 tests across 8 files passing (was 53 in increment 1/2; +8 for the new `useCountdown`
+  and persistence/restore tests).
+- `npm run lint`: oxlint exit 0, zero warnings. One `eslint-disable-next-line react/set-state-in-effect`
+  with a reason on the storage-notice write path, which synchronises with localStorage (the rule's own
+  stated exception) and only fires on a terminal write failure.
+- `npm run validate:content`: 5 structural checks ran, 4 real-bank checks skipped, exit 0. The
+  ten-question fixture round passes unique ids, blurb-spoils-nothing, shape coverage and encoding.
+- `npm run build`: green. The two-bank guarantee re-checked in the rebuilt bundle by `grep`:
+  `content/rounds` absent, the fixture prompt present, `bankKind` fixtures present. `HEELER_REAL_BANK`
+  set nowhere.
+
+### Deliberately not, and honoured
+
+More than one round, dealing logic, dispute/void, wake lock, and type-scale/contrast work are all absent,
+per the increment's scope. The `voidedQuestionIds` parameter on `teamTotals`/`standings` is a seam
+defaulting to empty, not the void feature. The ARIA roles on the scoring controls (`switch`,
+`spinbutton`, team-name accessible names) are present because the shapes need them to work at all; the
+full spin-control announcement, live region, 44px targets and contrast are increment 6, and the code
+comments say so.
+
+### The review, and what it found
+
+Five reviewers per `.kiro/steering/review.md`, each anchored to a different source: against the source
+documents, against the mechanism, cold as the reader, red team, and a senior-engineer whole-repo pass.
+Every finding was opened and confirmed against the code before acting. Roughly 40 findings across the
+five; acted on 7 clusters, rejected 2, deferred 5.
+
+Confirmed and fixed:
+
+- **The `nextTeamId` counter reset on reload (red team, rated blocking).** It was a module-global counter
+  reset to 0 each page load, while the ids it minted persisted inside the game. The corruption was latent
+  today (a new game clears results), but the code documented ids as "stable... cannot corrupt scoring"
+  and that was false across the persistence boundary, which increments 4 and 5 build on. Replaced with
+  `crypto.randomUUID` and a non-secure-context fallback.
+- **No validation of a restored game against the bank (red team).** A parseable-but-stale `game` — an
+  unknown round id, or a cursor past the end — landed on a dead "No question available." screen that a
+  reload only re-restored. Traced and reproduced. Added an `isCoherent` check at the `readInitial`
+  boundary that discards an incoherent game to a fresh start with the notice. Verified through Playwright:
+  a game whose `roundIds` names a deleted round now falls back to setup with "A saved game could not be
+  read and was discarded" rather than bricking.
+- **`timerLengthSeconds` unclamped in state (red team).** A restored `NaN` length started an interval that
+  ticked `NaN` forever. Now clamped in the reducer's `START_GAME` through `clampTimerSeconds`.
+- **The two load-bearing paths had no tests (mechanism, senior-eng).** `useCountdown` (the pausable timer,
+  a WCAG claim) and the `useGame` persistence/restore path were verified only through Playwright, not the
+  committed suite. Added `useCountdown.test.ts` with fake timers (count down, stop at zero, pause holds,
+  extend, reset) and three persistence tests in `App.test.tsx` (restore mid-round, discard incoherent,
+  discard unparseable).
+- **Clamp logic duplicated three ways, two without the NaN guard (senior-eng, red team).** Consolidated on
+  a single `clampPoints` in `state.ts`, called by the reducer, the scoring UI and `scoreList`.
+- **Timer bounds 5/600 were unnamed, duplicated literals not enforced in state (senior-eng).** Named
+  `MIN_TIMER_SECONDS`/`MAX_TIMER_SECONDS` in `state.ts`, referenced from the setup form and enforced in the
+  reducer.
+- **Contested "all" answers displayed joined by "or" (cold reader).** The reveal said "all answers required"
+  while the answer line read "X or Y". `AnswerText` now joins with "and" when the rule is "all". Also added
+  a two-step confirm to the podium's New game (a stray Space used to wipe the final standings) and a minimal
+  on-screen keyboard hint, since the keyboard map was otherwise undiscoverable.
+
+Rejected:
+
+- **The source reviewer's own "game key never persisted" (its B1).** The reviewer retracted it in the same
+  report after tracing correctly, and the Playwright reload confirms persistence works. Not a finding.
+- **Digits 1-9 "over-reach".** The handler already guards an index with no team, so 5-9 were inert.
+  Narrowed the regex to 1-4 anyway to match intent, but it was not a defect.
+
+Deferred, with reasons recorded here so a later review does not re-raise them as new:
+
+- **Timer drift from recreating the interval each tick (mechanism).** Cosmetic on a room display nobody
+  stopwatches; a fixed-cadence rewrite is not worth the churn in increment 3.
+- **Multi-tab last-writer-wins on the `game` key (red team 6.3).** Real but low-value for a single-screen
+  living-room app; no `storage`-event reconciliation added.
+- **No team-name length cap (red team 2.4).** Layout blowout with a pathological name; increment 6 owns
+  presentation.
+- **Timer at zero shows no "time's up" cue, and skip equals reveal (cold reader).** Visual timer treatment
+  is increment 6; skip-as-reveal ("stop waiting, show the answer") is a deliberate simplification.
+- **`readInitial` runs twice and calls `clearGame` inside a render-phase initialiser (mechanism, red team
+  6.2).** Idempotent today. The misleading "one-shot load" comment was corrected; the render-phase side
+  effect is left because `loadGame` is a pure read and `clearGame` is idempotent, and a ref-during-render
+  alternative is its own hazard.
+
+### Not verified in this increment
+
+- **Anything about a television.** 1920x1080 is a 1080p window, not a viewing distance or overscan.
+  Increment 6.
+- **Accessibility beyond the roles and accessible names observed in the tree.** No contrast measurement, no
+  type scale, no live-region announcement, no focus-visible audit. Those are increment 6 deliverables and
+  nothing here claims them; the ARIA roles present are what the answer shapes require to function.
+- **That local and CI run the same runtime.** As with increment 1, "green locally" and "green in CI" are
+  not bit-identical claims; CI has not run because nothing is pushed.
+- **The contested "all" connector in a live playthrough.** The change is a pure function verified by tsc and
+  by the earlier reveal showing "Scoring: all answers required" for `fx-007`; the reload verification used
+  the "either" question. The unit path is covered.
