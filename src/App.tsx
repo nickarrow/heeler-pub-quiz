@@ -54,6 +54,7 @@ function Phases({ game }: { game: Game }): ReactElement {
           lastDeal={game.lastDeal}
           unservedRoundCount={game.unservedRoundCount}
           onResetServedRounds={game.resetServedRounds}
+          roundsPerGame={game.roundsPerGame}
         />
       )
 

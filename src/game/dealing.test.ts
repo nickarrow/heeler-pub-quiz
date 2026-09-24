@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Round } from '../content/types.ts'
-import { dealRounds, markServed, ROUNDS_PER_GAME } from './dealing.ts'
+import { dealRounds, markServed, previewRoundsPerGame, ROUNDS_PER_GAME } from './dealing.ts'
 
 // The no-repeats proof at the logic level. `increments.md` §4: three full games
 // must not repeat a round, and the pool must exhaust rather than recycle. The
@@ -26,6 +26,25 @@ function pool(n: number): Round[] {
   }))
 }
 
+describe('previewRoundsPerGame', () => {
+  // The preview bank holds fewer than a full game's rounds on purpose, and the
+  // owner must be able to reach the questions to read them. So a preview game is
+  // as long as the preview bank, capped at the normal length and never zero.
+  it('is the whole bank when the bank is smaller than a full game', () => {
+    expect(previewRoundsPerGame(1)).toBe(1)
+    expect(previewRoundsPerGame(3)).toBe(3)
+  })
+
+  it('never exceeds the normal game length', () => {
+    expect(previewRoundsPerGame(4)).toBe(ROUNDS_PER_GAME)
+    expect(previewRoundsPerGame(10)).toBe(ROUNDS_PER_GAME)
+  })
+
+  it('is at least one even for an empty bank, so it never deals zero rounds', () => {
+    expect(previewRoundsPerGame(0)).toBe(1)
+  })
+})
+
 describe('dealRounds', () => {
   it('deals a full game of unserved rounds', () => {
     const deal = dealRounds(pool(12), new Set())
@@ -33,6 +52,16 @@ describe('dealRounds', () => {
     if (deal.ok) {
       expect(deal.roundIds).toHaveLength(ROUNDS_PER_GAME)
       expect(deal.roundIds).toEqual(['round-1', 'round-2', 'round-3', 'round-4'])
+    }
+  })
+
+  it('deals a short preview game when asked for fewer rounds', () => {
+    // A one-round preview bank deals its single round rather than reporting the
+    // pool exhausted, because the preview game length is passed explicitly.
+    const deal = dealRounds(pool(1), new Set(), 1)
+    expect(deal.ok).toBe(true)
+    if (deal.ok) {
+      expect(deal.roundIds).toEqual(['round-1'])
     }
   })
 

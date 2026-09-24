@@ -21,11 +21,16 @@ export function SetupScreen({
   lastDeal,
   unservedRoundCount,
   onResetServedRounds,
+  roundsPerGame = ROUNDS_PER_GAME,
 }: {
   onStart: (teams: Team[], timerLengthSeconds: number) => void
   lastDeal: LastDeal
   unservedRoundCount: number
   onResetServedRounds: () => void
+  /** How many rounds a game deals. The real and fixture banks play the full
+   * ROUNDS_PER_GAME; the preview bank plays as many rounds as it has. Defaulted
+   * so the common case reads unchanged. */
+  roundsPerGame?: number
 }): ReactElement {
   const [names, setNames] = useState<string[]>(['', ''])
   const [timer, setTimer] = useState<number>(DEFAULT_TIMER_SECONDS)
@@ -69,7 +74,7 @@ export function SetupScreen({
           Out of fresh rounds
         </h2>
         <p role="status" className="text-fluid-base">
-          There are not enough unplayed rounds left for a full game of {ROUNDS_PER_GAME}. Only{' '}
+          There are not enough unplayed rounds left for a full game of {roundsPerGame}. Only{' '}
           {unservedRoundCount} unplayed{' '}
           {unservedRoundCount === 1 ? 'round remains' : 'rounds remain'}. Rather than repeat rounds
           you have already played, you can reset and make every round available again.
@@ -100,7 +105,7 @@ export function SetupScreen({
       </h2>
       <p className="text-fluid-sm text-ink/70">
         {unservedRoundCount} unplayed{' '}
-        {unservedRoundCount === 1 ? 'round' : 'rounds'} available. A game plays {ROUNDS_PER_GAME}.
+        {unservedRoundCount === 1 ? 'round' : 'rounds'} available. A game plays {roundsPerGame}.
       </p>
 
       <form

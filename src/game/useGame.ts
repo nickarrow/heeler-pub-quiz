@@ -10,7 +10,7 @@
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { bank as loadedBank } from '@bank'
 import type { Bank, Round } from '../content/types.ts'
-import { dealRounds, markServed, type Deal } from './dealing.ts'
+import { dealRounds, markServed, previewRoundsPerGame, ROUNDS_PER_GAME, type Deal } from './dealing.ts'
 import type { StorageNotice } from './notice.ts'
 import type { GameAction } from './reducer.ts'
 import { gameReducer } from './reducer.ts'
@@ -51,6 +51,9 @@ export type Game = {
   resetServedRounds: () => void
   /** How many rounds have never been dealt, for the setup and exhaustion screens. */
   unservedRoundCount: number
+  /** How many rounds a game deals from this bank: the full length for real and
+   * fixtures, the whole preview bank for preview. Shown on the setup screen. */
+  roundsPerGame: number
   lastDeal: LastDeal
   storageNotice: StorageNotice
   /** Dispute, void, and the derived voided-question set. See useFlags. */
@@ -61,6 +64,13 @@ export function useGame(): Game {
   const rounds = bank.rounds
   const flags = useFlags()
   const { clearAllFlags } = flags
+
+  // A real or fixture game is four rounds (`design.md` §4). The preview bank is
+  // the one exception: it holds fewer rounds on purpose, and the owner needs to
+  // reach the questions to read them, so a preview game is as long as the
+  // preview bank. This never relaxes the real game.
+  const roundsPerGame =
+    bank.kind === 'preview' ? previewRoundsPerGame(rounds.length) : ROUNDS_PER_GAME
 
   // Lazy initialisers: each runs once on first render and each calls
   // readInitial() independently. That is two reads, not one shared load, but the
@@ -98,7 +108,7 @@ export function useGame(): Game {
 
   const startNewGame = useCallback(
     (teams: Team[], timerLengthSeconds: number) => {
-      const deal: Deal = dealRounds(rounds, new Set(served))
+      const deal: Deal = dealRounds(rounds, new Set(served), roundsPerGame)
       if (!deal.ok) {
         // Pool exhausted: do not start a short game. Record it so the UI can
         // offer the reset, and leave the current (setup) state untouched.
@@ -116,7 +126,7 @@ export function useGame(): Game {
       setLastDeal({ ok: true })
       rawDispatch({ type: 'START_GAME', teams, roundIds: deal.roundIds, timerLengthSeconds })
     },
-    [rounds, served],
+    [rounds, served, roundsPerGame],
   )
 
   const resetToSetup = useCallback(() => {
@@ -157,6 +167,7 @@ export function useGame(): Game {
     resetToSetup,
     resetServedRounds,
     unservedRoundCount,
+    roundsPerGame,
     lastDeal,
     storageNotice,
     flags,
