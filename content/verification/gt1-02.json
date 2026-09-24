@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Featherwand",
+  "excerpt": "armed with a magic feather wand that makes things incredibly heavy, Bingo can now stop them leaving the house.",
+  "episode": "Featherwand",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived makes it heavy" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Featherwand/Script", "note": "Featherwand transcript shows every featherwanded object becoming too heavy to lift" }
+  }
+}

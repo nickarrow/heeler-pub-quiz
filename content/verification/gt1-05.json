@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Chickenrat",
+  "excerpt": "Bingo questions what is a chickenrat. Bluey says that it's an animal that is half-chicken and half-rat.",
+  "episode": "Chickenrat",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived half-chicken half-rat" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Chickenrat/Script", "note": "Chickenrat transcript defines the chickenrat as half chicken, half rat during the restaurant game" }
+  }
+}

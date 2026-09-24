@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Ticklecrabs",
+  "excerpt": "Bandit sets the scene: his name is Telemachus and he's looking for a true love who can save him from the crabs.",
+  "episode": "Ticklecrabs",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Telemachus" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Ticklecrabs/Script", "note": "Ticklecrabs transcript has Bandit adopt the name Telemachus during the tickle-crabs game" }
+  }
+}

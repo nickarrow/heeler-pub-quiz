@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Shadowlands",
+  "excerpt": "play Shadowlands - a game where they must only walk in the shady areas and avoid the crocodile infested, sunlit grass.",
+  "episode": "Shadowlands",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived crocodile-infested sea" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Shadowlands/Script", "note": "Shadowlands transcript plays out the shade-safe / sunlight-is-crocodiles rule" }
+  }
+}

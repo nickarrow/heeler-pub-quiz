@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Mount_Mumandad",
+  "excerpt": "As they jointly climb the last part of Mount Mumanddad together, they reach the top together. They plant the one united flag on Bandit's head.",
+  "episode": "Mount Mumandad",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived plant a flag on Bandit's head" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Mount_Mumandad/Script", "note": "Mount Mumandad transcript ends with the flag planted on the sleeping Bandit's head" }
+  }
+}

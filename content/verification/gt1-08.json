@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Claw",
+  "excerpt": "Bandit says that there is a special prize: a block that says 2 bottomless bowls of ice cream!",
+  "episode": "The Claw",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived a bottomless bowl of ice cream" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Claw/Script", "note": "The Claw transcript names the bottomless ice cream block as the machine's special prize" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Sheepdog",
+  "excerpt": "Soon, Bandit is in the backyard on all fours, acting like a sheep, and wanders into Wendy's yard to eat her washing.",
+  "episode": "Sheepdog",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived a sheep" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Sheepdog/Script", "note": "Sheepdog transcript has Bandit playing the sheep to the girls' sheepdogs" }
+  }
+}

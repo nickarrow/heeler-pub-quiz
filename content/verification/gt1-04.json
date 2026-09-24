@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Spy_Game",
+  "excerpt": "The samples go to Bingo (who insists on being called Sparkleshot) who is in charge of collecting the potion-grass to make the adult-controlling potion.",
+  "episode": "Spy Game",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Sparkleshot" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Spy_Game/Script", "note": "Spy Game transcript has Bingo insisting on the codename Sparkleshot" }
+  }
+}

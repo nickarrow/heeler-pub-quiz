@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Daddy_Robot",
+  "excerpt": "Daddy Robot recalculates his objectives, and picks the girls up to take them out to the wheelie bin (as they are the creators of all the mess).",
+  "episode": "Daddy Robot",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived the wheelie bin" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Daddy_Robot/Script", "note": "Daddy Robot transcript has the robot moving to bin the girls as the source of the mess" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Escape",
+  "excerpt": "Bluey says that it was Jerry Lee, their science butler, who built the Dreamhouse Car.",
+  "episode": "Escape",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Jerry Lee" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Escape/Script", "note": "Escape transcript names Jerry Lee the science butler within the imagination chase game" }
+  }
+}
