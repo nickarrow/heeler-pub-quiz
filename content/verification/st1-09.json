@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Pool/Script",
+  "excerpt": "Bluey: I don't want to brush my teeth, it's boring. Chilli: Boring things are still important. Bluey: No they're not. Chilli: You sound like your Dad!",
+  "episode": "The Pool",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named The Pool with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Pool", "note": "The Pool recap: Chilli tells Bluey boring things are important too and that she sounds like her father" }
+  }
+}

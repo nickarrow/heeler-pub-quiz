@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Fancy_Restaurant",
+  "excerpt": "Bandit calls himself Romeo McFlourish, and Bluey says he's not on the list and will need to make a booking.",
+  "episode": "Fancy Restaurant",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Fancy Restaurant with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Fancy_Restaurant/Script", "note": "Fancy Restaurant transcript has Bandit adopt the pretend-date alias Romeo McFlourish" }
+  }
+}

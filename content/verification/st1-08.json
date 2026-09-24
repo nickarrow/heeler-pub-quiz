@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Swim_School",
+  "excerpt": "Margaret then surprises them; she welcomes them to Big Fish, says I'm Margaret and I'm not as nice as Karen.",
+  "episode": "Swim School",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Swim School with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Swim_School/Script", "note": "Swim School transcript has the strict Big Fish instructor Margaret introduce herself" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Rug_Island/Script",
+  "excerpt": "Chilli: What did she give you? A single felt pen is shown. Bandit: ...Everything!",
+  "episode": "Rug Island",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Rug Island with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Rug_Island", "note": "Rug Island recap: Chilli asks what Bingo gave him, a brown felt pen, and Bandit replies Everything" }
+  }
+}

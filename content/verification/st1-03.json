@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Hammerbarn/Script",
+  "excerpt": "At the checkout, as the garden gnome Gerald is scanned: Bluey: SHE'S TAKING MY HUSBAND!",
+  "episode": "Hammerbarn",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Hammerbarn with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Hammerbarn", "note": "Hammerbarn recap: Bluey accuses the store clerk of taking her husband as the lawn gnome is scanned" }
+  }
+}

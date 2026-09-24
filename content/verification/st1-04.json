@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Copycat/Script",
+  "excerpt": "Bandit drives holding the shoebox with the injured bird in one hand. Bluey: You're a good seat belt, Dad. Bandit: Thanks.",
+  "episode": "Copycat",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Copycat with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Copycat", "note": "Copycat recap: they drive the injured budgie to the vet, Bandit holding the box, and Bluey calls him a good seat belt" }
+  }
+}

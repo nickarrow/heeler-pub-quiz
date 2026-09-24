@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Sleepytime/Script",
+  "excerpt": "Bingo, to the Sun: I have to go. I'm a big girl now. The Sun replies: Remember I'll always be here for you, even if you can't see me.",
+  "episode": "Sleepytime",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Sleepytime with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Sleepytime", "note": "Sleepytime recap quotes the line: She says to the Sun, I have to go, I'm a big girl now" }
+  }
+}

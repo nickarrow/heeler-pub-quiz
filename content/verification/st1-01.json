@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Fruitbat/Script",
+  "excerpt": "Bingo: Even though I don't really need to do a wee, I'm going to do one anyway. Bandit: That's very clever, Bingo. Bingo: It's called a tactical wee.",
+  "episode": "Fruitbat",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Fruitbat with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Fruitbat", "note": "Fruitbat episode article recap covers the bedtime toilet routine where the line occurs" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Army/Script",
+  "excerpt": "Rusty, after Jack's basic training: Congratulations, Recruit Russell. You're now Private Russell. Rusty salutes; Jack follows.",
+  "episode": "Army",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Army with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Army", "note": "Army recap: Rusty as drill sergeant runs Jack through basic training and promotes him" }
+  }
+}

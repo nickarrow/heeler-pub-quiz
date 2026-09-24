@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Daddy_Dropoff/Script",
+  "excerpt": "Bandit winds Bingo up at kindy drop-off. Bandit and Bluey: See ya, Wind-Up Bingo! Bingo waddles off dut-dut-dut.",
+  "episode": "Daddy Dropoff",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given the quoted line only; named Daddy Dropoff with high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Daddy_Dropoff", "note": "Daddy Dropoff recap: Bandit winds Bingo and sends her waddling into kindy as Wind-Up Bingo" }
+  }
+}
