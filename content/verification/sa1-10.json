@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Barky_Boats",
+  "excerpt": "Bluey finds out that Mia is twelve years old and will move to big school next year. Captain is Mackenzie's buddy.",
+  "episode": "Barky Boats",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Mia and Captain" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Cricket", "note": "Cricket shows Mia and Captain together as older kids, corroborating them as the older buddies from Barky Boats" }
+  }
+}

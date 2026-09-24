@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Calypso_(Episode)",
+  "excerpt": "Bluey is at school with her friends, listening to Calypso tell a story about a gnome; she circles the room guiding each child's play.",
+  "episode": "Calypso",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Calypso" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Barky_Boats", "note": "Barky Boats recap shows Calypso addressing the class and announcing the buddy day, corroborating the teacher role" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Onesies",
+  "excerpt": "Chilli's estranged older sister, Brandy, comes to visit them after four years. Chilli notes that Bingo looks like Brandy.",
+  "episode": "Onesies",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Brandy" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Onesies/Script", "note": "Onesies transcript: Chilli introduces 'your Auntie Brandy' and calls her 'my sister Brandy'" }
+  }
+}

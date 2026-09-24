@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Backpackers",
+  "excerpt": "Bluey, Bingo, and Cousins Muffin and Socks... (Backpackers recap names Muffin and Socks as the cousins).",
+  "episode": "Muffin Cone",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Muffin and Socks" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Muffin_Cone", "note": "Muffin Cone recap and Appearances show Muffin as daughter of Uncle Stripe and Trixie, taken to her cousins'" }
+  }
+}

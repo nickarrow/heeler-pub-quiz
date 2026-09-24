@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Baby_Race",
+  "excerpt": "Bluey learnt to roll over first, but Judo was the first to crawl, so then it became a race to see who was going to walk first!",
+  "episode": "Baby Race",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Judo" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Sticky_Gecko", "note": "Sticky Gecko is built around a playdate with Judo, corroborating Judo as a recurring peer of Bluey's" }
+  }
+}

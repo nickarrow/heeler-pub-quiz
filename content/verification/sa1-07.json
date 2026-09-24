@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Seesaw/Script",
+  "excerpt": "Pom Pom: Yes, Missus Heeler. Pomeranians are a small breed! ... Pomeranians are a small, but hardy breed!",
+  "episode": "Seesaw",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Pomeranian" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Seesaw", "note": "Seesaw recap repeats the 'small but hardy breed' line and Appearances lists Pom Pom (debut)" }
+  }
+}

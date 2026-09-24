@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Grandad/Script",
+  "excerpt": "Chilli, of Grandad: I'm his daughter! He should take care of himself for me because I still need him. Appearances name him Mort Cattle.",
+  "episode": "Grandad",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Mort" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Grandad", "note": "Grandad article recap and Appearances identify Mort as Chilli's father, the maternal grandfather the kids call Grandad" }
+  }
+}

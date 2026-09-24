@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Army",
+  "excerpt": "He knows so much about the army because his dad's in the army - he's out on patrol right now, but he'll be home soon, and promised to bring Rusty some condensed milk.",
+  "episode": "Army",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived 'in the army'" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Cricket", "note": "Cricket recap: a letter from his dad, who is on deployment; Bandit narrates Rusty's dad was away on patrol" }
+  }
+}

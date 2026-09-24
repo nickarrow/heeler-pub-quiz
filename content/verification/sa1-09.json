@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Cricket",
+  "excerpt": "Rusty is demonstrating fielding technique to his little sister, Dusty ... the scene cuts to Rusty's house, where he's playing with his brother Digger and his sister Dusty.",
+  "episode": "Cricket",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Digger and Dusty" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Cricket/Script", "note": "Cricket transcript stage directions and Bandit voiceover name Digger (brother) and Dusty (little sister); Appearances lists both as debuts" }
+  }
+}

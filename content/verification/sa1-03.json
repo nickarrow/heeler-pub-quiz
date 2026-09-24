@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Army/Script",
+  "excerpt": "Jack [narrating]: One thing I can do is run. I'm a Jack Russell! Opening: a family of Jack Russell Terriers; this is Jack, our focus for this episode.",
+  "episode": "Army",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt and passage only, answer withheld; derived Jack" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Army", "note": "Army recap: Jack is really good at running, because he's a Jack Russell; Appearances lists Jack (debut)" }
+  }
+}
