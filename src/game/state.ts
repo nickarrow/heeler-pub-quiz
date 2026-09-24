@@ -10,7 +10,7 @@
 // `teamTotals` below takes the set of voided ids as input and is the only way
 // totals are ever computed.
 
-import type { Question, Round } from '../content/types.ts'
+import type { BankKind, Question, Round } from '../content/types.ts'
 
 /** A team's stable id, assigned at setup. Separate from the display name so a
  * rename or a duplicate name cannot corrupt scoring, and so increment 6 has a
@@ -34,9 +34,9 @@ export type QuestionResult = {
 export type GameState = {
   /** Which bank produced this game. Reads from the loaded bank's own `kind`, so
    * it cannot claim fixtures while serving real questions. Increment 5's flag
-   * export uses the same marker to keep fixture-era disputes out of the real
-   * error-rate sample. */
-  bankKind: 'fixtures' | 'real'
+   * export uses the same marker to keep fixture-era disputes — and, since 7a,
+   * preview disputes — out of the real error-rate sample. */
+  bankKind: BankKind
   teams: Team[]
   /** The dealt rounds, in order. Increment 3 deals one; increment 4 deals four. */
   roundIds: string[]

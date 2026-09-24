@@ -27,6 +27,11 @@ describe('void is a reversible flag', () => {
     expect(state.flags[0]?.bankKind).toBe('real')
     expect(state.flags[0]?.kind).toBe('void')
   })
+
+  it('records a preview bank marker, so a preview void is never mistaken for a real one', () => {
+    const state = toggleVoid(emptyFlags, 'q1', 'preview', at)
+    expect(state.flags[0]?.bankKind).toBe('preview')
+  })
 })
 
 describe('dispute accumulates without interrupting', () => {
@@ -59,6 +64,12 @@ describe('isFlagsState rejects malformed shapes', () => {
     expect(
       isFlagsState({
         flags: [{ questionId: 'q', bankKind: 'fixtures', kind: 'void', at: 'x' }],
+      }),
+    ).toBe(true)
+    // Preview is a valid bank marker since increment 7a.
+    expect(
+      isFlagsState({
+        flags: [{ questionId: 'q', bankKind: 'preview', kind: 'dispute', note: 'n', at: 'x' }],
       }),
     ).toBe(true)
   })

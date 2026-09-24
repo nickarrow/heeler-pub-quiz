@@ -5,8 +5,9 @@
 //
 // The export carries every flag AND each flag's bank marker, so the increment-9
 // consumer computing a real-bank error rate can filter to `bankKind: 'real'` and
-// leave the fixture-era disputes from increments 3 to 6 out of the sample. That
-// marker is why the increment-1 review left this for increment 5 to shape.
+// leave everything else out of the sample: the fixture-era disputes from
+// increments 3 to 6, and — since 7a — any preview-bank disputes. That marker is
+// why the increment-1 review left this for increment 5 to shape.
 
 import type { Flag } from './flags.ts'
 
@@ -16,8 +17,11 @@ export type FlagExport = {
    * re-tallying. */
   summary: {
     total: number
+    /** The only count increment 9 samples from. Everything else is excluded by
+     * construction. */
     real: number
     fixtures: number
+    preview: number
     disputes: number
     voids: number
   }
@@ -33,6 +37,7 @@ export function buildFlagExport(flags: Flag[], exportedAt: string): FlagExport {
       total: flags.length,
       real: flags.filter((flag) => flag.bankKind === 'real').length,
       fixtures: flags.filter((flag) => flag.bankKind === 'fixtures').length,
+      preview: flags.filter((flag) => flag.bankKind === 'preview').length,
       disputes: flags.filter((flag) => flag.kind === 'dispute').length,
       voids: flags.filter((flag) => flag.kind === 'void').length,
     },

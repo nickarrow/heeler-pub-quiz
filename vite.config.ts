@@ -3,29 +3,47 @@ import { resolve } from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
-import { fixtureBankRelativePath, realBankRelativePath } from './scripts/bank-paths.ts'
+import {
+  fixtureBankRelativePath,
+  previewBankRelativePath,
+  realBankRelativePath,
+} from './scripts/bank-paths.ts'
 
-// The two-bank guarantee. `design.md` §3 promises that no build which is not an
+// The bank guarantee. `design.md` §3 promises that no build which is not an
 // explicit production build can render a real question, and this alias is the
-// whole mechanism. Absence of the variable means fixtures, so forgetting to set
-// it produces the harmless outcome.
+// whole mechanism. Since increment 7a it selects between three banks, not two,
+// through ONE tri-valued variable rather than two booleans — two booleans have
+// four combinations and two of them are undefined, which is the kind of "flag
+// that doesn't work" this scheme already survived once.
 //
-// As of increment 1 this variable is set nowhere: not in this repository, not in
-// the deploy workflow. Increment 8 is what adds it, on the workflow's build step
-// only. Until then the real bank is unreachable by any command.
+// HEELER_BANK:
+//   unset / anything unrecognised -> fixtures   (the safe default)
+//   'real'                        -> the real bank    (deploy only, increment 8)
+//   'preview'                     -> the preview bank (a deliberate local command)
 //
-// Note this is read by every command, not only by production builds. An exported
-// shell variable would reach `npm run dev` too. That is why the guard below
-// exists and why a test asserts the variable is unset.
-const useRealBank = process.env.HEELER_REAL_BANK === '1'
+// Two properties this shape must keep, and does:
+//   - The default is fixtures. Absence of the variable, OR any typo'd value,
+//     falls to fixtures. It never falls THROUGH to real or preview.
+//   - The deploy selects only 'real'. Increment 8 sets HEELER_BANK=real on the
+//     workflow's build step and nowhere else; 'preview' is never written there,
+//     and a committed test asserts the workflow cannot select it.
+//
+// Read by every command, not only production builds — an exported shell variable
+// would reach `npm run dev` too. That is why the guard below exists and why the
+// bank-guard tests assert both the default and the deploy path.
+const bankSelection = process.env.HEELER_BANK
+
+const bankRelativePath =
+  bankSelection === 'real'
+    ? realBankRelativePath
+    : bankSelection === 'preview'
+      ? previewBankRelativePath
+      : fixtureBankRelativePath
 
 // Absolute, because Vite uses relative alias values as-is and never resolves
 // them into filesystem paths. See docs/verification-log.md — the first version
 // of this used a relative path and the import would simply have failed.
-const bankPath = resolve(
-  import.meta.dirname,
-  useRealBank ? realBankRelativePath : fixtureBankRelativePath,
-)
+const bankPath = resolve(import.meta.dirname, bankRelativePath)
 
 // The guarantee rests entirely on this path being right, and a wrong one fails
 // in confusing places. Fail here instead.

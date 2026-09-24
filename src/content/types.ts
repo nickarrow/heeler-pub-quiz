@@ -45,12 +45,29 @@ export type Round = {
 }
 
 /**
- * What a bank module exports. Both banks satisfy this, and the app imports
+ * Which bank is loaded. Three states, not two, since increment 7a:
+ *
+ * - `fixtures` — invented content, the safe default, ships in every ordinary
+ *   build and is what any screenshot or demo link shows.
+ * - `real` — the shippable question bank, selected only by the deploy workflow.
+ * - `preview` — a small set of real-quality questions the owner is cleared to
+ *   read, reachable only by a deliberate local command, never deployed, and
+ *   disjoint from the real bank so reading it spoils no shippable question.
+ *
+ * This one union is the source of truth for the kind everywhere it travels: the
+ * game state, a flag's bank marker, the export summary and the on-screen badge
+ * all import it rather than re-spelling the three strings, so a fourth state
+ * later is one edit, not six.
+ */
+export type BankKind = 'fixtures' | 'real' | 'preview'
+
+/**
+ * What a bank module exports. All three banks satisfy this, and the app imports
  * exactly one of them through the `@bank` alias without ever naming either
  * file.
  */
 export type Bank = {
-  /** Which bank this is, so the app can show the fixture badge honestly. */
-  kind: 'fixtures' | 'real'
+  /** Which bank this is, so the app can show the right badge honestly. */
+  kind: BankKind
   rounds: Round[]
 }

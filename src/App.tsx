@@ -1,6 +1,6 @@
 import { useState, type ReactElement } from 'react'
 import { Button } from './components/Button.tsx'
-import { FixtureBadge } from './components/FixtureBadge.tsx'
+import { BankBadge } from './components/BankBadge.tsx'
 import { FooterNotice } from './components/FooterNotice.tsx'
 import { QuestionScreen } from './components/QuestionScreen.tsx'
 import { ReviewScreen } from './components/ReviewScreen.tsx'
@@ -30,7 +30,7 @@ export default function App(): ReactElement {
     <div className="flex min-h-screen flex-col">
       <main className="flex flex-1 flex-col items-start gap-6 px-6 py-8">
         <h1 className="text-fluid-lg font-bold text-blue-800">Heeler Pub Quiz</h1>
-        {game.state.bankKind === 'fixtures' ? <FixtureBadge /> : null}
+        <BankBadge kind={game.state.bankKind} />
         <StorageNotice notice={game.storageNotice} />
 
         <Phases game={game} />

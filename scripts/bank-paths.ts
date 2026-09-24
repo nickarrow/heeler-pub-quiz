@@ -21,3 +21,10 @@
 export const fixtureBankRelativePath = 'src/content/fixtures/index.ts'
 
 export const realBankRelativePath = 'src/content/rounds/index.ts'
+
+/**
+ * The preview bank (increment 7a): real-quality questions the owner may read,
+ * played only by a deliberate local command and never deployed. Disjoint from
+ * the real bank by construction, so reading it spoils no shippable question.
+ */
+export const previewBankRelativePath = 'src/content/preview/index.ts'

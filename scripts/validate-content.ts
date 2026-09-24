@@ -11,7 +11,11 @@ import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import type { Bank } from '../src/content/types.ts'
-import { fixtureBankRelativePath, realBankRelativePath } from './bank-paths.ts'
+import {
+  fixtureBankRelativePath,
+  previewBankRelativePath,
+  realBankRelativePath,
+} from './bank-paths.ts'
 import type { Report } from './content-rules.ts'
 import {
   checkBlurbsSpoilNothing,
@@ -26,7 +30,12 @@ import {
 const repoRoot = resolve(import.meta.dirname, '..')
 const fixtureBankPath = resolve(repoRoot, fixtureBankRelativePath)
 const realBankPath = resolve(repoRoot, realBankRelativePath)
+const previewBankPath = resolve(repoRoot, previewBankRelativePath)
+// The real bank's verification records. The preview bank keeps its own set in a
+// sibling directory so a preview record and a real record can never collide on
+// a shared question id, and so the two are visibly separate on disk.
 const verificationDir = resolve(repoRoot, 'content/verification')
+const previewVerificationDir = resolve(repoRoot, 'content/verification-preview')
 
 const failures: string[] = []
 const checksRun: string[] = []
@@ -78,7 +87,29 @@ async function validateRealBank(): Promise<void> {
   checkTextEncoding(real, 'real bank', report)
   checkTenQuestionsPerRound(real.rounds, report)
   checkTierMix(real.rounds, report)
-  checkVerificationRecords(real.rounds, verificationDir, report)
+  checkVerificationRecords(real.rounds, verificationDir, 'real bank', report)
+}
+
+async function validatePreviewBank(): Promise<void> {
+  if (!existsSync(previewBankPath)) {
+    // Expected only before increment 7a delivers it. Named rather than passed
+    // over in silence, the same as the real bank.
+    report.skipped('preview bank: structural rules and provenance records')
+    return
+  }
+  const preview = await loadBank(previewBankPath)
+  if (preview.kind !== 'preview') {
+    report.fail(`preview bank declares kind "${preview.kind}", expected "preview"`)
+  }
+  // Structural rules apply to any bank.
+  checkIdsUnique(preview, 'preview bank', report)
+  checkBlurbsSpoilNothing(preview, 'preview bank', report)
+  checkTextEncoding(preview, 'preview bank', report)
+  // Provenance too: the preview questions went through the full pipeline, so the
+  // owner is judging real-quality work. What does NOT apply is the shipped-round
+  // shape — ten questions per round and the 3 / 5 / 2 tier mix — because the
+  // preview set is a small spread across tiers and shapes, not a shipped round.
+  checkVerificationRecords(preview.rounds, previewVerificationDir, 'preview bank', report)
 }
 
 function printOutcome(): void {
@@ -90,8 +121,8 @@ function printOutcome(): void {
   }
 
   if (checksSkipped.length > 0) {
-    console.log(`\nThe real bank is not present at ${realBankPath}, so the rules above marked`)
-    console.log('SKIPPED were not applied. That is expected until increment 7.')
+    console.log('\nSome rules above are marked SKIPPED because the bank they apply to is not')
+    console.log('present yet. The real bank arrives in increment 7; the preview bank in 7a.')
   }
 
   if (failures.length > 0) {
@@ -113,4 +144,5 @@ function printOutcome(): void {
 
 await validateFixtureBank()
 await validateRealBank()
+await validatePreviewBank()
 printOutcome()

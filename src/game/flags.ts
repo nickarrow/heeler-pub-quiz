@@ -9,12 +9,15 @@
 // export can be filtered to the real bank only and fixture-era disputes from
 // increments 3 to 6 never pollute increment 9's error-rate sample.
 
+import type { BankKind } from '../content/types.ts'
+
 export type FlagKind = 'dispute' | 'void'
 
 export type Flag = {
   questionId: string
-  /** Which bank the flagged question came from. The export filters on this. */
-  bankKind: 'fixtures' | 'real'
+  /** Which bank the flagged question came from. The export filters on this to
+   * keep everything but real-bank flags out of increment 9's error-rate sample. */
+  bankKind: BankKind
   kind: FlagKind
   /** A dispute carries a note; a void need not. */
   note?: string
@@ -98,7 +101,7 @@ export function isFlagsState(value: unknown): value is FlagsState {
     const f = flag as Record<string, unknown>
     return (
       typeof f.questionId === 'string' &&
-      (f.bankKind === 'fixtures' || f.bankKind === 'real') &&
+      (f.bankKind === 'fixtures' || f.bankKind === 'real' || f.bankKind === 'preview') &&
       (f.kind === 'dispute' || f.kind === 'void') &&
       (f.note === undefined || typeof f.note === 'string') &&
       typeof f.at === 'string'

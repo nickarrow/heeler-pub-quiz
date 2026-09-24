@@ -11,10 +11,11 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    /* The type side of the two-bank alias. Vite resolves `@bank` at build time;
-       the compiler has to be told separately, and it is told the fixture bank.
-       The real bank is still typechecked because it lives under `src` and is
-       covered by `include` below, not because anything imports it this way. */
+    /* The type side of the bank alias. Vite resolves `@bank` at build time;
+       the compiler has to be told separately, and it is told the fixture bank
+       (the safe default). The real and preview banks are still typechecked
+       because they live under `src` and are covered by `include` below, not
+       because anything imports them this way. */
     "paths": {
       "@bank": ["./src/content/fixtures/index.ts"]
     },

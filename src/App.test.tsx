@@ -33,6 +33,9 @@ describe('the app shell', () => {
   it('shows the fixture badge while the fixture bank is loaded', () => {
     render(<App />)
     expect(screen.getByText(/fixture questions/i)).toBeInTheDocument()
+    // And not the preview badge: the default resolution is fixtures, so a
+    // preview session can never be what an ordinary run shows.
+    expect(screen.queryByText(/preview questions/i)).not.toBeInTheDocument()
   })
 })
 

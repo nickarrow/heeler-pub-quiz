@@ -178,20 +178,44 @@ export function checkTierMix(rounds: Round[], report: Report): void {
 
 /**
  * Verification records live outside `src` and stay as JSON, so they are data read
- * by this script rather than code the app could import. One file per question id,
- * holding `sourceUrl` and `excerpt`. The shape is provisional: it is confirmed in
- * increment 7, when the first real round is authored and there is something to
- * confirm it against. `content-pipeline.md` §2 also names the episode as recorded
- * per question, which this does not yet require.
+ * by this script rather than code the app could import. One file per question id.
+ *
+ * The shape, confirmed in increment 7a against the first authored questions and
+ * reconciled with `content-pipeline.md` §2, which the increment-1 code did not
+ * yet honour:
+ *
+ *   {
+ *     "sourceUrl": string,        // where the fact was authored from
+ *     "excerpt":   string,        // the grounding passage, 40 words or fewer
+ *     "episode":   string,        // §2 names the episode per question; now required
+ *     "checks": {                 // that BOTH checks were run — the pipeline, as data
+ *       "rederivation": { "agreed": true },
+ *       "crossAnchor":  { "sourceUrl": string }
+ *     }
+ *   }
+ *
+ * Two things this validates and two it deliberately does not. It requires the
+ * episode AND cross-checks it against the question's own citation, so a record
+ * pasted from the wrong question fails rather than passing quietly. It requires
+ * the `checks` block to be PRESENT and to claim agreement — that the procedure
+ * ran — but it cannot and does not adjudicate the re-derivation itself; a machine
+ * cannot judge whether an answer was correctly derived, only that the record says
+ * it was. The judgement lives in the authoring, recorded here so "survived the
+ * two checks" is data rather than a claim in prose.
+ *
+ * Applies to any bank that carries provenance: the real bank, and — since 7a —
+ * the preview bank, because the whole point of preview is the owner judging
+ * real-quality questions that went through the full pipeline.
  */
 export function checkVerificationRecords(
   rounds: Round[],
   verificationDir: string,
+  label: string,
   report: Report,
 ): void {
-  report.ran('real bank: verification record per question, excerpt of 40 words or fewer')
+  report.ran(`${label}: verification record per question, excerpt of 40 words or fewer, both checks recorded`)
   if (!existsSync(verificationDir)) {
-    report.fail(`real bank: verification directory is missing: ${verificationDir}`)
+    report.fail(`${label}: verification directory is missing: ${verificationDir}`)
     return
   }
   const records = new Set(
@@ -202,30 +226,78 @@ export function checkVerificationRecords(
   for (const round of rounds) {
     for (const question of round.questions) {
       if (!records.has(question.id)) {
-        report.fail(`real bank: question ${question.id} has no verification record`)
+        report.fail(`${label}: question ${question.id} has no verification record`)
         continue
       }
       const recordPath = resolve(verificationDir, `${question.id}.json`)
-      let record: { sourceUrl?: unknown; excerpt?: unknown }
+      let record: {
+        sourceUrl?: unknown
+        excerpt?: unknown
+        episode?: unknown
+        checks?: unknown
+      }
       try {
         record = JSON.parse(readFileSync(recordPath, 'utf8')) as typeof record
       } catch {
         // The parse error is deliberately not reported. V8's JSON errors quote
         // the offending region of the file, and that region is an excerpt.
-        report.fail(`real bank: verification record for ${question.id} is not valid JSON`)
+        report.fail(`${label}: verification record for ${question.id} is not valid JSON`)
         continue
       }
       if (typeof record.sourceUrl !== 'string' || record.sourceUrl.length === 0) {
-        report.fail(`real bank: verification record for ${question.id} has no sourceUrl`)
+        report.fail(`${label}: verification record for ${question.id} has no sourceUrl`)
       }
+      if (typeof record.episode !== 'string' || record.episode.length === 0) {
+        report.fail(`${label}: verification record for ${question.id} has no episode`)
+      } else if (record.episode !== question.source.episode) {
+        // The record was filed against a different episode than the question
+        // cites — a sign it was pasted from the wrong question. Names ids and
+        // that they disagree; never the episode text of either, which could hint
+        // at an answer.
+        report.fail(
+          `${label}: verification record for ${question.id} names a different episode than the question's citation`,
+        )
+      }
+      checkRecordChecks(record.checks, question.id, label, report)
       if (typeof record.excerpt !== 'string' || record.excerpt.length === 0) {
-        report.fail(`real bank: verification record for ${question.id} has no excerpt`)
+        report.fail(`${label}: verification record for ${question.id} has no excerpt`)
         continue
       }
       const words = countWords(record.excerpt)
       if (words > 40) {
-        report.fail(`real bank: excerpt for ${question.id} is ${words} words, capped at 40`)
+        report.fail(`${label}: excerpt for ${question.id} is ${words} words, capped at 40`)
       }
     }
+  }
+}
+
+/**
+ * The `checks` block: proof, as data, that both checks from `content-pipeline.md`
+ * §3 were run. Presence and structure only — a re-derivation cannot be judged by
+ * a script, so this asserts the record CLAIMS agreement and a cross-anchor
+ * source, not that either was sound. No message here prints any excerpt or note.
+ */
+function checkRecordChecks(checks: unknown, questionId: string, label: string, report: Report): void {
+  if (typeof checks !== 'object' || checks === null) {
+    report.fail(`${label}: verification record for ${questionId} has no checks block`)
+    return
+  }
+  const c = checks as { rederivation?: unknown; crossAnchor?: unknown }
+  const rederivation = c.rederivation as { agreed?: unknown } | undefined
+  if (typeof rederivation !== 'object' || rederivation === null || rederivation.agreed !== true) {
+    report.fail(
+      `${label}: verification record for ${questionId} does not record a passed blind re-derivation`,
+    )
+  }
+  const crossAnchor = c.crossAnchor as { sourceUrl?: unknown } | undefined
+  if (
+    typeof crossAnchor !== 'object' ||
+    crossAnchor === null ||
+    typeof crossAnchor.sourceUrl !== 'string' ||
+    crossAnchor.sourceUrl.length === 0
+  ) {
+    report.fail(
+      `${label}: verification record for ${questionId} does not record a cross-anchor second source`,
+    )
   }
 }

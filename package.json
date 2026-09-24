@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:preview": "node scripts/dev-preview.ts",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",

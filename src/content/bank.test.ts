@@ -6,6 +6,12 @@ import { bank } from '@bank'
 // `design.md` §3 cannot regress unnoticed. Vitest reads the same
 // `resolve.alias` as the app, so this exercises the real resolution rather than
 // a copy of it.
+//
+// Since increment 7a the alias chooses between three banks through one
+// tri-valued variable, HEELER_BANK. This file guards the DEFAULT resolution; the
+// other half of the guarantee — that the deploy path can select only the real
+// bank, never preview — lives in scripts/deploy-workflow.test.ts, because
+// reading the workflow file needs Node types this app-scoped project excludes.
 describe('the @bank alias', () => {
   it('resolves to the fixture bank by default', () => {
     expect(bank.kind).toBe('fixtures')
@@ -17,7 +23,7 @@ describe('the @bank alias', () => {
   })
 })
 
-describe('the real-bank switch', () => {
+describe('the bank selector', () => {
   // Reached through globalThis with a local type rather than through `process`,
   // because `tsconfig.app.json` scopes its types to `vite/client`. Pulling Node's
   // globals into the app project to satisfy one test would make `process`
@@ -25,13 +31,16 @@ describe('the real-bank switch', () => {
   const env = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env
 
   // Absence of the variable is what makes fixtures the default, so forgetting it
-  // produces the harmless outcome. As of increment 1 it is set nowhere at all.
-  //
-  // Increment 8 sets it, and `technical-design.md` requires that to be on the
-  // build step rather than job-wide. If someone sets it job-wide instead, this
-  // test fails — which is the point, not a nuisance. Nothing else enforces that
-  // distinction.
+  // — or typo'ing it — produces the harmless outcome. It is set nowhere in the
+  // repository, and the deploy workflow does not set it until increment 8.
   it('is not set in the test environment', () => {
+    expect(env?.HEELER_BANK).toBeUndefined()
+  })
+
+  // The retired boolean must stay retired. If it reappears, the tri-valued
+  // selector in vite.config.ts is not the one thing choosing the bank, and the
+  // guarantee reasoning above no longer holds.
+  it('does not read the retired HEELER_REAL_BANK variable', () => {
     expect(env?.HEELER_REAL_BANK).toBeUndefined()
   })
 })
