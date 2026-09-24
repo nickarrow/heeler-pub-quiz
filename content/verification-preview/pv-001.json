@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Camping/Script",
+  "excerpt": "Bluey: Oh, my name is Bluey! Jean-Luc: Salut, Bluey. Moi c'est Jean-Luc. (Hi, Bluey. I am Jean-Luc.)",
+  "episode": "Camping",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given prompt and passage with answer withheld; derived Jean-Luc" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Camping", "note": "episode article recap and Appearances both name Jean-Luc (debut)" }
+  }
+}

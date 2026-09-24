@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sleepover/Script",
+  "excerpt": "Bluey and Bingo act as a wife and husband respectively whereas Muffin acts as their kid Sheila. Bluey [as Wife]: Sheila, this isn't a bus.",
+  "episode": "The Sleepover",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given prompt and passage with answer withheld; derived Sheila" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sleepover", "note": "episode article recap names the daughter Sheila in the Restaurant game" }
+  }
+}

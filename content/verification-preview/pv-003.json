@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Grannies/Script",
+  "excerpt": "Bingo, breaking character, gets up and does the floss dance. Bluey: Bingo, stop it! Dad, tell Bingo that Grannies don't floss.",
+  "episode": "Grannies",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given prompt and passage with answer withheld; derived the floss" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Grannies", "note": "episode article synopsis and recap centre on whether grannies can floss" }
+  }
+}

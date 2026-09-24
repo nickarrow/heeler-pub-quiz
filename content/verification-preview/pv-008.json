@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Yoga_Ball",
+  "excerpt": "When he tries to sit down and get some work done, he finds that the kids have stolen the yoga ball that he uses as a computer chair.",
+  "episode": "Yoga Ball",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given prompt and passage with answer withheld; derived the yoga ball" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Yoga_Ball/Script", "note": "transcript and episode title both establish the yoga ball as Bandit's work chair" }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "purpose": "Episodes the preview bank (increment 7a) authored its questions from. Increment 8 MUST exclude these from the shippable real bank, so that the owner reading the preview set spoils no question that increment 9 will ever sample. This is design option A: disjointness by exclusion. Episode identifiers only, never any answer text.",
+  "authored": "2026-09-24",
+  "corpusSnapshot": "2026-09-24",
+  "excludedEpisodes": [
+    { "episode": "Camping", "series": 1, "episodeInSeries": 43 },
+    { "episode": "Grannies", "series": 1, "episodeInSeries": 28 },
+    { "episode": "Yoga Ball", "series": 1, "episodeInSeries": 16 },
+    { "episode": "The Sleepover", "series": 1, "episodeInSeries": 39 },
+    { "episode": "Fairytale", "series": 3, "episodeInSeries": 26 }
+  ],
+  "note": "Five episodes yielded eight preview questions. Excluding five of 154 episodes leaves the real bank ample material for all themes; the cost to the shippable bank is small and deliberate."
+}

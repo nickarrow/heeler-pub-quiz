@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Fairytale",
+  "excerpt": "Chilli in her She-Ra costume comes to the rescue and reads out Bandit's name from his hat. Chilli playfully denies being that girl, leaving the current situation ambiguous.",
+  "episode": "Fairytale",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given prompt and passage with answer withheld; derived 'Chilli, but unsettled/disputed'" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Show", "note": "The Show article notes the dispute about Bandit and Chilli's meeting, which Fairytale revisits; confirms the fact is contested in-universe" }
+  }
+}

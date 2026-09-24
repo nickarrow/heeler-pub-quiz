@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Fairytale/Script",
+  "excerpt": "Bandit: That's me when I was 10 years old, on holiday with your Uncle Rad and Uncle Stripe. The camera pulls back, showing Stripe and Rad riding their own bikes.",
+  "episode": "Fairytale",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given prompt and passage with answer withheld; derived Rad and Stripe" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Fairytale", "note": "episode article Appearances lists Stripe and Radley (Rad) in the flashback" }
+  }
+}

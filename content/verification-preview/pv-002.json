@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Grannies/Script",
+  "excerpt": "Bluey [as Janet]: Make sure you pick up some beans for dinner, Rita. Bingo [as Rita]: What was that, Janet?",
+  "episode": "Grannies",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given prompt and passage with answer withheld; derived Rita" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Grannies", "note": "episode article recap names Bluey as Janet and Bingo as Rita" }
+  }
+}

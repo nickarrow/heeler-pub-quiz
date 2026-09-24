@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Yoga_Ball/Script",
+  "excerpt": "Chilli: Did you use your big girl bark? Bingo: No. Because I don't have a very good big girl bark. Bingo: I'm just gonna better at using my big girl bark.",
+  "episode": "Yoga Ball",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent given prompt and passage with answer withheld; derived her big girl bark" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Yoga_Ball", "note": "episode article recap: Bingo learns to use her big girl bark to tell Dad a game is too much" }
+  }
+}
