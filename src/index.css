@@ -1,0 +1,5 @@
+/* Tailwind 4: one import, no config file, no PostCSS step. Design tokens are
+   CSS-based when we need them, which is increment 6 — the type scale, the
+   palette and the contrast work all belong there. Increment 1 stays plain on
+   purpose so it does not pre-empt that increment. */
+@import 'tailwindcss';

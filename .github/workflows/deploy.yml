@@ -1,0 +1,81 @@
+# Build and publish to GitHub Pages.
+#
+# Two jobs with an artifact handoff, which is the shape the platform uses — not
+# one list of steps. Action versions are pinned deliberately: the Pages trio is
+# the combination GitHub's own starter workflows ship, chosen over the
+# individually-newest releases because that is the only place a combination of
+# the three is asserted to work together. See docs/verification-log.md.
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          # Major only. Matches the owner's local Node 24 line; an exact pin
+          # would put CI on a runtime missing security patches and would need
+          # bumping by hand forever.
+          node-version: '24'
+          cache: npm
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Gate 1. Structural rules on any bank, provenance rules on the real bank
+      # only. Exits non-zero and runs before the build, so a bank that fails
+      # does not deploy.
+      - name: Validate content
+        run: npm run validate:content
+
+      # Gate 2. Includes the bank guard, which asserts the alias still defaults
+      # to fixtures.
+      - name: Test
+        run: npm test
+
+      # Gate 3. The typechecker runs inside this script — `build` is
+      # `tsc -b && vite build` — so there is deliberately no separate typecheck
+      # step to pay for twice.
+      #
+      # HEELER_REAL_BANK is set nowhere in this workflow. Absence of it means
+      # the fixture bank, which is the harmless default. Increment 8 adds it
+      # here, on this step only, and nowhere else.
+      - name: Build
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
