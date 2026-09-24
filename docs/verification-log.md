@@ -817,3 +817,132 @@ Deferred, with reasons recorded here so a later review does not re-raise them as
 - **The contested "all" connector in a live playthrough.** The change is a pure function verified by tsc and
   by the earlier reveal showing "Scoring: all answers required" for `fx-007`; the reload verification used
   the "either" question. The unit path is covered.
+
+## 24 September 2026 — increment 4, multiple rounds and the dealing logic
+
+Delivers twelve short hand-written fixture rounds, `served-rounds` in use, a new game dealing four
+unserved rounds, correct exhaustion behaviour when the pool cannot fill a game, and a reset behind a
+confirmation. Served on deal, not on finish. On two local commits (`content:` for the fixture split,
+`feat:` for the dealing app), never mixed, not pushed. Everything below was observed rather than
+inferred, except where it says otherwise.
+
+### Design decisions the docs left open, and how they were taken
+
+- **A game is four rounds** (`design.md` §4: four rounds of ten). `ROUNDS_PER_GAME = 4`, named and
+  used everywhere rather than as a literal.
+- **Exhaustion threshold is "fewer than four unserved", not "zero".** `design.md` §5 says a round short
+  of ten makes scores across rounds incomparable; the same logic one level up says a game short of four
+  rounds is not the same game. So when fewer than four unserved rounds remain, the app refuses to deal
+  and offers the reset rather than dealing a short game or recycling.
+- **Dealing is deterministic**: the first four unserved rounds in bank order. No shuffle; the design does
+  not ask for one, and determinism is what makes the no-repeats proof predictable.
+- **Two resets, kept distinct.** `resetToSetup` (from increment 3) abandons the current game and keeps
+  served-rounds. `resetServedRounds` (new) clears the served pool so every round is dealable again, and
+  is what the exhaustion screen offers, behind a confirmation.
+
+### The twelve rounds, counted
+
+Counted by reading every round object, not from the comments: **twelve rounds** (`fixture-1` through
+`fixture-12`), **43 questions** total — one detailed ten-question round (`round-01.ts`, `fx-001..fx-010`,
+all three shapes and tiers, which increment 3 plays through) plus eleven short three-question rounds
+(`short-rounds-a.ts` `fixture-2..7`, `short-rounds-b.ts` `fixture-8..12`), each covering single, list and
+contested across its three questions. All round ids and all question ids are unique (verified by the
+red-team reviewer with a de-duplicating scan: 12 distinct round ids, 43 distinct question ids, zero
+collisions). The bank is split across files to keep each inside the length target and assembled in a
+stable order in `index.ts`. Everything is obviously invented and stays in the repo as the permanent
+fixture.
+
+### What the running app does
+
+Driven through Playwright MCP against the dev server at 1920x1080, fixtures only:
+
+- **Three full games back to back, no round repeated.** A scripted pass played three complete four-round
+  games, collecting each round-intro title from the accessibility tree. The result, computed from the
+  collected titles: game 1 = Fixture Rounds One to Four; game 2 = Five to Eight; game 3 = Nine to Twelve.
+  All twelve titles across the three games are distinct (twelve unique values in a twelve-entry list).
+- **The fourth game reports the pool exhausted, not a recycled game.** After three games the fourth Start
+  attempt showed "Out of fresh rounds — not enough unplayed rounds left for a full game of 4. Only 0
+  unplayed rounds remain," with a reset offered. No round was recycled.
+- **Reset behind a confirmation restores the pool.** Clicking "Reset the rounds" showed a confirm ("Reset
+  so every round can be played again? This clears any game in progress.") with Yes/Cancel; confirming
+  returned to setup showing "12 unplayed rounds available", and `served-rounds` in storage was cleared to
+  null.
+- **Served on deal, not finish, observed directly.** Immediately after starting a game — on the round-1
+  intro, zero questions played — `served-rounds` already held the four dealt ids (`fixture-1` through
+  `fixture-4`). An evening abandoned there keeps those four served; they do not leak back into the pool.
+- Zero console errors across the session.
+
+### The gates, observed
+
+- `tsc -b` exit 0.
+- `npm test`: 72 tests across 9 files passing (was 61; +11 for dealing, exhaustion, served-shape
+  validation and the served-marking integration path). `dealing.test.ts` proves the pure layer — full
+  deal, never-deals-served, exhaustion-not-short-game at the boundary, the three-games-then-exhaust walk,
+  and `markServed` dedup.
+- `npm run lint`: oxlint clean, zero warnings.
+- `npm run validate:content`: 5 structural checks ran over all twelve rounds and 43 questions, 4
+  real-bank checks skipped, exit 0.
+- `npm run build`: green, 37 modules. Two-bank guarantee re-checked in the rebuilt bundle: `content/rounds`
+  absent.
+
+### The review, and what it found
+
+Four reviewers, each a different source: against the documents, against the mechanism, red team, and a
+senior-engineer whole-repo pass. (The cold-reader mandate was folded into the source review, whose UI
+barely changed from increment 3 beyond the exhaustion and reset screens.) Every finding was opened and
+confirmed against the code before acting. Acted on 5, rejected 1, deferred the rest with reasons.
+
+Confirmed and fixed:
+
+- **`served-rounds` loaded without shape validation (red team and mechanism, rated blocking).** The load
+  cast `JSON.parse(...) as string[]` with no check, and the hook seeded its `served` state from it and
+  called `served.includes(...)` on every render. A stored `{}`, `null` or number would throw
+  `served.includes is not a function` and brick the app, which a reload only re-restored — the exact
+  asymmetry the reviewers named, since the `game` key was already guarded by `isCoherent` and this one was
+  not. Fixed: `loadServedRounds` now rejects any value that is not an array of strings, treating a wrong
+  shape as unparseable (discard, fresh start). Verified through Playwright: a corrupt `served-rounds` of
+  `null` now renders the setup screen with "12 unplayed rounds available" rather than crashing. Negative
+  cases (`{}`, `null`, `42`, a string, a mixed array) covered by a new storage test.
+- **No integration test for the served-marking-on-deal path (senior-eng, mechanism).** The pure functions
+  and the exhaustion path were tested, but nothing asserted through the hook that starting a game marks its
+  rounds served before any question is played. Added an App test that starts a game and asserts
+  `served-rounds` holds four ids on the round-1 intro.
+- **Stale `short-rounds.ts` filename in a comment (senior-eng).** `round-01.ts` referenced a singular file
+  that does not exist; corrected to name `-a` and `-b`.
+- **Reset confirmation understated its blast radius (source reviewer).** It said "allow every round to be
+  played again" without mentioning it also clears a game in progress; reworded to say so.
+- **`useGame` growing, restore machinery separable (senior-eng).** Lifted `isCoherent` and `readInitial`
+  into a `restore.ts` sibling and the `StorageNotice` type into `notice.ts`, so `useGame` stays about
+  wiring the reducer to React. This was a trajectory note the reviewer rated a deferrable NOTE; taken now
+  because it was cheap and increment 5 will add to `useGame`.
+
+Rejected:
+
+- **Id-scheme wrinkles (senior-eng NOTE): round 1 uses `fx-0xx` while others use `fx-Nxx`, and padding
+  varies so ids do not sort lexically.** Purely cosmetic; nothing sorts by id (dealing uses array order),
+  and the ids are unique. Not worth churning content.
+
+Deferred, with reasons:
+
+- **served state / storage divergence on a quota write failure (red team).** If the served write fails, the
+  in-memory set advances but storage does not, so a reload could re-deal already-played rounds. Accepted
+  rather than fixed: the only correct action on a failed write is to keep playing in memory, which is what
+  happens, and the `in-memory-only` notice already tells the player a refresh will lose the evening. The
+  narrower "no-repeats pool is now stale" nuance is recorded here rather than papered over.
+- **served leaked on an unmount landing between the storage write and the dispatch (red team).** The
+  reviewer rated it theoretical — the window is empty in a synchronous handler. No fix.
+- **Confirm-dialog pattern now repeated three times (senior-eng).** Below the threshold to extract; the
+  reviewer's own guidance was "extract on the fourth." No action.
+- **`role="status"` announcement timing on the exhaustion panel (source, senior-eng).** Live-region
+  behaviour is increment 6. Noted, not fixed here.
+
+### Not verified in this increment
+
+- **Anything about a television, and any accessibility claim beyond roles and accessible names.**
+  Increment 6.
+- **That local and CI run the same runtime.** Nothing is pushed, so CI has not run.
+- **The full 120-question-cycle Playwright pass `increments.md` §4 describes as the maximum.** The three
+  games were played with the short rounds (three questions each), which is 36 question-and-reveal cycles,
+  not 120 — the 120 figure assumes ten-question rounds throughout. The no-repeats property is a function of
+  rounds dealt, not questions played, so 36 cycles across twelve distinct rounds proves it; the larger
+  number would only re-exercise scoring, which increment 3 already covered.

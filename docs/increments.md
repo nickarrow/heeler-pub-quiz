@@ -240,6 +240,19 @@ something anyone would actually keep up.
 
 **Needs from you.** Nothing.
 
+**Done, 24 September 2026.** Twelve short fixture rounds and the dealing logic, on two local commits (a `content:`
+commit splitting the bank into twelve rounds and a `feat:` commit for dealing), not pushed. Verified through Playwright
+MCP: three full games back to back dealt twelve distinct rounds with no repeat (game 1 rounds one to four, game 2 five
+to eight, game 3 nine to twelve, all computed distinct from the collected titles), and the fourth attempt reported the
+pool exhausted rather than recycling. Reset behind a confirmation restored the pool; served-rounds was observed holding
+the four dealt rounds on the round-1 intro before any question was played, confirming served-on-deal. Four-reviewer
+pass; the blocking finding (a `served-rounds` key loaded without shape validation, which could brick the app on a
+corrupt value) was fixed and re-verified in the browser, and the served-marking path got an integration test. 72 tests,
+lint, validate and build all green; the two-bank guarantee holds in the rebuilt bundle. The Playwright pass used the
+short rounds, so it ran 36 question cycles rather than the 120 this section anticipated for ten-question rounds — the
+no-repeats property is a function of rounds dealt, not questions, so the shorter pass proves it. Details, what was fixed
+or deferred, and what was left unverified are in `verification-log.md` under the same date.
+
 ## 5. Dispute, void, and the review screen
 
 The error-discovery mechanism. It exists before any real content so that the first real evening cannot happen without
