@@ -283,6 +283,16 @@ describe('playing through to a reveal and scoring', () => {
     expect(alphaSwitch).toHaveAttribute('aria-checked', 'true')
   })
 
+  it('announces a score change in the live region', async () => {
+    const user = await startTwoTeams()
+    await user.click(screen.getByRole('button', { name: /^reveal$/i }))
+    const live = screen.getByTestId('live-region')
+    expect(live).toHaveTextContent('')
+    await user.click(screen.getByRole('switch', { name: /alpha scored/i }))
+    // The live region now carries the resulting score for the team by name.
+    expect(live).toHaveTextContent(/alpha: 1 point/i)
+  })
+
   it('exposes a spin control for a list question, named for the team', async () => {
     const user = await startTwoTeams()
     // Advance to the second question (fx-002, the list shape) by revealing and

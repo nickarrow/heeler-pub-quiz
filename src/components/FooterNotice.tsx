@@ -11,7 +11,7 @@
  */
 export function FooterNotice() {
   return (
-    <footer className="border-t border-neutral-300 px-6 py-4 text-sm text-neutral-600">
+    <footer className="border-t-2 border-ink/15 px-6 py-4 text-fluid-sm text-ink/70">
       <p>
         Heeler Pub Quiz is an unofficial, fan-made quiz. It is not affiliated with, endorsed by, or
         connected to Bluey, Ludo Studio, BBC Studios, or any of their licensees.

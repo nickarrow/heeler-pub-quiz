@@ -10,7 +10,7 @@
  */
 export function FixtureBadge() {
   return (
-    <p className="inline-block rounded border border-amber-500 bg-amber-100 px-3 py-1 text-sm font-medium text-amber-900">
+    <p className="inline-block rounded-lg border-2 border-orange-600 bg-orange-100 px-3 py-1 text-fluid-sm font-semibold text-orange-700">
       Fixture questions — invented for testing, not from the show
     </p>
   )

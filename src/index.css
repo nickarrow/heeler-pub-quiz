@@ -1,5 +1,86 @@
-/* Tailwind 4: one import, no config file, no PostCSS step. Design tokens are
-   CSS-based when we need them, which is increment 6 — the type scale, the
-   palette and the contrast work all belong there. Increment 1 stays plain on
-   purpose so it does not pre-empt that increment. */
+/* Tailwind 4: one import, CSS-based config, no tailwind.config.js and no PostCSS
+   step. Increment 6 — the room — adds the design tokens here: a palette, a fluid
+   type scale, and the base treatment for a television three metres away. */
 @import 'tailwindcss';
+
+/* Palette: blue, orange and cream (design.md Presentation). Colour, shape and
+   warmth carry the vibe; no character art, no title-card lettering. Values are
+   chosen for contrast, not decoration. Measured WCAG ratios against the surfaces
+   the components actually use (standard relative-luminance formula, recomputed
+   and corrected after review — the first draft overstated three of these):
+     ink (#1a2238) on cream (#fdf6e3):    ~14.6:1  (body, AA/AAA)
+     ink on white:                        ~15.8:1
+     blue-700 (#1d4ed8) on cream:         ~6.2:1   (large + body AA)
+     white on blue-700:                   ~6.7:1   (button text AA)
+     orange-700 (#b45309) on cream:       ~4.66:1  (body AA, thin margin)
+     orange-700 (#b45309) on white:       ~5.0:1   (body AA)
+     green-800 (#166534) on green-100:    ~6.5:1   (correct state)
+     red-800 (#991b1b) on red-100:        ~6.8:1   (void state)
+   Each clears its target (4.5:1 body, 3:1 large text and UI, per 1.4.3). The
+   orange-700-on-cream margin is thin (0.16 over 4.5), so a palette tweak must
+   recheck it rather than assume slack.
+
+   Font: design.md names Nunito "such as"; a rounded system stack is used rather
+   than fetching a webfont, so a loaded page keeps working with no network and no
+   third-party CDN in a public bundle. A deliberate deviation, in the log.
+
+   Type scale: clamp() with rem endpoints and a vw preference, NOT raw vw. rem
+   endpoints keep text responsive to the reader's chosen text size (1.4.4); raw
+   vw would ignore it. These map to text-fluid-* utilities.
+
+   The explanation lives outside @theme because Tailwind 4's @theme block accepts
+   only custom properties. */
+@theme {
+  --color-cream: #fdf6e3;
+  --color-ink: #1a2238;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-orange-600: #c2620c;
+  --color-orange-700: #b45309;
+  --color-green-100: #dcfce7;
+  --color-green-800: #166534;
+  --color-red-100: #fee2e2;
+  --color-red-800: #991b1b;
+  --font-sans: 'Nunito', 'Segoe UI Rounded', 'SF Pro Rounded', ui-rounded, 'Helvetica Neue', Arial,
+    sans-serif;
+  --text-fluid-sm: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem);
+  --text-fluid-base: clamp(1.1rem, 0.95rem + 0.8vw, 1.5rem);
+  --text-fluid-lg: clamp(1.4rem, 1.1rem + 1.5vw, 2.25rem);
+  --text-fluid-xl: clamp(1.75rem, 1.35rem + 2vw, 3rem);
+}
+
+/* Base surface and text: cream background, ink text, the rounded sans, at the
+   fluid base size so the whole app reads from a sofa by default. */
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-fluid-base);
+}
+
+/* Visible focus for keyboard driving (2.4.7). A thick, high-contrast ring on
+   any focused control, shown for keyboard focus. The game is driven from a sofa,
+   possibly with a remote pretending to be a keyboard, so focus must be obvious
+   from across the room, not a hairline. */
+:focus-visible {
+  outline: 3px solid var(--color-blue-800);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Reduced motion: honour the user's preference. There is little motion in the
+   app, but any transition or animation collapses to none when asked. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -2,6 +2,7 @@
 // then starts. Type-scale and contrast are increment 6; this stays plain.
 
 import { useState, type ReactElement } from 'react'
+import { Button, TARGET_SIZE } from './Button.tsx'
 import { ROUNDS_PER_GAME } from '../game/dealing.ts'
 import {
   clampTimerSeconds,
@@ -64,41 +65,29 @@ export function SetupScreen({
   if (exhausted) {
     return (
       <section className="flex flex-col gap-4" aria-labelledby="exhausted-heading">
-        <h2 id="exhausted-heading" className="text-2xl font-medium">
+        <h2 id="exhausted-heading" className="text-fluid-xl font-bold">
           Out of fresh rounds
         </h2>
-        <p role="status" className="text-neutral-700">
+        <p role="status" className="text-fluid-base">
           There are not enough unplayed rounds left for a full game of {ROUNDS_PER_GAME}. Only{' '}
           {unservedRoundCount} unplayed{' '}
           {unservedRoundCount === 1 ? 'round remains' : 'rounds remain'}. Rather than repeat rounds
           you have already played, you can reset and make every round available again.
         </p>
         {confirmingReset ? (
-          <div className="flex items-center gap-3">
-            <span>Reset so every round can be played again? This clears any game in progress.</span>
-            <button
-              type="button"
-              className="rounded bg-blue-700 px-4 py-2 font-medium text-white"
-              onClick={onResetServedRounds}
-            >
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-fluid-base">
+              Reset so every round can be played again? This clears any game in progress.
+            </span>
+            <Button variant="primary" onClick={onResetServedRounds}>
               Yes, reset the rounds
-            </button>
-            <button
-              type="button"
-              className="rounded border border-neutral-400 px-4 py-2"
-              onClick={() => setConfirmingReset(false)}
-            >
-              Cancel
-            </button>
+            </Button>
+            <Button onClick={() => setConfirmingReset(false)}>Cancel</Button>
           </div>
         ) : (
-          <button
-            type="button"
-            className="self-start rounded bg-blue-700 px-4 py-2 font-medium text-white"
-            onClick={() => setConfirmingReset(true)}
-          >
+          <Button variant="primary" className="self-start" onClick={() => setConfirmingReset(true)}>
             Reset the rounds
-          </button>
+          </Button>
         )}
       </section>
     )
@@ -106,10 +95,10 @@ export function SetupScreen({
 
   return (
     <section className="flex flex-col gap-6" aria-labelledby="setup-heading">
-      <h2 id="setup-heading" className="text-2xl font-medium">
+      <h2 id="setup-heading" className="text-fluid-xl font-bold">
         Set up the game
       </h2>
-      <p className="text-sm text-neutral-600">
+      <p className="text-fluid-sm text-ink/70">
         {unservedRoundCount} unplayed{' '}
         {unservedRoundCount === 1 ? 'round' : 'rounds'} available. A game plays {ROUNDS_PER_GAME}.
       </p>
@@ -122,13 +111,15 @@ export function SetupScreen({
         }}
       >
         <fieldset className="flex flex-col gap-3">
-          <legend className="font-medium">Teams ({MIN_TEAMS} to {MAX_TEAMS})</legend>
+          <legend className="text-fluid-base font-semibold">
+            Teams ({MIN_TEAMS} to {MAX_TEAMS})
+          </legend>
           {names.map((name, index) => (
             <div key={index} className="flex items-center gap-2">
               <label className="flex flex-1 items-center gap-2">
-                <span className="w-16 text-sm text-neutral-600">Team {index + 1}</span>
+                <span className="w-20 text-fluid-sm text-ink/70">Team {index + 1}</span>
                 <input
-                  className="flex-1 rounded border border-neutral-400 px-3 py-2"
+                  className={`${TARGET_SIZE} flex-1 rounded-lg border-2 border-ink/40 px-3 py-2 text-fluid-base`}
                   type="text"
                   value={name}
                   onChange={(event) => setName(index, event.target.value)}
@@ -137,52 +128,38 @@ export function SetupScreen({
                 />
               </label>
               {names.length > MIN_TEAMS ? (
-                <button
-                  type="button"
-                  className="rounded border border-neutral-400 px-3 py-2"
-                  onClick={() => removeTeam(index)}
-                >
-                  Remove
-                </button>
+                <Button onClick={() => removeTeam(index)}>Remove</Button>
               ) : null}
             </div>
           ))}
           {names.length < MAX_TEAMS ? (
-            <button
-              type="button"
-              className="self-start rounded border border-neutral-400 px-3 py-2"
-              onClick={addTeam}
-            >
+            <Button className="self-start" onClick={addTeam}>
               Add a team
-            </button>
+            </Button>
           ) : null}
         </fieldset>
 
         <label className="flex flex-col gap-1">
-          <span className="font-medium">Timer length (seconds)</span>
+          <span className="text-fluid-base font-semibold">Timer length (seconds)</span>
           <input
-            className="w-32 rounded border border-neutral-400 px-3 py-2"
+            className={`${TARGET_SIZE} w-32 rounded-lg border-2 border-ink/40 px-3 py-2 text-fluid-base`}
             type="number"
             min={MIN_TIMER_SECONDS}
             max={MAX_TIMER_SECONDS}
             value={timer}
             onChange={(event) => setTimer(clampTimerSeconds(Number(event.target.value)))}
           />
-          <span className="text-sm text-neutral-600">
+          <span className="text-fluid-sm text-ink/70">
             Between {MIN_TIMER_SECONDS} and {MAX_TIMER_SECONDS} seconds. The timer counts down but
             never locks anyone out.
           </span>
         </label>
 
-        <button
-          type="submit"
-          className="self-start rounded bg-blue-700 px-4 py-2 font-medium text-white disabled:opacity-50"
-          disabled={!canStart}
-        >
+        <Button variant="primary" type="submit" className="self-start" disabled={!canStart}>
           Start game
-        </button>
+        </Button>
         {!canStart ? (
-          <p className="text-sm text-neutral-600">
+          <p className="text-fluid-sm text-ink/70">
             Enter a name for at least {MIN_TEAMS} teams. Blank names are not allowed.
           </p>
         ) : null}

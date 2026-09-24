@@ -19,13 +19,16 @@ export function Standings({
       {table.map((row, index) => (
         <li
           key={row.team.id}
-          className="flex items-center justify-between gap-4 rounded border border-neutral-300 px-4 py-3"
+          className="flex items-center justify-between gap-4 rounded-lg border-2 border-ink/20 bg-white px-4 py-3"
         >
           <span className="flex items-center gap-3">
-            <span className="w-6 text-neutral-500">{index + 1}</span>
-            <span className="font-medium">{row.team.name}</span>
+            <span className="w-6 text-fluid-base text-ink/60">{index + 1}</span>
+            <span className="text-fluid-lg font-semibold">{row.team.name}</span>
           </span>
-          <span aria-label={`${row.team.name} total ${row.total}`} className="font-semibold">
+          <span
+            aria-label={`${row.team.name} total ${row.total}`}
+            className="text-fluid-lg font-bold tabular-nums"
+          >
             {row.total}
           </span>
         </li>

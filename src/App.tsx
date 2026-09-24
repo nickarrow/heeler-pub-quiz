@@ -1,4 +1,5 @@
 import { useState, type ReactElement } from 'react'
+import { Button } from './components/Button.tsx'
 import { FixtureBadge } from './components/FixtureBadge.tsx'
 import { FooterNotice } from './components/FooterNotice.tsx'
 import { QuestionScreen } from './components/QuestionScreen.tsx'
@@ -10,18 +11,25 @@ import type { Flag } from './game/flags.ts'
 import { currentQuestion, currentRound } from './game/state.ts'
 import { useGame, type Game } from './game/useGame.ts'
 import { useKeyboard } from './game/useKeyboard.ts'
+import { useWakeLock } from './game/useWakeLock.ts'
 
 // The whole game loop on fixtures. Six phases held in state, no router
 // (`technical-design.md`), nothing auto-advancing (`design.md` §4). Increment 4
-// adds dealing over unserved rounds and the exhaustion path. The bank is imported
-// once through the alias inside useGame, never named here.
+// adds dealing over unserved rounds and the exhaustion path; increment 6 the
+// room — type scale, contrast, live region, wake lock, visible focus. The bank
+// is imported once through the alias inside useGame, never named here.
 export default function App(): ReactElement {
   const game = useGame()
+  // Keep the screen awake while a game is running, so a long discussion does not
+  // let the television sleep. Held off the setup and final screens, where there
+  // is nothing to keep alive. Feature-detected and silent if unavailable.
+  const inGame = game.state.phase !== 'setup' && game.state.phase !== 'final'
+  useWakeLock(inGame)
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-neutral-900">
+    <div className="flex min-h-screen flex-col">
       <main className="flex flex-1 flex-col items-start gap-6 px-6 py-8">
-        <h1 className="text-3xl font-semibold">Heeler Pub Quiz</h1>
+        <h1 className="text-fluid-lg font-bold text-blue-800">Heeler Pub Quiz</h1>
         {game.state.bankKind === 'fixtures' ? <FixtureBadge /> : null}
         <StorageNotice notice={game.storageNotice} />
 
@@ -124,18 +132,16 @@ function RoundIntro({
   useKeyboard({ onAdvance: onBegin })
   return (
     <section className="flex flex-col gap-4" aria-labelledby="intro-heading">
-      <p className="text-sm uppercase tracking-wide text-neutral-500">Round {roundNumber}</p>
-      <h2 id="intro-heading" className="text-2xl font-medium">
+      <p className="text-fluid-sm font-semibold uppercase tracking-wide text-orange-700">
+        Round {roundNumber}
+      </p>
+      <h2 id="intro-heading" className="text-fluid-xl font-bold">
         {title}
       </h2>
-      <p className="text-neutral-700">{blurb}</p>
-      <button
-        type="button"
-        className="self-start rounded bg-blue-700 px-4 py-2 font-medium text-white"
-        onClick={onBegin}
-      >
+      <p className="text-fluid-base">{blurb}</p>
+      <Button variant="primary" className="self-start" onClick={onBegin}>
         Begin round
-      </button>
+      </Button>
     </section>
   )
 }
@@ -157,17 +163,13 @@ function RoundBreak({
   const lastRound = roundNumber >= roundCount
   return (
     <section className="flex flex-col gap-4" aria-labelledby="break-heading">
-      <h2 id="break-heading" className="text-2xl font-medium">
+      <h2 id="break-heading" className="text-fluid-xl font-bold">
         Standings after round {roundNumber} of {roundCount}
       </h2>
       <Standings state={state} voidedQuestionIds={voidedQuestionIds} />
-      <button
-        type="button"
-        className="self-start rounded bg-blue-700 px-4 py-2 font-medium text-white"
-        onClick={onNext}
-      >
+      <Button variant="primary" className="self-start" onClick={onNext}>
         {lastRound ? 'See the final standings' : 'Continue to the next round'}
-      </button>
+      </Button>
     </section>
   )
 }
@@ -195,45 +197,27 @@ function FinalScreen({
   // read caught it. New game now takes a deliberate two-step confirm instead.
   return (
     <section className="flex flex-col gap-4" aria-labelledby="final-heading">
-      <h2 id="final-heading" className="text-2xl font-medium">
+      <h2 id="final-heading" className="text-fluid-xl font-bold">
         Final standings
       </h2>
       <Standings state={state} voidedQuestionIds={voidedQuestionIds} />
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          className="rounded border border-neutral-400 px-4 py-2"
-          onClick={() => setReviewing(true)}
-        >
+        <Button onClick={() => setReviewing(true)}>
           Review flagged questions{flags.length > 0 ? ` (${flags.length})` : ''}
-        </button>
+        </Button>
       </div>
       {confirming ? (
-        <div className="flex items-center gap-3">
-          <span>Start a new game and clear these standings?</span>
-          <button
-            type="button"
-            className="rounded bg-blue-700 px-4 py-2 font-medium text-white"
-            onClick={onNewGame}
-          >
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-fluid-base">Start a new game and clear these standings?</span>
+          <Button variant="primary" onClick={onNewGame}>
             Yes, new game
-          </button>
-          <button
-            type="button"
-            className="rounded border border-neutral-400 px-4 py-2"
-            onClick={() => setConfirming(false)}
-          >
-            Cancel
-          </button>
+          </Button>
+          <Button onClick={() => setConfirming(false)}>Cancel</Button>
         </div>
       ) : (
-        <button
-          type="button"
-          className="self-start rounded bg-blue-700 px-4 py-2 font-medium text-white"
-          onClick={() => setConfirming(true)}
-        >
+        <Button variant="primary" className="self-start" onClick={() => setConfirming(true)}>
           New game
-        </button>
+        </Button>
       )}
     </section>
   )

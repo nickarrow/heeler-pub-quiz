@@ -4,6 +4,7 @@
 // final screen so the review sits at the natural end of an evening.
 
 import type { ReactElement } from 'react'
+import { Button } from './Button.tsx'
 import { downloadTextFile } from '../game/download.ts'
 import type { Flag } from '../game/flags.ts'
 import { flagExportJson } from '../game/flagExport.ts'
@@ -29,17 +30,17 @@ export function ReviewScreen({
 
   return (
     <section className="flex flex-col gap-4" aria-labelledby="review-heading">
-      <h2 id="review-heading" className="text-2xl font-medium">
+      <h2 id="review-heading" className="text-fluid-xl font-bold">
         Flagged questions
       </h2>
 
       {flags.length === 0 ? (
-        <p className="text-neutral-700">
+        <p className="text-fluid-base">
           No questions were disputed or voided this evening. Nothing to export.
         </p>
       ) : (
         <>
-          <p className="text-neutral-700">
+          <p className="text-fluid-base">
             {disputes} {disputes === 1 ? 'dispute' : 'disputes'} and {voids}{' '}
             {voids === 1 ? 'void' : 'voids'} recorded.
           </p>
@@ -47,44 +48,36 @@ export function ReviewScreen({
             {flags.map((flag, index) => (
               <li
                 key={`${flag.questionId}-${flag.at}-${index}`}
-                className="flex flex-col gap-1 rounded border border-neutral-300 px-4 py-3"
+                className="flex flex-col gap-1 rounded-lg border-2 border-ink/20 bg-white px-4 py-3"
               >
                 <span className="flex items-center gap-2">
                   <span
-                    className={`rounded px-2 py-0.5 text-xs font-medium ${
+                    className={`rounded px-2 py-0.5 text-fluid-sm font-semibold ${
                       flag.kind === 'void'
-                        ? 'bg-red-100 text-red-900'
-                        : 'bg-amber-100 text-amber-900'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-orange-100 text-orange-700'
                     }`}
                   >
                     {flag.kind}
                   </span>
-                  <span className="font-medium">{flag.questionId}</span>
-                  <span className="text-xs text-neutral-500">({flag.bankKind})</span>
+                  <span className="text-fluid-base font-semibold">{flag.questionId}</span>
+                  <span className="text-fluid-sm text-ink/60">({flag.bankKind})</span>
                 </span>
                 {flag.note !== undefined ? (
-                  <span className="text-sm text-neutral-700">{flag.note}</span>
+                  <span className="text-fluid-sm">{flag.note}</span>
                 ) : null}
               </li>
             ))}
           </ul>
-          <button
-            type="button"
-            className="self-start rounded bg-blue-700 px-4 py-2 font-medium text-white"
-            onClick={downloadExport}
-          >
+          <Button variant="primary" className="self-start" onClick={downloadExport}>
             Export flags as JSON
-          </button>
+          </Button>
         </>
       )}
 
-      <button
-        type="button"
-        className="self-start rounded border border-neutral-400 px-4 py-2"
-        onClick={onBack}
-      >
+      <Button className="self-start" onClick={onBack}>
         Back to the standings
-      </button>
+      </Button>
     </section>
   )
 }

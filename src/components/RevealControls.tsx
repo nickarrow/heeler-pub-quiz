@@ -8,6 +8,7 @@
 // void control a genuine error looks exactly like a designed one.
 
 import { useState, type ReactElement } from 'react'
+import { Button, TARGET_SIZE } from './Button.tsx'
 
 export function RevealControls({
   voided,
@@ -32,41 +33,30 @@ export function RevealControls({
   }
 
   return (
-    <div className="flex flex-col gap-3 border-t border-neutral-200 pt-3">
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          className={`rounded border px-4 py-2 ${
-            voided ? 'border-red-700 bg-red-100 text-red-900' : 'border-neutral-400'
-          }`}
+    <div className="flex flex-col gap-3 border-t-2 border-ink/15 pt-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <Button
+          className={voided ? 'border-red-800 bg-red-100 text-red-800' : ''}
           aria-pressed={voided}
           onClick={onToggleVoid}
         >
           {voided ? 'Voided - restore to scoring' : 'Void this question'}
-        </button>
-        {!disputing ? (
-          <button
-            type="button"
-            className="rounded border border-neutral-400 px-4 py-2"
-            onClick={() => setDisputing(true)}
-          >
-            Dispute
-          </button>
-        ) : null}
+        </Button>
+        {!disputing ? <Button onClick={() => setDisputing(true)}>Dispute</Button> : null}
       </div>
 
       {voided ? (
-        <p role="status" className="text-sm text-red-900">
+        <p role="status" className="text-fluid-sm font-semibold text-red-800">
           This question is voided. It scores zero for every team and is dropped from the totals.
         </p>
       ) : null}
 
       {disputing ? (
         <div className="flex flex-col gap-2">
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="flex flex-col gap-1 text-fluid-sm">
             <span>What is wrong with this question?</span>
             <input
-              className="rounded border border-neutral-400 px-3 py-2"
+              className={`${TARGET_SIZE} rounded-lg border-2 border-ink/40 px-3 py-2 text-fluid-base`}
               type="text"
               value={note}
               onChange={(event) => setNote(event.target.value)}
@@ -76,24 +66,17 @@ export function RevealControls({
             />
           </label>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              className="rounded bg-blue-700 px-4 py-2 font-medium text-white disabled:opacity-50"
-              onClick={submitDispute}
-              disabled={note.trim().length === 0}
-            >
+            <Button variant="primary" onClick={submitDispute} disabled={note.trim().length === 0}>
               Record dispute
-            </button>
-            <button
-              type="button"
-              className="rounded border border-neutral-400 px-4 py-2"
+            </Button>
+            <Button
               onClick={() => {
                 setNote('')
                 setDisputing(false)
               }}
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       ) : null}
