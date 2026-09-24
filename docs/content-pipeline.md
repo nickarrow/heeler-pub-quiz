@@ -43,6 +43,14 @@ Each candidate question is written against the stored text, recording:
 Over-author deliberately: twelve candidates per round, ten shipped. `design.md` §5 has the arithmetic and why the
 slack is there.
 
+**A prompt must not give away its own answer.** The owner caught this on the 7a preview set: a prompt that named the
+episode "Yoga Ball" while the answer *was* a yoga ball answered itself. Naming the source episode in a prompt is fine
+framing on its own — "In Fairytale, name Bandit's two brothers" gives nothing away — but it becomes a leak the moment
+the title, or any other word in the prompt, is the answer. This is now a structural validation rule
+(`checkPromptsSpoilNothing`, the same shape as the blurb-spoiler check, one level down) that runs against every bank
+and fails the build, so it is enforced rather than left to care. Like every content rule, its failure message names
+the question id and withholds the text.
+
 The first authoring pass also reports back on two things the design guesses at and nobody has verified — whether ten
 genuinely contested facts exist, and which themes have real depth. Both are open questions in `design.md` §9, and
 this pass is what closes them.
