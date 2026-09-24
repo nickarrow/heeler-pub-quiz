@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Beach",
+  "excerpt": "At the beach, Bluey follows Mum's footprints on a solo adventure past a surfer, seagulls, soldier crabs, a jellyfish and a pelican.",
+  "episode": "The Beach",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived the beach" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Beach/Script", "note": "The Beach transcript is set entirely at the beach along the shoreline" }
+  }
+}

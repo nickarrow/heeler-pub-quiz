@@ -8,6 +8,7 @@ import { sayThatAgainTwo } from './say-that-again-2.ts'
 import { theSupportActOne } from './the-support-act-1.ts'
 import { theSupportActTwo } from './the-support-act-2.ts'
 import { whereAndWhenOne } from './where-and-when-1.ts'
+import { whereAndWhenTwo } from './where-and-when-2.ts'
 
 // The real bank: the shippable question bank, drawn from the corpus and checked
 // two independent ways per question (content-pipeline.md §3). Selected only by
@@ -33,6 +34,7 @@ export const bank = {
     sayThatAgainTwo,
     gamesTheyInventedTwo,
     theSupportActTwo,
+    whereAndWhenTwo,
   ],
 } satisfies Bank
 

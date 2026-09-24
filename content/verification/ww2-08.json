@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign",
+  "excerpt": "They head to the Lookout, where they find Frisky sitting in the gazebo, lost in thought.",
+  "episode": "The Sign",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived the Lookout" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign/Script", "note": "The Sign transcript has the family find Frisky at the Lookout gazebo" }
+  }
+}

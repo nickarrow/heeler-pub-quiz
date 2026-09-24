@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign",
+  "excerpt": "The policeman tells them he gave Frisky a speeding ticket near her favourite juice shop.",
+  "episode": "The Sign",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived a juice shop" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Sign/Script", "note": "The Sign transcript has the policeman mention the juice shop where Frisky was ticketed" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Creek",
+  "excerpt": "Bluey and her friend explore a natural bushland waterway, the creek, near the neighbourhood.",
+  "episode": "The Creek",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived the creek" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Creek/Script", "note": "The Creek transcript is set at the bush creek Bluey visits with her friend" }
+  }
+}

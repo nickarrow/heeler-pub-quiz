@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Mount_Mumandad",
+  "excerpt": "The Heeler family have just returned from a trip to CrazyWorld complete with show bags and exhausted parents.",
+  "episode": "Mount Mumandad",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived CrazyWorld" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Mount_Mumandad/Script", "note": "Mount Mumandad transcript opens on the return from CrazyWorld" }
+  }
+}

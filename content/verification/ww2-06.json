@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Rug_Island",
+  "excerpt": "On Rug Island, made of coloured felt pens laid on the floor, the kids build a whole pretend island world.",
+  "episode": "Rug Island",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived coloured felt pens" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Rug_Island/Script", "note": "Rug Island transcript builds the island from the felt pens the kids arrange" }
+  }
+}

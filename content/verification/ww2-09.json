@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Hammerbarn",
+  "excerpt": "Bandit is told by an employee the location of the pizza oven - aisle 300 - but should he hit a flamingo, he would have gone too far.",
+  "episode": "Hammerbarn",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived aisle 300" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Hammerbarn/Script", "note": "Hammerbarn transcript has the employee direct Bandit to aisle 300 for the pizza ovens" }
+  }
+}

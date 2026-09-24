@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Road_Trip",
+  "excerpt": "When Bluey and Bingo learn that the grey nomads are heading for The Big Peanut, they want to check it out too.",
+  "episode": "Road Trip",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived The Big Peanut" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Pass_the_Parcel", "note": "Pass the Parcel shows a Big Peanut fridge magnet from Road Trip, corroborating the attraction" }
+  }
+}

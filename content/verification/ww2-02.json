@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Stumpfest",
+  "excerpt": "It's an event where Bandit and the other men rip up all the stumps in the backyard while the kids play and the ladies watch from the balcony.",
+  "episode": "Stumpfest",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived tree stumps" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Tradies", "note": "Tradies notes Chilli's backyard pond wish from Stumpfest, corroborating the stump-clearing setting" }
+  }
+}
