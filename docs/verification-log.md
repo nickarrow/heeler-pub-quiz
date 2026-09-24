@@ -489,10 +489,28 @@ the compiler; lint absent from CI, which is harmless now and stops being harmles
 accumulation of up to forty words per verification record across 150 questions in a public repository, which
 `content-pipeline.md` never weighed against the reasoning that keeps `.corpus/` out of git.
 
+### The validator was split, because the length rule turned out to apply to it
+
+Acting on the findings pushed `scripts/validate-content.ts` to 307 lines, past the `AGENTS.md` target, and the owner's
+ruling the same day was that the target is about code specifically. So it split along the seam a reviewer had already
+named: `content-rules.ts` holds what is and is not acceptable, `validate-content.ts` works out which banks exist and
+prints the outcome. 231 and 116 lines, plus 23 for `bank-paths.ts`, all counted with `ReadAllLines`.
+
+The split also removed three module-level mutable arrays that every rule reached into. Rules now take a `Report` they
+write to, which is why the seam was worth taking rather than just moving lines to get under a number.
+
 ### Verified after the changes
 
 All four gates re-run and observed, not assumed: content validation 5 checks ran and 4 skipped, exit 0; 6 tests in 2
 files passing; build green; oxlint exit 0. The two-bank guarantee re-checked in the rebuilt bundle — `content/rounds`
-absent, `bank-paths` absent, fixture prompt and footer notice present, favicon rebased under the base path. Each of the
-four validation rules negative-tested again against the rewritten script, including the new encoding rule, and the blurb
-failure confirmed to print no answer text.
+absent, `bank-paths` absent, fixture prompt and footer notice present, favicon rebased under the base path.
+
+All four structural rules negative-tested against the split script: a duplicated question id, a blurb seeded with one of
+its own answers, a bank missing the contested shape, and a planted `U+00E2 U+20AC U+201D` in a prompt. Each produced exit
+1, and each output was checked against every answer string in the fixture bank to confirm none appeared — which is the
+leak fix tested rather than assumed. The fixture file restored byte-identical afterwards, verified with `git diff`.
+
+Then the deploy: workflow run 3 on commit `b6f35e6` green with every step reporting success, and the live site re-driven
+through Playwright — question, badge and footer notice in the accessibility tree, four requests all 200, zero console
+errors. The deployed asset hashes matched the local build exactly, which is incidental evidence that CI built the same
+thing this machine did.
