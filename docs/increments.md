@@ -98,6 +98,14 @@ site. It is left out for now because the docs are explicit that it is a convenie
 the dev server port is not known yet, and a guardrail whose failure mode is "the browser silently will not load your
 app" is a poor trade on day one. Add it once both URLs are real.
 
+**Both URLs are now real, 24 September 2026.** The dev server binds to `http://localhost:5173/heeler-pub-quiz/` and the
+site is at `https://nickarrow.github.io/heeler-pub-quiz/`, so the argument is
+`--allowed-origins=http://localhost:5173;https://nickarrow.github.io`. Semicolon-separated, confirmed against the
+0.0.82 README, which also states in its own words that the flag is not a security boundary and does not affect
+redirects. Two things it cannot do: the list takes origins, so it cannot be scoped to the `/heeler-pub-quiz/` path, and
+it therefore permits any site on `nickarrow.github.io`. Handed to the owner to apply rather than applied here, because
+the config is user-level and shared across projects.
+
 ## 1. Toolchain, and one question on a screen
 
 The thinnest possible slice through every layer. Not a game yet — one question, rendered, live on the internet.
@@ -124,7 +132,16 @@ workflow: the page loads, the snapshot contains the question and the footer noti
 because no asset 404ed. That last one is the most likely first-deploy failure and it is invisible from the CI log.
 Then confirm the workflow is green with every gate having actually run rather than skipped.
 
-**Needs from you.** The push credential, per prerequisites.
+**Needs from you.** The push credential, per prerequisites. *Corrected 24 September 2026: it needed two more things
+than that. A decision on the footer notice's wording, including whether it names the show, since nothing in the
+documents settled that and the notice publishes to the internet. And permission to edit a user-level MCP config, which
+sits outside this workspace and is shared by every project.*
+
+**Done, 24 September 2026.** Live at `https://nickarrow.github.io/heeler-pub-quiz/`, on commit `2995f5b`. Verified in a
+real browser rather than from the workflow: the page loads, the accessibility tree carries the question, the badge and
+the footer notice, and all four requests returned 200 with no asset 404ing. Every step of both jobs reported success
+rather than skipped. What was observed, what was deviated from and what was left unverified are in
+`verification-log.md` under the same date.
 
 ## 2. Corpus fetch and a reality check
 
@@ -316,6 +333,13 @@ and it is the price of not being in the authoring loop.
 | Tiebreaks | Still open, not blocking |
 
 ## One decision before the first push
+
+> **Stale, 24 September 2026.** This section's premise no longer holds and it is left in place rather than deleted,
+> because the direction of the error matters. Six commits were already on `origin/main` before increment 1 began, all
+> six authored `nick.arrow@gmail.com`, confirmed with `git log --format='%ae'`. The cheap moment described below had
+> already passed by the time anybody read this. Raised with the owner on 23 September 2026 and accepted as fine; git
+> configuration is the owner's, and the address is public either way now. The remedy described at the end of this
+> section is no longer available without rewriting published history.
 
 The five commits made so far carry `nick.arrow@gmail.com` as the author email, because that is what `user.email` is set
 to globally. Pushing to a public repository publishes that address in the commit history, where it is readable and

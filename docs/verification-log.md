@@ -196,3 +196,156 @@ deployed site that cannot start a game, is real but entirely downstream of the v
 dissolves with the same fix, so it was folded rather than counted twice.
 
 One reviewer discarded three of their own suspicions on reading the files, which is the behaviour worth having.
+
+## 24 September 2026 — increment 1, what the first real code changed
+
+First increment with code in it. Everything below was observed rather than inferred, except where it says otherwise.
+
+### What the deployed site actually does
+
+Driven through Playwright MCP against `https://nickarrow.github.io/heeler-pub-quiz/`, not asserted from a green
+workflow:
+
+- The page loads and the title is `Heeler Pub Quiz`.
+- The accessibility tree contains the fixture question, the fixture badge and the footer notice. The notice appears
+  inside a `contentinfo` landmark.
+- **No asset 404ed.** Four requests, all 200: the document, `assets/index-C4agnejQ.js`,
+  `assets/index-gw3bVsTn.css`, `favicon.svg`. All four under the `/heeler-pub-quiz/` base path. This was the most
+  likely first-deploy failure and it did not happen.
+- Zero console errors and zero console warnings.
+
+Workflow run 1 on commit `2995f5b` concluded `success`, and every step in both jobs reported conclusion `success`
+rather than `skipped` — read from the Actions REST API per step, since `gh` is not installed.
+
+### The two-bank guarantee, checked in the artefact rather than trusted
+
+`grep` of the built bundle for `content/rounds` returns nothing, and the fixture question's prompt is present. So the
+claim that only one bank is ever in the module graph is now a property observed in the output, not only a property of
+the config. `HEELER_REAL_BANK` is set nowhere in the repository.
+
+The content validation gate was negative-tested rather than assumed: a duplicated question id, a blurb seeded with one
+of its own round's answers, and a bank missing the contested shape each produced exit 1 with a named failure, and the
+file restored clean afterwards. Four structural checks run; four real-bank checks report themselves SKIPPED with the
+reason, because the real bank does not exist until increment 7.
+
+### Three claims about the scaffold, re-checked against create-vite 9.2.1
+
+`technical-design.md`'s claims were verified against the template on `main` in September 2026, and the scaffold has
+moved since. All three still hold:
+
+- `build` is `tsc -b && vite build`, so the typechecker does run inside it and a separate CI step would duplicate it.
+- The root `tsconfig.json` is solution-style, holding only `files` and `references`.
+- `tsconfig.app.json` ends with `"include": ["src"]`, which is why both banks live under `src`.
+
+Resolved versions, for the record: create-vite 9.2.1, Vite 8.3.0, React 19.2.8, TypeScript 6.0.3,
+`@vitejs/plugin-react` 6.1.1, Tailwind 4.3.3, Vitest 5.0.1, oxlint 1.81.0.
+
+**TypeScript 6 makes the strict family the default.** `tsconfig.app.json` contains no `"strict": true`, which reads
+like strict is off. It is not: a probe file with an untyped parameter produced TS7006, and `const n: number = null`
+produced TS2322. So the typecheck gate is a real gate. Worth writing down because the natural conclusion from reading
+that file is the wrong one.
+
+**The scaffold now ships a linter.** Oxlint, by default, in place of ESLint. `increments.md` names no lint gate, so it
+is present as `npm run lint` and deliberately not wired into CI. Confirmed live by planting a duplicate declaration,
+which it caught.
+
+### Pinned action versions, and the divergence that prompted pinning
+
+The divergence is real. GitHub's own maintained starter workflows — `pages/static.yml` and `pages/jekyll-gh-pages.yml`,
+both read on 23 September 2026 — use `configure-pages@v5`, `upload-pages-artifact@v3`, `deploy-pages@v5`. The
+registry's latest releases are `configure-pages` v6.0.0, `upload-pages-artifact` v5.0.0, `deploy-pages` v5.0.1. The
+`deploy-pages` README example shows `@v4`, a third answer again.
+
+Chose the starter-workflow trio. The reasoning is that it is the only place a *combination* of the three is asserted to
+work together; the individual latest releases assert nothing about each other, and `upload-pages-artifact` v5.0.0
+bumped its internal `upload-artifact` to v7 with no corresponding statement about which `deploy-pages` consumes it. The
+one documented pairing constraint, from `upload-pages-artifact` v3.0.0, requires `deploy-pages@v4` or newer, which v5
+satisfies.
+
+`checkout@v7` and `setup-node@v7` are latest major, since neither has a cross-pairing constraint. The breaking changes
+across checkout v5 to v7 concern `pull_request_target` checkout safety, which a push-to-main workflow does not touch.
+
+### Deviations from the documents, with reasons
+
+**`happy-dom` rather than `jsdom`.** `technical-design.md` allows either. jsdom 30.1.1 declares
+`engines.node` of `^22.22.2 || ^24.15.0 || >=26.0.0` and this machine runs Node v24.12.0, so npm warned on install.
+happy-dom 20.14.5 wants `>=20.0.0`. Choosing it keeps local and CI on the same footing.
+
+**`defineConfig` imported from `vitest/config`, not `vite`.** The config snippet in `technical-design.md` imports from
+`vite`, which cannot carry the `test` block Vitest needs for a DOM environment. `vitest/config`'s `defineConfig` is a
+superset. The `base`, the plugins and the alias are otherwise exactly as specified.
+
+**No `pull_request` trigger on the workflow.** The documents put app changes on a branch and through a pull request.
+The owner directed on 23 September 2026 that this project commits straight to `main`, branches and requests being
+overkill for a solo repository, so a `pull_request` trigger would never fire. `push` to `main` and `workflow_dispatch`.
+
+**`concurrency.cancel-in-progress` is `true`, which contradicts GitHub's own recommendation.**
+`technical-design.md` specifies cancel in progress, and both GitHub starter workflows set it to `false` with a comment
+that production deployments should be allowed to finish. Followed the project document. Flagging it because the
+opposite choice is defensible and this is the owner's call, not a finding.
+
+### Four things that bit, recorded so they do not bite twice
+
+**`import.meta.dirname` survives Vite's config bundling.** The absolute-path alias depends on it and it was not safe to
+assume. Verified by the build resolving the fixture bank correctly, and guarded further by an `existsSync` check in the
+config that throws if the alias target is missing.
+
+**Vite rebases hand-written root-relative URLs in `index.html`.** `dist/index.html` contains
+`href="/heeler-pub-quiz/favicon.svg"` from a source that said `href="/favicon.svg"`. `technical-design.md` warns that
+hand-written links need `import.meta.env.BASE_URL`, which is true for URLs built in JavaScript at runtime and **not**
+true of attributes in `index.html`, which the build rewrites. Recorded precisely so nobody later "fixes" a link that
+already works.
+
+**Dynamic `import()` of an absolute Windows path fails.** The validation script loads a bank by path, and
+`c:\...` is read as a URL scheme by the ESM loader — `ERR_UNSUPPORTED_ESM_URL_SCHEME`. Fixed with
+`pathToFileURL`. Node's native TypeScript execution itself worked fine; the script runs as `node scripts/validate-content.ts`
+with no build step.
+
+**Testing Library does not auto-clean without Vitest globals.** This project runs Vitest without globals so imports
+stay explicit, and Testing Library only registers its own cleanup when it detects a framework's globals. Without an
+explicit `cleanup()` in `afterEach`, renders accumulated across tests in a file and role queries found several of
+everything. Two tests failed for that reason before it was added, and the failure looks nothing like its cause.
+
+### Corrections to what the documents claim
+
+**`increments.md`'s closing section is out of date and has been corrected in place with a dated note.** It says five
+commits exist and nothing has been pushed, which made the author-email decision cheap. Six commits were already on
+`origin/main` before this increment started, all six carrying `nick.arrow@gmail.com`, verified with
+`git log --format='%ae'`. That moment had already passed. Raised with the owner on 23 September 2026 and left
+unactioned, since git configuration is the owner's.
+
+**`increments.md` said increment 1 needed only the push credential from the owner.** It needed two more decisions: the
+wording of the footer notice, including whether it names the show, and permission to edit a user-level MCP config.
+Corrected in place.
+
+### The footer notice, and why it names the show
+
+`design.md` §7 keeps the show's name out of the product name, the repository name and the domain, and bans character
+art, title-card lettering, theme music and screenshots. It does not say whether the name may appear in prose, and a
+disclaimer that does not name what it disclaims affiliation with disclaims nothing. The owner decided on
+23 September 2026 that it names the show. Shipped wording:
+
+> Heeler Pub Quiz is an unofficial, fan-made quiz. It is not affiliated with, endorsed by, or connected to Bluey, Ludo
+> Studio, BBC Studios, or any of their licensees.
+
+Reporting a decision, not giving legal advice, per §7's own framing. It is covered by a test, because the notice is
+easy to forget and increment 1 publishes to the internet.
+
+### Not verified in this increment
+
+- **That local and CI run the same runtime.** CI pins Node major `24`, which resolves to v24.21.0 on the runner, while
+  the machine runs v24.12.0 — nine patch releases apart on the same LTS line. "Green in CI" and "green locally" are
+  therefore not bit-identical claims. Latest 24.x read from `nodejs.org/dist/index.json` on 24 September 2026.
+- **The CI logs themselves.** Step conclusions were read from the API; the log text was not, because the logs endpoint
+  needs authentication. So "the validation gate ran and reported four checks" is verified locally and inferred in CI
+  from a successful step.
+- **Anything about a television.** A 1920x1080 viewport is a 1080p window, not a viewing distance and not overscan.
+  Increment 6.
+- **Any accessibility claim beyond landmark structure.** No contrast measurement, no type scale, no keyboard map. Those
+  are increment 6 deliverables and nothing here claims them.
+- **`--allowed-origins`.** Handed to the owner rather than applied, since it lives in a user-level config outside this
+  workspace. Unapplied as of this entry.
+
+**One incidental observation.** Playwright MCP's `--output-dir=.playwright-mcp` resolves against the MCP server's own
+working directory rather than the workspace, so no `.playwright-mcp/` directory appears in the repository. The
+`.gitignore` entry for it is therefore currently guarding nothing. Harmless, and cheap to leave in place.
