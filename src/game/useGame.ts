@@ -16,6 +16,7 @@ import type { GameAction } from './reducer.ts'
 import { gameReducer } from './reducer.ts'
 import { readInitial } from './restore.ts'
 import type { GameState, Team } from './state.ts'
+import { useFlags, type Flags } from './useFlags.ts'
 import {
   clearGame,
   clearServedRounds,
@@ -52,10 +53,14 @@ export type Game = {
   unservedRoundCount: number
   lastDeal: LastDeal
   storageNotice: StorageNotice
+  /** Dispute, void, and the derived voided-question set. See useFlags. */
+  flags: Flags
 }
 
 export function useGame(): Game {
   const rounds = bank.rounds
+  const flags = useFlags()
+  const { clearAllFlags } = flags
 
   // Lazy initialisers: each runs once on first render and each calls
   // readInitial() independently. That is two reads, not one shared load, but the
@@ -125,10 +130,24 @@ export function useGame(): Game {
     setServed([])
     clearGame()
     setLastDeal(null)
+    // A full reset starts the whole evening over, so the flags from the spent
+    // pool go too. Abandoning a single game (resetToSetup) keeps them, because
+    // the disputes from that game still matter to the review.
+    clearAllFlags()
     rawDispatch({ type: 'RESET_TO_SETUP' })
-  }, [])
+    // Depend on the stable clearAllFlags callback, not the whole `flags` object,
+    // which is a fresh literal every render and would defeat the useCallback.
+  }, [clearAllFlags])
 
   const unservedRoundCount = rounds.filter((round) => !served.includes(round.id)).length
+
+  // A failed flags write is the same class of degradation as a failed game or
+  // served write, and it matters more than tidiness: voids affect scoring, so a
+  // player whose flags are not persisting should be told a refresh will lose
+  // them. Fold it into the one storage notice rather than leaving it silent. A
+  // 'discarded-unparseable-game' notice is more specific, so it wins.
+  const storageNotice: StorageNotice =
+    notice ?? (flags.degraded ? 'in-memory-only' : null)
 
   return {
     state,
@@ -139,6 +158,7 @@ export function useGame(): Game {
     resetServedRounds,
     unservedRoundCount,
     lastDeal,
-    storageNotice: notice,
+    storageNotice,
+    flags,
   }
 }

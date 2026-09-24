@@ -6,11 +6,13 @@
 // reason, and every write reports success or a reason, and nothing here throws
 // into the game loop.
 
+import { emptyFlags, isFlagsState, type FlagsState } from './flags.ts'
 import type { GameState } from './state.ts'
 
 const PREFIX = 'heeler-pub-quiz/v1'
 export const GAME_KEY = `${PREFIX}/game`
 export const SERVED_ROUNDS_KEY = `${PREFIX}/served-rounds`
+export const FLAGS_KEY = `${PREFIX}/flags`
 
 /** Why a read did not return a stored value. `absent` is normal and not an
  * error; the other two are the degraded paths from the failure table. */
@@ -131,3 +133,36 @@ export function clearServedRounds(): void {
     // A failed clear is harmless and must not interrupt play.
   }
 }
+
+export function loadFlags(): ReadResult<FlagsState> {
+  const result = readJson<unknown>(FLAGS_KEY)
+  if (!result.ok) {
+    return result
+  }
+  // Same lesson as served-rounds: validate the shape rather than trusting the
+  // cast. A malformed flags key is discarded to empty rather than allowed to
+  // reach the reducer and crash a render or corrupt an export.
+  if (!isFlagsState(result.value)) {
+    return { ok: false, reason: 'unparseable' }
+  }
+  return { ok: true, value: result.value }
+}
+
+export function saveFlags(flags: FlagsState): WriteResult {
+  return writeJson(FLAGS_KEY, flags)
+}
+
+export function clearFlags(): void {
+  const store = storage()
+  if (store === undefined) {
+    return
+  }
+  try {
+    store.removeItem(FLAGS_KEY)
+  } catch {
+    // A failed clear is harmless and must not interrupt play.
+  }
+}
+
+/** The empty flags state, for a fresh start or a discarded key. */
+export { emptyFlags }

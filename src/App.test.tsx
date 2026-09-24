@@ -161,6 +161,108 @@ describe('dealing and exhaustion', () => {
   })
 })
 
+describe('dispute and void', () => {
+  async function startTwoTeamsAtReveal(): Promise<ReturnType<typeof userEvent.setup>> {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText(/team 1 name/i), 'Alpha')
+    await user.type(screen.getByLabelText(/team 2 name/i), 'Bravo')
+    await user.click(screen.getByRole('button', { name: /start game/i }))
+    await user.click(screen.getByRole('button', { name: /begin round/i }))
+    await user.click(screen.getByRole('button', { name: /^reveal$/i }))
+    return user
+  }
+
+  it('void drops the question from scoring for every team, not just one', async () => {
+    const user = await startTwoTeamsAtReveal()
+    // Score the single-answer question for both teams.
+    await user.click(screen.getByRole('switch', { name: /alpha scored/i }))
+    await user.click(screen.getByRole('switch', { name: /bravo scored/i }))
+    // Void it.
+    await user.click(screen.getByRole('button', { name: /void this question/i }))
+    // Save and continue, then skip through the rest of the round to a break to
+    // read standings. Reveal+continue each remaining question without scoring.
+    await user.click(screen.getByRole('button', { name: /save scores and continue/i }))
+    // Fixture round one has ten questions; loop to the round break.
+    for (let i = 0; i < 9; i++) {
+      await user.click(screen.getByRole('button', { name: /^reveal$/i }))
+      await user.click(screen.getByRole('button', { name: /save scores and continue/i }))
+    }
+    // At the round break: both teams should read zero, because the only scored
+    // question was voided and drops for everyone.
+    expect(screen.getByLabelText(/alpha total 0/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/bravo total 0/i)).toBeInTheDocument()
+  })
+
+  it('does not carry a void into the next game, because that game deals different rounds', async () => {
+    // The safety here is a coupling worth pinning: a void flag survives the New
+    // game reset (resetToSetup keeps flags), but served-rounds also survives, so
+    // the next game deals unserved rounds and cannot re-present the voided
+    // question. If a future change ever let a served round be re-dealt, a stale
+    // void could bleed; this test guards the invariant that it currently cannot.
+    const user = userEvent.setup()
+    render(<App />)
+    await user.type(screen.getByLabelText(/team 1 name/i), 'Alpha')
+    await user.type(screen.getByLabelText(/team 2 name/i), 'Bravo')
+    await user.click(screen.getByRole('button', { name: /start game/i }))
+    // Game 1 begins on Fixture Round One.
+    expect(screen.getByText(/^round 1$/i)).toBeInTheDocument()
+    const firstRoundTitle = screen.getByRole('heading', { level: 2 }).textContent
+    await user.click(screen.getByRole('button', { name: /begin round/i }))
+    await user.click(screen.getByRole('button', { name: /^reveal$/i }))
+    await user.click(screen.getByRole('button', { name: /void this question/i }))
+    // Play out game 1 to the final (10 + 3 + 3 + 3 = short rounds after round 1).
+    // Reveal+continue until the final's New game button appears.
+    for (let guard = 0; guard < 90; guard++) {
+      if (screen.queryByRole('button', { name: /^new game$/i })) {
+        break
+      }
+      // On a reveal (including the voided Q1 we start on): save and continue.
+      const save = screen.queryByRole('button', { name: /save scores and continue/i })
+      if (save) {
+        await user.click(save)
+        continue
+      }
+      const reveal = screen.queryByRole('button', { name: /^reveal$/i })
+      if (reveal) {
+        await user.click(reveal)
+        continue
+      }
+      const begin = screen.queryByRole('button', { name: /begin round/i })
+      if (begin) {
+        await user.click(begin)
+        continue
+      }
+      const cont = screen.queryByRole('button', { name: /continue to the next round|see the final standings/i })
+      if (cont) {
+        await user.click(cont)
+        continue
+      }
+      break
+    }
+    // At the final: start a new game.
+    await user.click(screen.getByRole('button', { name: /^new game$/i }))
+    await user.click(screen.getByRole('button', { name: /yes, new game/i }))
+    await user.type(screen.getByLabelText(/team 1 name/i), 'Alpha')
+    await user.type(screen.getByLabelText(/team 2 name/i), 'Bravo')
+    await user.click(screen.getByRole('button', { name: /start game/i }))
+    // Game 2 deals a DIFFERENT first round than game 1, so the voided question's
+    // round cannot recur.
+    const secondRoundTitle = screen.getByRole('heading', { level: 2 }).textContent
+    expect(secondRoundTitle).not.toBe(firstRoundTitle)
+  })
+
+  it('records a dispute without interrupting play', async () => {
+    const user = await startTwoTeamsAtReveal()
+    await user.click(screen.getByRole('button', { name: /^dispute$/i }))
+    await user.type(screen.getByLabelText(/dispute note/i), 'The answer looks wrong')
+    await user.click(screen.getByRole('button', { name: /record dispute/i }))
+    // Still on the same reveal — dispute interrupted nothing.
+    expect(screen.getByText(/question 1 of 10/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /save scores and continue/i })).toBeInTheDocument()
+  })
+})
+
 describe('playing through to a reveal and scoring', () => {
   async function startTwoTeams(): Promise<ReturnType<typeof userEvent.setup>> {
     const user = userEvent.setup()

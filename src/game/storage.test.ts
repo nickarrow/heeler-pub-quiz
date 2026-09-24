@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   GAME_KEY,
+  loadFlags,
   loadGame,
   loadServedRounds,
+  saveFlags,
   saveGame,
   saveServedRounds,
   SERVED_ROUNDS_KEY,
@@ -104,6 +106,33 @@ describe('served-rounds key', () => {
     expect(loaded.ok).toBe(true)
     if (loaded.ok) {
       expect(loaded.value).toEqual(['fixture-1', 'fixture-2'])
+    }
+  })
+})
+
+describe('flags key', () => {
+  const FLAGS_KEY = 'heeler-pub-quiz/v1/flags'
+
+  it('round-trips a flags state', () => {
+    const state = {
+      flags: [{ questionId: 'q', bankKind: 'fixtures' as const, kind: 'void' as const, at: 'x' }],
+    }
+    expect(saveFlags(state).ok).toBe(true)
+    const loaded = loadFlags()
+    expect(loaded.ok).toBe(true)
+    if (loaded.ok) {
+      expect(loaded.value.flags).toHaveLength(1)
+    }
+  })
+
+  it('is absent before anything is flagged', () => {
+    expect(loadFlags()).toEqual({ ok: false, reason: 'absent' })
+  })
+
+  it('rejects a malformed flags value rather than trusting the cast', () => {
+    for (const bad of ['{}', 'null', '[]', '{"flags":"x"}', '{"flags":[{"questionId":1}]}']) {
+      localStorage.setItem(FLAGS_KEY, bad)
+      expect(loadFlags()).toEqual({ ok: false, reason: 'unparseable' })
     }
   })
 })

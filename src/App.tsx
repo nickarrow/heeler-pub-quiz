@@ -2,9 +2,11 @@ import { useState, type ReactElement } from 'react'
 import { FixtureBadge } from './components/FixtureBadge.tsx'
 import { FooterNotice } from './components/FooterNotice.tsx'
 import { QuestionScreen } from './components/QuestionScreen.tsx'
+import { ReviewScreen } from './components/ReviewScreen.tsx'
 import { SetupScreen } from './components/SetupScreen.tsx'
 import { Standings } from './components/Standings.tsx'
 import { StorageNotice } from './components/StorageNotice.tsx'
+import type { Flag } from './game/flags.ts'
 import { currentQuestion, currentRound } from './game/state.ts'
 import { useGame, type Game } from './game/useGame.ts'
 import { useKeyboard } from './game/useKeyboard.ts'
@@ -73,6 +75,9 @@ function Phases({ game }: { game: Game }): ReactElement {
           revealed={state.phase === 'reveal'}
           existingAwarded={state.results.find((r) => r.questionId === question.id)?.awarded}
           timerLengthSeconds={state.timerLengthSeconds}
+          voided={game.flags.voidedQuestionIds.has(question.id)}
+          onToggleVoid={() => game.flags.toggleVoid(question.id, state.bankKind)}
+          onDispute={(note) => game.flags.dispute(question.id, state.bankKind, note)}
           onReveal={() => dispatch({ type: 'REVEAL' })}
           onScoreAndNext={(awarded) => {
             dispatch({ type: 'SCORE_QUESTION', awarded })
@@ -88,12 +93,20 @@ function Phases({ game }: { game: Game }): ReactElement {
           state={state}
           roundNumber={state.cursor.round + 1}
           roundCount={state.roundIds.length}
+          voidedQuestionIds={game.flags.voidedQuestionIds}
           onNext={() => dispatch({ type: 'NEXT_ROUND' })}
         />
       )
 
     case 'final':
-      return <FinalScreen state={state} onNewGame={game.resetToSetup} />
+      return (
+        <FinalScreen
+          state={state}
+          flags={game.flags.flags}
+          voidedQuestionIds={game.flags.voidedQuestionIds}
+          onNewGame={game.resetToSetup}
+        />
+      )
   }
 }
 
@@ -131,11 +144,13 @@ function RoundBreak({
   state,
   roundNumber,
   roundCount,
+  voidedQuestionIds,
   onNext,
 }: {
   state: Game['state']
   roundNumber: number
   roundCount: number
+  voidedQuestionIds: ReadonlySet<string>
   onNext: () => void
 }): ReactElement {
   useKeyboard({ onAdvance: onNext })
@@ -145,7 +160,7 @@ function RoundBreak({
       <h2 id="break-heading" className="text-2xl font-medium">
         Standings after round {roundNumber} of {roundCount}
       </h2>
-      <Standings state={state} />
+      <Standings state={state} voidedQuestionIds={voidedQuestionIds} />
       <button
         type="button"
         className="self-start rounded bg-blue-700 px-4 py-2 font-medium text-white"
@@ -159,12 +174,22 @@ function RoundBreak({
 
 function FinalScreen({
   state,
+  flags,
+  voidedQuestionIds,
   onNewGame,
 }: {
   state: Game['state']
+  flags: Flag[]
+  voidedQuestionIds: ReadonlySet<string>
   onNewGame: () => void
 }): ReactElement {
   const [confirming, setConfirming] = useState(false)
+  const [reviewing, setReviewing] = useState(false)
+
+  if (reviewing) {
+    return <ReviewScreen flags={flags} onBack={() => setReviewing(false)} />
+  }
+
   // Deliberately no onAdvance here: on the podium, Space used to start a new
   // game, so one stray keypress wiped the final standings with no undo. A cold
   // read caught it. New game now takes a deliberate two-step confirm instead.
@@ -173,7 +198,16 @@ function FinalScreen({
       <h2 id="final-heading" className="text-2xl font-medium">
         Final standings
       </h2>
-      <Standings state={state} />
+      <Standings state={state} voidedQuestionIds={voidedQuestionIds} />
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          className="rounded border border-neutral-400 px-4 py-2"
+          onClick={() => setReviewing(true)}
+        >
+          Review flagged questions{flags.length > 0 ? ` (${flags.length})` : ''}
+        </button>
+      </div>
       {confirming ? (
         <div className="flex items-center gap-3">
           <span>Start a new game and clear these standings?</span>

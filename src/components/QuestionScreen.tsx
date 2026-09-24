@@ -15,6 +15,7 @@ import { clampPoints, type Team, type TeamId } from '../game/state.ts'
 import { useCountdown } from '../game/useCountdown.ts'
 import { useKeyboard } from '../game/useKeyboard.ts'
 import { AnswerText } from './AnswerText.tsx'
+import { RevealControls } from './RevealControls.tsx'
 import { ScoringControls } from './ScoringControls.tsx'
 
 const EXTEND_SECONDS = 15
@@ -29,6 +30,9 @@ export function QuestionScreen({
   revealed,
   existingAwarded,
   timerLengthSeconds,
+  voided,
+  onToggleVoid,
+  onDispute,
   onReveal,
   onScoreAndNext,
   onBack,
@@ -42,6 +46,9 @@ export function QuestionScreen({
   revealed: boolean
   existingAwarded: Record<TeamId, number> | undefined
   timerLengthSeconds: number
+  voided: boolean
+  onToggleVoid: () => void
+  onDispute: (note: string) => void
   onReveal: () => void
   onScoreAndNext: (awarded: Record<TeamId, number>) => void
   onBack: () => void
@@ -161,6 +168,8 @@ export function QuestionScreen({
           </div>
 
           <ScoringControls answer={question.answer} teams={teams} awarded={draft} onChange={setTeamScore} />
+
+          <RevealControls voided={voided} onToggleVoid={onToggleVoid} onDispute={onDispute} />
 
           <button
             type="button"
