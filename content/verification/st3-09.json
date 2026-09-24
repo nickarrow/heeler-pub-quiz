@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Shadowlands/Script",
+  "excerpt": "Snickers proposes the game Shadowlands, in which players may only move through shade and must avoid the sun.",
+  "episode": "Shadowlands",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the game rule only; named Shadowlands, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Shadowlands", "note": "the episode is the playground game of staying in the shadows and never touching sunlight" }
+  }
+}

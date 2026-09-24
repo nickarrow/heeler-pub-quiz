@@ -5,6 +5,7 @@ import { gamesTheyInventedTwo } from './games-they-invented-2.ts'
 import { propsDepartmentOne } from './props-department-1.ts'
 import { propsDepartmentTwo } from './props-department-2.ts'
 import { sayThatAgainOne } from './say-that-again-1.ts'
+import { sayThatAgainThree } from './say-that-again-3.ts'
 import { sayThatAgainTwo } from './say-that-again-2.ts'
 import { theSupportActOne } from './the-support-act-1.ts'
 import { theSupportActTwo } from './the-support-act-2.ts'
@@ -37,6 +38,7 @@ export const bank = {
     theSupportActTwo,
     whereAndWhenTwo,
     propsDepartmentTwo,
+    sayThatAgainThree,
   ],
 } satisfies Bank
 

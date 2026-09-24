@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Muffin_Cone/Script",
+  "excerpt": "Muffin, made to wear a cone to stop thumb-sucking, shouts: I WANT TO SUCK MY THU-UMB!",
+  "episode": "Muffin Cone",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the quoted line only; named Muffin Cone, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Muffin_Cone", "note": "synopsis: Muffin cannot stop sucking her thumb so she has to wear a cone of shame" }
+  }
+}

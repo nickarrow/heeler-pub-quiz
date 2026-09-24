@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Baby_Race/Script",
+  "excerpt": "At Mothers' Group, when Judo sits up early, Wendy says: Oh, well, you know, it's not a race.",
+  "episode": "Baby Race",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the quoted line only; named Baby Race, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Baby_Race", "note": "the episode is Chilli's flashback to a mothers' group baby race; run your own race is the moral" }
+  }
+}

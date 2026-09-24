@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Keepy_Uppy/Script",
+  "excerpt": "Bluey: You have to keep the balloon in the air and can't let it touch the ground.",
+  "episode": "Keepy Uppy",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the quoted rule only; named Keepy Uppy, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Keepy_Uppy", "note": "the episode is built entirely around keeping a single balloon off the ground" }
+  }
+}

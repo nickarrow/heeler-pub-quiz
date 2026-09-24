@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Bob_Bilby/Script",
+  "excerpt": "Bluey: Bob stays with us for the weekend, and we take photos and stick them in the Bob Bilby book.",
+  "episode": "Bob Bilby",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the scene description only; named Bob Bilby, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bob_Bilby", "note": "the class-mascot bilby puppet goes home for the weekend and is recorded in a scrapbook" }
+  }
+}

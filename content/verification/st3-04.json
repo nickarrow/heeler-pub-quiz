@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Asparagus/Script",
+  "excerpt": "Chilli, whispering as she hands Bluey a stalk of asparagus: It turns people into any animal you want!",
+  "episode": "Asparagus",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the quoted line only; named Asparagus, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Asparagus", "note": "the plot turns on a magic asparagus that transforms people into animals" }
+  }
+}

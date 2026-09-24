@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Featherwand/Script",
+  "excerpt": "Bingo points her featherwand at the cereal box: Cereal, heavy!",
+  "episode": "Featherwand",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the quoted line only; named Featherwand, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Featherwand", "note": "Bingo uses a feather as a wand that makes whatever she points at heavy" }
+  }
+}

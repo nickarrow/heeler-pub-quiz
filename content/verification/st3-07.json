@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Bike/Script",
+  "excerpt": "Bingo, defeated at the park water fountain: I can't do it. I'll never be able to drink water again.",
+  "episode": "Bike",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the quoted line only; named Bike, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bike", "note": "the episode intercuts several kids persevering at hard tasks in the park, Bingo at the fountain among them" }
+  }
+}

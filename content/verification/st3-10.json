@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Verandah_Santa/Script",
+  "excerpt": "Bandit plays Verandah Santa, arriving on the verandah to slip presents under the children's pillows at bedtime.",
+  "episode": "Verandah Santa",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the scene description only; named Verandah Santa, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Verandah_Santa", "note": "the pretend game is a bedtime Santa who comes via the verandah with presents" }
+  }
+}

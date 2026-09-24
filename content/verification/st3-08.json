@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Markets/Script",
+  "excerpt": "Indy: My mum always says to me, What goes around, comes around.",
+  "episode": "Markets",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent given the quoted line only; named Markets, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Markets", "note": "recap: Indy tells Bluey what goes around comes around, and the five-dollar note circles back" }
+  }
+}
