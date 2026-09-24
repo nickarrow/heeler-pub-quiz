@@ -23,6 +23,7 @@ Checked rather than assumed, 23 September 2026:
 | Pages source set to GitHub Actions | **Done** |
 | GitHub CLI (`gh`) | Not installed |
 | A credential for the first push | **Not established** |
+| Playwright MCP | Package verified working at 0.0.82. Config needs pasting into `.kiro/settings/mcp.json` |
 
 The last row is the only one that still blocks increment 1. Password authentication for git operations no longer
 exists, so the first HTTPS push needs one of: Git Credential Manager, which ships with Git for Windows and opens a
@@ -52,6 +53,42 @@ design, which makes CI the only gate in front of it.
 had increment 2 updating the design and leaving the plan above it untouched, which is the exact failure
 `HOW-TO-WORK.md` warns about.
 
+## Seeing the thing: Playwright MCP
+
+`stack.md` calls this out directly — the screenshot habit is the cheap version, and a browser automation tool
+connected to the agent is the better one, "worth doing once the interface matters." For an app that is almost entirely
+interface, it matters from increment 1.
+
+[Playwright MCP](https://playwright.dev/mcp/introduction) drives a real browser and returns an **accessibility tree**
+rather than a screenshot. That is the detail that makes it worth more here than a picture would be: the snapshot is
+structured, so "does the scoring button carry its team's name as its accessible name" is a question it can answer
+directly, not something anyone has to squint at. Screenshots are still available when the question is about layout.
+
+Configuration choices, each for a reason:
+
+- **`--viewport-size=1920x1080`**, because `design.md` §3 says readable on a 1080p television. The default viewport
+  would have been testing a size nobody plays at.
+- **`--isolated`**, so the browser profile lives in memory. Each session starts with empty local storage, which is
+  exactly what is needed to test the fresh-start, exhaustion and reset paths without hand-clearing anything. A refresh
+  within a session still persists, which is the property `design.md` §4 actually promises.
+- **Headed**, which is the default, so the work is watchable.
+- **Pinned to a version**, not `@latest`, on the same principle as the Pages actions — a tool that changes under you
+  is a debugging session waiting to happen. Bumping it is a deliberate act.
+
+**What it is not.** Not a replacement for the Vitest suite in `technical-design.md`, which covers dealing, scoring and
+persistence logic that needs no browser. Not conformance testing either — the snapshot shows the accessibility tree,
+which is not the same as a screen reader user's experience. And not a substitute for increment 6's human check:
+viewport size emulates a 1080p window, not a three-metre viewing distance or a television's overscan.
+
+**Whether to commit a Playwright test suite** alongside the interactive use is a decision deliberately not taken here.
+The tool earns its place as verification during development first; a committed browser suite is a change to
+`technical-design.md`'s testing section and should be argued for on its own.
+
+One hardening step left for increment 1: `--allowed-origins` can restrict the browser to the dev server and the Pages
+site. It is left out for now because the docs are explicit that it is a convenience rather than a security boundary,
+the dev server port is not known yet, and a guardrail whose failure mode is "the browser silently will not load your
+app" is a poor trade on day one. Add it once both URLs are real.
+
 ## 1. Toolchain, and one question on a screen
 
 The thinnest possible slice through every layer. Not a game yet — one question, rendered, live on the internet.
@@ -73,8 +110,10 @@ directory is an interactive prompt and this directory already holds documentatio
 place. And do not let the scaffold's own `.gitignore` overwrite this one — ours carries the corpus exclusion that
 keeps transcripts out of a public repository, which is the one file here where an overwrite has consequences.
 
-**How you know it worked.** The Pages URL loads, shows one question and the footer notice, and the workflow is green
-with every gate having actually run rather than been skipped.
+**How you know it worked.** Driven through Playwright MCP against the live Pages URL, not asserted from a green
+workflow: the page loads, the snapshot contains the question and the footer notice, and `base` resolved correctly
+because no asset 404ed. That last one is the most likely first-deploy failure and it is invisible from the CI log.
+Then confirm the workflow is green with every gate having actually run rather than skipped.
 
 **Needs from you.** The push credential, per prerequisites.
 
@@ -119,7 +158,10 @@ a running total cannot retroactively drop one.
 **Deliberately not.** More than one round. Dealing logic. Dispute and void. Wake lock. Any type-scale or contrast
 work beyond defaults.
 
-**How you know it worked.** Play ten fake questions with two teams, reach a podium, refresh mid-round and carry on.
+**How you know it worked.** Playwright MCP plays the whole thing: name two teams, work through ten fake questions
+hitting all three answer shapes, score each one, reach the podium. Then reload mid-round and confirm the snapshot shows
+the same question and the same scores — which is the `game` key doing its job, and is tedious to check by hand every
+time the loop changes.
 
 **Needs from you.** Nothing.
 
@@ -133,8 +175,11 @@ than on finish, so an abandoned evening does not leak half-seen questions into t
 **Deliberately not.** Any real content. These rounds are obviously invented and they stay in the repository as the
 permanent test fixture.
 
-**How you know it worked.** Play three games back to back with nothing repeating, then get told plainly that the pool
-is empty rather than getting a quiet repeat.
+**How you know it worked.** This is the increment where the browser tool pays for itself. Playwright MCP plays three
+full games back to back — twelve rounds, a hundred and twenty question-and-reveal cycles — collecting the round titles
+from each snapshot and confirming no round appears twice, then confirms the fourth attempt says the pool is empty
+rather than quietly recycling. Doing that by hand once is tedious; doing it after every change to dealing is not
+something anyone would actually keep up.
 
 **Needs from you.** Nothing.
 
@@ -148,8 +193,10 @@ question from scoring for every team. A review screen that lists flags and expor
 
 **Deliberately not.** Any automatic correction, any editing of questions in the app. The export is the handoff.
 
-**How you know it worked.** Void a question mid-round and confirm no team's score moved because of it. Dispute
-another, finish, and find it on the review screen and in the export.
+**How you know it worked.** Playwright MCP scores a question for two teams, voids it, and reads the scores back out of
+the snapshot to confirm both dropped — the scoring constraint from increment 3 being load-bearing here, and a
+regression that a unit test would catch in the reducer but not in what the screen actually shows. Then dispute
+another, finish the game, and confirm it appears on the review screen and in the export.
 
 **Needs from you.** Nothing.
 
@@ -165,12 +212,21 @@ feature detection, reacquired when the document becomes visible. Reduced motion 
 **Deliberately not.** Conformance testing with assistive technology, which needs a person and a screen reader, and is
 not claimed anywhere.
 
-**How you know it worked.** Tested on the screen you will actually use, from the distance you will actually sit at,
-driven by keyboard only.
+**How you know it worked, in two halves.**
+
+The machine half, through Playwright MCP, because the snapshot *is* an accessibility tree and every claim in this
+increment is a claim about that tree. Each team's scoring control exposes its team name as its accessible name rather
+than a position. The list stepper reports as a spin control with a value. The live region exists and its content
+changes when a score does. Focus is visible and the whole game is reachable by keyboard alone. A timer can be paused.
+None of that needs a person, and all of it is the kind of thing that silently regresses.
+
+The human half, which the tool cannot do. Whether it is legible from a sofa three metres away, and whether the layout
+survives your particular television. A 1920x1080 viewport is a 1080p *window*, not a viewing distance and not
+overscan.
 
 **Needs from you.** Tell me which screen, and whether you cast a tab or plug in HDMI — they behave differently and
-viewport-based sizing is exactly where that shows. A screenshot pasted into chat beats any description of a layout
-problem.
+viewport-based sizing is exactly where that shows. For the human half, a screenshot pasted into chat still beats any
+description of a layout problem.
 
 ## 7. One real round through the whole pipeline
 
@@ -203,9 +259,14 @@ sitting in increment 3 of the first version and causing the whole verification p
 
 **Deliberately not.** Anything in the app.
 
-**How you know it worked.** Three games deal without repeating. Validation passes in CI. The count of shipped rounds
-and questions is computed and recorded rather than estimated. The live site serves real questions and you have not
-read them.
+**How you know it worked.** Validation passes in CI. The count of shipped rounds and questions is computed and
+recorded rather than estimated. Then Playwright MCP smoke-checks the live site: three games deal without repeating,
+each round is ten questions long, every reveal shows an answer and an episode.
+
+**Worth being explicit about who reads what here.** That smoke check puts real questions into my context, and does not
+violate the standing constraint at the top of this document. The constraint protects *you*, and the questions were
+written by the same process doing the checking — there is nothing left to spoil. What the check deliberately does not
+do is report any question's content back to you.
 
 **Needs from you.** Nothing.
 

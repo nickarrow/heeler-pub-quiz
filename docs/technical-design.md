@@ -270,6 +270,11 @@ the storage-failure table. The bank guard: default alias resolution is the fixtu
 does not deploy. Not a warning in a log, and no falling back to a smaller game — a quietly shortened bank is worse
 than a failed deploy.
 
+**Browser verification sits outside this suite.** Playwright MCP drives a real browser during development and returns
+an accessibility tree, which is how claims about accessible names, live regions, keyboard reachability and actual
+rendered behaviour get checked. `increments.md` says which increments use it for what. It is not part of the committed
+test suite, and whether it should become one is an open decision rather than an omission.
+
 ## Build, CI and deploy
 
 Pages with its source set to GitHub Actions, which is done.

@@ -6,11 +6,15 @@
 .env.*
 .DS_Store
 node_modules/
+
 # Fetched source corpus. Episode transcripts and wiki articles are the show's
 # copyright regardless of who typed them up, so the fetch script is committed and
-# its output never is. See docs/design.md, "Three tiers of content".
+# its output never is. See docs/content-pipeline.md, "Three tiers of content".
 .corpus/
 
 # Build output
 dist/
 coverage/
+
+# Playwright MCP output — screenshots, traces, session files
+.playwright-mcp/
