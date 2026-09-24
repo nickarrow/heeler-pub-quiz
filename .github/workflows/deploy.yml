@@ -65,11 +65,16 @@ jobs:
       # `tsc -b && vite build` — so there is deliberately no separate typecheck
       # step to pay for twice.
       #
-      # HEELER_REAL_BANK is set nowhere in this workflow. Absence of it means
-      # the fixture bank, which is the harmless default. Increment 8 adds it
-      # here, on this step only, and nowhere else.
+      # HEELER_BANK=real selects the real bank (vite.config.ts), and it is set
+      # here, on this build step only, and nowhere else in the workflow. Every
+      # other step and every ordinary command sees it unset and falls to the
+      # fixture bank, the harmless default. 'preview' is never written here; the
+      # deploy-workflow guard test asserts the workflow can select only 'real'.
+      # This env line is the increment-8 deploy switch.
       - name: Build
         run: npm run build
+        env:
+          HEELER_BANK: real
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

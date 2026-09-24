@@ -23,11 +23,14 @@ describe('the deploy workflow cannot select the preview bank', () => {
   })
 
   it('selects only the real bank if it selects any bank at all', () => {
-    // Every HEELER_BANK assignment in the workflow, if present, must name the
-    // real bank. As of increment 7a there are none — the switch is increment 8 —
-    // so this both passes now and constrains increment 8 to select real, and
-    // only real, when it adds one.
+    // Every HEELER_BANK assignment in the workflow must name the real bank.
+    // Increment 8 added one, on the build step (the deploy switch); this allows
+    // that and forbids any assignment naming another bank. Comment text counts
+    // here too, which is fine: the constraint is that nothing selects a
+    // non-real bank, and a comment that named 'preview' would be a lie worth
+    // failing on.
     const assignments = workflow.match(/HEELER_BANK\s*[:=]\s*['"]?(\w+)/gi) ?? []
+    expect(assignments.length).toBeGreaterThan(0)
     for (const assignment of assignments) {
       expect(assignment).toMatch(/real/i)
     }
