@@ -134,9 +134,18 @@ async function fetchScriptPageTitles(): Promise<string[]> {
     .sort()
 }
 
-/** Fetch each title's wikitext, write it, and return manifest records, sorted. */
+/**
+ * Fetch each title's wikitext, write it, and return manifest records, sorted.
+ *
+ * `fileNameForTitle` is lossy — it replaces filesystem-illegal characters — so this
+ * throws if two titles in one subdir collide onto a single filename, which would
+ * otherwise clobber the first write with no error. The caller reconciles the count
+ * of records returned against the count of titles enumerated, so a title the API
+ * returns as missing or without content does not silently shrink the corpus.
+ */
 async function fetchWikiPages(titles: string[], subdir: string): Promise<PageRecord[]> {
   const records: PageRecord[] = []
+  const filenames = new Map<string, string>()
   // Batches of 50 titles per request, MediaWiki's default cap for anonymous callers.
   for (let i = 0; i < titles.length; i += 50) {
     const batch = titles.slice(i, i + 50)
@@ -157,7 +166,16 @@ async function fetchWikiPages(titles: string[], subdir: string): Promise<PageRec
       if (page.missing !== undefined) continue
       const content = page.revisions?.[0]?.slots?.main?.['*']
       if (content === undefined) continue
-      writeFileSync(resolve(corpusRoot, subdir, fileNameForTitle(page.title)), `${content}\n`, 'utf8')
+      const filename = fileNameForTitle(page.title)
+      const clash = filenames.get(filename)
+      if (clash !== undefined) {
+        throw new Error(
+          `Filename collision in ${subdir}: "${page.title}" and "${clash}" both sanitise to ` +
+            `"${filename}". The lossy filename map would clobber one silently; fix fileNameForTitle.`,
+        )
+      }
+      filenames.set(filename, page.title)
+      writeFileSync(resolve(corpusRoot, subdir, filename), `${content}\n`, 'utf8')
       records.push({
         title: page.title,
         sourceUrl: `https://blueypedia.fandom.com/wiki/${encodeURIComponent(page.title.replace(/ /g, '_'))}`,
@@ -168,7 +186,30 @@ async function fetchWikiPages(titles: string[], subdir: string): Promise<PageRec
   return records.sort((a, b) => (a.title < b.title ? -1 : a.title > b.title ? 1 : 0))
 }
 
+/**
+ * Reconcile what was enumerated against what was written. A few enumerated titles
+ * can legitimately have no fetchable content, so a small shortfall is reported
+ * rather than fatal; but an empty result for a non-empty enumeration means the
+ * fetch failed, and is thrown so a truncated corpus cannot pass the idempotency
+ * check on a short set.
+ */
+function reconcile(label: string, enumerated: number, written: number): void {
+  const skipped = enumerated - written
+  if (enumerated > 0 && written === 0) {
+    throw new Error(`${label}: enumerated ${enumerated} titles but wrote 0 — the fetch failed.`)
+  }
+  if (skipped > 0) {
+    console.log(`  ${label}: wrote ${written} of ${enumerated} (${skipped} had no fetchable content)`)
+  }
+}
+
 async function main(): Promise<void> {
+  // Guard the recursive delete below. rmSync with force:true swallows errors, so if
+  // a future edit to corpusRoot's resolve(...) ever stopped pointing at .corpus this
+  // would silently delete the wrong tree. Refuse rather than trust the path.
+  if (!corpusRoot.endsWith('.corpus')) {
+    throw new Error(`Refusing to wipe "${corpusRoot}": expected a path ending in .corpus.`)
+  }
   // Start from clean so a rerun cannot leave a stale file behind. This is what
   // makes "reruns from clean" true rather than asserted.
   rmSync(corpusRoot, { recursive: true, force: true })
@@ -183,11 +224,13 @@ async function main(): Promise<void> {
   const episodeTitles = await fetchEpisodeArticleTitles()
   console.log(`  ${episodeTitles.length} episode articles`)
   const episodeArticles = await fetchWikiPages(episodeTitles, 'wiki/episodes')
+  reconcile('episode articles', episodeTitles.length, episodeArticles.length)
 
   console.log('Enumerating wiki /Script pages...')
   const scriptTitles = await fetchScriptPageTitles()
   console.log(`  ${scriptTitles.length} /Script pages`)
   const scriptPages = await fetchWikiPages(scriptTitles, 'wiki/scripts')
+  reconcile('/Script pages', scriptTitles.length, scriptPages.length)
 
   const manifest: Manifest = {
     // A single coarse date, not a per-request timestamp, so the manifest itself is

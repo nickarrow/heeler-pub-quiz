@@ -46,6 +46,8 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/*.test.{ts,tsx}'],
+    // src holds the app and content tests; scripts holds tooling tests such as the
+    // fetch host-pinning guard, which is security-relevant and belongs in CI.
+    include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts'],
   },
 })
