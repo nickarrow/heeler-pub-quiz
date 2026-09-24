@@ -3,22 +3,41 @@
    type scale, and the base treatment for a television three metres away. */
 @import 'tailwindcss';
 
-/* Palette: blue, orange and cream (design.md Presentation). Colour, shape and
-   warmth carry the vibe; no character art, no title-card lettering. Values are
-   chosen for contrast, not decoration. Measured WCAG ratios against the surfaces
-   the components actually use (standard relative-luminance formula, recomputed
-   and corrected after review — the first draft overstated three of these):
-     ink (#1a2238) on cream (#fdf6e3):    ~14.6:1  (body, AA/AAA)
-     ink on white:                        ~15.8:1
-     blue-700 (#1d4ed8) on cream:         ~6.2:1   (large + body AA)
-     white on blue-700:                   ~6.7:1   (button text AA)
-     orange-700 (#b45309) on cream:       ~4.66:1  (body AA, thin margin)
-     orange-700 (#b45309) on white:       ~5.0:1   (body AA)
-     green-800 (#166534) on green-100:    ~6.5:1   (correct state)
-     red-800 (#991b1b) on red-100:        ~6.8:1   (void state)
-   Each clears its target (4.5:1 body, 3:1 large text and UI, per 1.4.3). The
-   orange-700-on-cream margin is thin (0.16 over 4.5), so a palette tweak must
-   recheck it rather than assume slack.
+/* Palette: a warmer, wider earthy set — blue, burnt orange, mustard, grassy
+   green on a sunny cream (design.md Presentation, restyle "move 1"). Colour,
+   shape and warmth carry the Bluey-adjacent vibe; still no character art, no
+   title-card lettering. The blue/orange/cream family from increment 6 is warmed
+   (a warm navy ink, a brighter primary blue), and two accents (mustard, green)
+   and a raised card surface are added so screens have depth instead of one flat
+   sheet.
+
+   Values are chosen for contrast, not decoration. WCAG ratios below were
+   COMPUTED for this palette (standard relative-luminance formula, run in a
+   script, not eyeballed) against the surfaces the components actually use:
+     ink (#23306e) on cream (#fff6e0):        11.35:1  (body, AA/AAA)
+     ink on card (#fffdf5):                   11.99:1  (body, AA/AAA)
+     ink on white:                            12.21:1
+     white on blue-700 (#2b62d6):              5.50:1  (button text, AA)
+     white on blue-800 (#1e40af):              8.72:1  (pressed/focus)
+     ink on mustard (#f6c945):                 7.77:1  (chips, AA)
+     ink on green (#7bbf6a):                   5.53:1  (accent surface, AA)
+     orange-700 (#8a3d0b) on cream:            7.09:1  (eyebrow labels, AA)
+     orange-700 on card:                       7.49:1
+     orange-700 on white:                      7.63:1
+     white on orange-600 (#d2691e):            3.63:1  (LARGE/UI only, >=3:1)
+     ink/70 (muted, ~#5b6699) on cream:       ~5.13:1  (secondary text, AA)
+     green-800 (#166534) on green-100 (#dcfce7): 6.49:1 (correct/got-it state)
+     red-800 (#991b1b) on red-100 (#fee2e2):   6.80:1  (void state)
+     orange-700 on orange-100 (#fff3e2):       6.96:1  (fixture badge, AA)
+     blue-800 on blue-100 (#dbeafe):           7.15:1  (preview badge, AA)
+   Each clears its target: 4.5:1 for body text, 3:1 for large text and UI
+   (1.4.3). One thin margin to recheck on any future tweak: white-on-orange-600
+   is large/UI-only at 3.63 (never body text). Note the fixture badge improved
+   from ~4.38 (the increment-6 orange-700 #b45309 on Tailwind's default
+   orange-100, a hair under 4.5) to 6.96, because this move both darkens the
+   text `orange-700` to #8a3d0b and pins a warm `orange-100` #fff3e2.
+   `orange-700` is the dark burnt-orange used for TEXT; `orange-600` (#d2691e)
+   is the brighter fill used only behind white at large sizes.
 
    Font: design.md names Nunito "such as"; a rounded system stack is used rather
    than fetching a webfont, so a loaded page keeps working with no network and no
@@ -31,12 +50,18 @@
    The explanation lives outside @theme because Tailwind 4's @theme block accepts
    only custom properties. */
 @theme {
-  --color-cream: #fdf6e3;
-  --color-ink: #1a2238;
-  --color-blue-700: #1d4ed8;
+  --color-cream: #fff6e0;
+  --color-card: #fffdf5;
+  --color-sky: #cfe8ff;
+  --color-ink: #23306e;
+  --color-blue-700: #2b62d6;
   --color-blue-800: #1e40af;
-  --color-orange-600: #c2620c;
-  --color-orange-700: #b45309;
+  --color-blue-100: #dbeafe;
+  --color-orange-600: #d2691e;
+  --color-orange-700: #8a3d0b;
+  --color-orange-100: #fff3e2;
+  --color-mustard: #f6c945;
+  --color-grass: #7bbf6a;
   --color-green-100: #dcfce7;
   --color-green-800: #166534;
   --color-red-100: #fee2e2;
