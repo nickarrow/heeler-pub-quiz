@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Handstand",
+  "excerpt": "Lucky and Rusty have a whistleball, which they throw through the open kitchen window.",
+  "episode": "Handstand",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived a whistleball, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Handstand", "note": "recap returns to Lucky and Rusty's whistleball flying in as Chilli shuts the fridge" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Chickenrat",
+  "excerpt": "At bedtime, Bingo panics when she can't find her beloved toy, Floppy.",
+  "episode": "Chickenrat",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived Floppy, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Chickenrat", "note": "recap: Chilli, Bluey and Bingo find Floppy hidden in the shape puzzle egg toy" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Dance_Mode",
+  "excerpt": "Coerced by Bluey, Bingo buys a yes/no button. Bluey has a great time using the new toy.",
+  "episode": "Dance Mode",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived a yes/no button, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Cubby", "note": "Cubby trivia lists the Yes/No buttons which were first seen in Dance Mode" }
+  }
+}

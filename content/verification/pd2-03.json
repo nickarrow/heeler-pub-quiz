@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Horsey_Ride",
+  "excerpt": "Chilli tells Bluey to put Polly Puppy away, because last time the cousins were over, Polly got dirty.",
+  "episode": "Horsey Ride",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived Polly Puppy, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Horsey_Ride", "note": "synopsis and recap both have Socks grabbing Polly Puppy and refusing to let go" }
+  }
+}

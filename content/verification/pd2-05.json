@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Charades",
+  "excerpt": "Nana shows the girls a music box given to her by her Nana long ago. They return with the music box.",
+  "episode": "Charades",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived a music box, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Charades", "note": "Trivia notes Chris Heeler's Nana gave her the music box, matching the recap" }
+  }
+}

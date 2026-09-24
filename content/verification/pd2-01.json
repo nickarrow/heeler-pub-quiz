@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Cubby",
+  "excerpt": "Bluey and Bingo build a very special cubby for their stuffed toy Kimjim.",
+  "episode": "Cubby",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived Kimjim, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Cubby", "note": "recap has the girls playing a Snakes and Ladders style game in the cubby that Kimjim keeps winning" }
+  }
+}

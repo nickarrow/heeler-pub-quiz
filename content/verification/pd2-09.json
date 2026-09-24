@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Ghostbasket",
+  "excerpt": "Bluey refers to one of the garden gnomes as Jeremy, the same gnome called by that name in Backpackers.",
+  "episode": "Ghostbasket",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived Jeremy, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Backpackers", "note": "the gnome is named Jeremy in Backpackers, the earlier episode the Ghostbasket note points back to" }
+  }
+}

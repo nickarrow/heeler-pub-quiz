@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Bedroom",
+  "excerpt": "Bingo gets Gloria, a present from Granddad. She was a Christmas present to me from Grandad.",
+  "episode": "Bedroom",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived Gloria, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bedroom", "note": "Trivia quotes the girls saying Gloria was a Christmas present to Bluey from Grandad" }
+  }
+}

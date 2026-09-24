@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Unicorse",
+  "excerpt": "Unicorse is the most annoying hand puppet in the world, who constantly interrupts while Mum tries to read.",
+  "episode": "Unicorse",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived Unicorse, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Unicorse", "note": "recap has Bluey offering Unicorse his favourite food, which he then chews loudly" }
+  }
+}

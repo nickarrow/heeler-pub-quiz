@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Hide_and_Seek",
+  "excerpt": "But her promise quickly comes undone when she uncovers Chattermax (a noisy old toy) hidden under the sink.",
+  "episode": "Hide and Seek",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated agent, prompt plus passage only, answer withheld; derived Chattermax, high confidence" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Fairies", "note": "Fairies trivia records the first appearance of Chattermax, corroborating the toy's name" }
+  }
+}
