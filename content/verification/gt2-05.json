@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Queens",
+  "excerpt": "Bluey, acting as the Queen's butler, announces the Queen's arrival. Butlers need someone to boss them around.",
+  "episode": "Queens",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived the butler" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Queens/Script", "note": "Queens transcript pairs each Queen on the throne with a butler who is bossed around" }
+  }
+}

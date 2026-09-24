@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Pirates",
+  "excerpt": "A frightened Missy slides off to hide safely on steady ground. Chilli narrates that she is the lighthouse keeper.",
+  "episode": "Pirates",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived lighthouse keeper" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Pirates/Script", "note": "Pirates transcript has Chilli narrate Missy as the lighthouse keeper when she hides ashore" }
+  }
+}

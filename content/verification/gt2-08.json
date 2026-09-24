@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Spy_Game",
+  "excerpt": "The kids are hard at work on their spy game, making a device that allows them to control the grownups.",
+  "episode": "Spy Game",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived control the grown-ups" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Spy_Game/Script", "note": "Spy Game transcript has the potion device made to control the adults (make them dance etc.)" }
+  }
+}

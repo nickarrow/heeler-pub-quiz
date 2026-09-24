@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Keepy_Uppy",
+  "excerpt": "Chilli joins in as the balloon mustn't touch the ground, or else it will burst.",
+  "episode": "Keepy Uppy",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived must not touch the ground" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Keepy_Uppy/Script", "note": "Keepy Uppy transcript plays the whole game on the balloon-must-not-touch-the-ground rule" }
+  }
+}

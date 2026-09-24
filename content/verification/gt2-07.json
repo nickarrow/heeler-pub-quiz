@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Burger_Shop",
+  "excerpt": "Bandit asks if it's time to get out, but Bluey responds that there is a new burger: Pickle Burger!",
+  "episode": "Burger Shop",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Pickle Burger" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Burger_Shop/Script", "note": "Burger Shop transcript has Bluey introduce the Pickle Burger to keep the bathtime game going" }
+  }
+}

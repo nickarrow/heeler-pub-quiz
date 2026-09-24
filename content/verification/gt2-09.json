@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Bus",
+  "excerpt": "Bingo's pretend pet snake, Boopsie, attacks Dad the bus driver, and in the chaos Dad falls off the bus.",
+  "episode": "Bus",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Boopsie" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bus/Script", "note": "Bus transcript names Bingo's pretend pet snake Boopsie" }
+  }
+}

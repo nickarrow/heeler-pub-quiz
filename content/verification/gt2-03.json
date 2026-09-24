@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Rug_Island",
+  "excerpt": "Bingo says it's not a ball, it's an egg; they crown Bandit for rescuing the chocolate egg, then all lick the egg.",
+  "episode": "Rug Island",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived a chocolate egg" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Rug_Island/Script", "note": "Rug Island transcript treats Pat's football as the white chocolate egg the kids defend" }
+  }
+}

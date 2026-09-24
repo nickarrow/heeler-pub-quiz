@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Magic_Xylophone",
+  "excerpt": "The magic xylophone freezes and unfreezes people with a ding of the dinger thing (mallet).",
+  "episode": "The Magic Xylophone",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived the dinger thing" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Magic_Xylophone/Script", "note": "The Magic Xylophone transcript names the mallet the dinger thing" }
+  }
+}

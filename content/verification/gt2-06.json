@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Space",
+  "excerpt": "Rusty is captain and Jack is the navigator, the dude-a-tron, the computer of the ship; Mackenzie is Chief Scientist.",
+  "episode": "Space",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived dude-a-tron" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Space/Script", "note": "Space transcript assigns Jack the navigator role nicknamed dude-a-tron" }
+  }
+}
