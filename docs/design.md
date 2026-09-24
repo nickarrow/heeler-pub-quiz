@@ -12,9 +12,10 @@ Four companion documents, each a different job:
 | `content-pipeline.md` | How questions get made, checked, and corrected afterwards |
 | `technical-design.md` | How the app is built. Architecture, data shapes, storage, testing, deployment |
 | `verification-log.md` | What has been checked, what has not, and what turned out to be wrong |
+| `increments.md` | In what sequence the work happens, and why that sequence |
 | `research/phone-join-and-multiplayer.md` | Work that informed the design and is not part of it |
 
-Sequencing will live in its own document, so that a stale assumption here cannot hide inside a task list.
+Sequencing is kept out of this document deliberately, so that a stale assumption here cannot hide inside a task list.
 
 ---
 
