@@ -68,6 +68,10 @@
   --color-red-800: #991b1b;
   --font-sans: 'Nunito', 'Segoe UI Rounded', 'SF Pro Rounded', ui-rounded, 'Helvetica Neue', Arial,
     sans-serif;
+  /* The card's soft offset shadow (restyle move 2): a low-opacity ink drop, no
+     blur, offset down and right, so cards read as gently lifted paper rather
+     than floating. Generates the shadow-card utility. */
+  --shadow-card: 14px 18px 0 -8px color-mix(in srgb, var(--color-ink) 12%, transparent);
   --text-fluid-sm: clamp(0.95rem, 0.85rem + 0.5vw, 1.15rem);
   --text-fluid-base: clamp(1.1rem, 0.95rem + 0.8vw, 1.5rem);
   --text-fluid-lg: clamp(1.4rem, 1.1rem + 1.5vw, 2.25rem);

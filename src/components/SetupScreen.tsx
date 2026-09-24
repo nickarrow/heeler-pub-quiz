@@ -3,6 +3,7 @@
 
 import { useState, type ReactElement } from 'react'
 import { Button, TARGET_SIZE } from './Button.tsx'
+import { Card } from './Card.tsx'
 import { ROUNDS_PER_GAME } from '../game/dealing.ts'
 import {
   clampTimerSeconds,
@@ -69,7 +70,7 @@ export function SetupScreen({
 
   if (exhausted) {
     return (
-      <section className="flex flex-col gap-4" aria-labelledby="exhausted-heading">
+      <Card aria-labelledby="exhausted-heading" className="flex flex-col gap-4">
         <h2 id="exhausted-heading" className="text-fluid-xl font-bold">
           Out of fresh rounds
         </h2>
@@ -94,12 +95,12 @@ export function SetupScreen({
             Reset the rounds
           </Button>
         )}
-      </section>
+      </Card>
     )
   }
 
   return (
-    <section className="flex flex-col gap-6" aria-labelledby="setup-heading">
+    <Card aria-labelledby="setup-heading" className="flex flex-col gap-6">
       <h2 id="setup-heading" className="text-fluid-xl font-bold">
         Set up the game
       </h2>
@@ -124,7 +125,7 @@ export function SetupScreen({
               <label className="flex flex-1 items-center gap-2">
                 <span className="w-20 text-fluid-sm text-ink/70">Team {index + 1}</span>
                 <input
-                  className={`${TARGET_SIZE} flex-1 rounded-lg border-2 border-ink/40 px-3 py-2 text-fluid-base`}
+                  className={`${TARGET_SIZE} flex-1 rounded-2xl border-[3px] border-ink/25 bg-white px-4 py-2 text-fluid-base`}
                   type="text"
                   value={name}
                   onChange={(event) => setName(index, event.target.value)}
@@ -147,7 +148,7 @@ export function SetupScreen({
         <label className="flex flex-col gap-1">
           <span className="text-fluid-base font-semibold">Timer length (seconds)</span>
           <input
-            className={`${TARGET_SIZE} w-32 rounded-lg border-2 border-ink/40 px-3 py-2 text-fluid-base`}
+            className={`${TARGET_SIZE} w-32 rounded-2xl border-[3px] border-ink/25 bg-white px-4 py-2 text-fluid-base`}
             type="number"
             min={MIN_TIMER_SECONDS}
             max={MAX_TIMER_SECONDS}
@@ -169,6 +170,6 @@ export function SetupScreen({
           </p>
         ) : null}
       </form>
-    </section>
+    </Card>
   )
 }

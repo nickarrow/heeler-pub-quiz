@@ -65,10 +65,10 @@ function ToggleScore({
       role="switch"
       aria-checked={got}
       aria-label={`${team.name} scored`}
-      className={`${TARGET} rounded-lg border-2 px-5 py-2 text-fluid-base font-semibold ${
+      className={`${TARGET} rounded-full border-[3px] px-5 py-2 text-fluid-base font-bold active:translate-y-[2px] ${
         got
           ? 'border-green-800 bg-green-100 text-green-800'
-          : 'border-ink/40 bg-white text-ink'
+          : 'border-ink/25 bg-white text-ink'
       }`}
       onClick={() => onChange(team.id, got ? 0 : 1)}
     >
@@ -100,19 +100,19 @@ function ListStepper({
     >
       <button
         type="button"
-        className={`${TARGET} rounded-lg border-2 border-ink/40 bg-white text-fluid-lg font-semibold text-ink disabled:opacity-60`}
+        className={`${TARGET} rounded-full border-[3px] border-ink/25 bg-white text-fluid-lg font-bold text-ink disabled:opacity-60 active:translate-y-[2px]`}
         aria-label={`Fewer points for ${team.name}`}
         onClick={() => onChange(team.id, Math.max(0, points - 1))}
         disabled={points <= 0}
       >
         -
       </button>
-      <span className="w-16 text-center text-fluid-base font-semibold tabular-nums">
+      <span className="w-16 text-center text-fluid-base font-bold tabular-nums">
         {points} / {max}
       </span>
       <button
         type="button"
-        className={`${TARGET} rounded-lg border-2 border-ink/40 bg-white text-fluid-lg font-semibold text-ink disabled:opacity-60`}
+        className={`${TARGET} rounded-full border-[3px] border-ink/25 bg-white text-fluid-lg font-bold text-ink disabled:opacity-60 active:translate-y-[2px]`}
         aria-label={`More points for ${team.name}`}
         onClick={() => onChange(team.id, Math.min(max, points + 1))}
         disabled={points >= max}

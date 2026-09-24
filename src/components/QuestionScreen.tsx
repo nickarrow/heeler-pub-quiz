@@ -16,6 +16,7 @@ import { useCountdown } from '../game/useCountdown.ts'
 import { useKeyboard } from '../game/useKeyboard.ts'
 import { AnswerText } from './AnswerText.tsx'
 import { Button } from './Button.tsx'
+import { Card } from './Card.tsx'
 import { LiveRegion } from './LiveRegion.tsx'
 import { RevealControls } from './RevealControls.tsx'
 import { ScoringControls } from './ScoringControls.tsx'
@@ -115,7 +116,7 @@ export function QuestionScreen({
   useKeyboard(handlers)
 
   return (
-    <section className="flex flex-col gap-6" aria-labelledby="question-heading">
+    <Card aria-labelledby="question-heading" className="flex flex-col gap-6">
       <LiveRegion message={announcement} />
       <p className="text-fluid-sm font-semibold uppercase tracking-wide text-orange-700">
         Round {roundNumber}: {round.title} — question {questionNumber} of {questionCount}
@@ -150,7 +151,7 @@ export function QuestionScreen({
         </p>
       ) : (
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2 rounded-lg border-2 border-ink/20 bg-white p-4">
+          <div className="flex flex-col gap-2 rounded-3xl border-[3px] border-green-800/50 bg-green-100 p-5">
             <p className="text-fluid-lg">
               <span className="font-bold">Answer: </span>
               <AnswerText answer={question.answer} />
@@ -182,6 +183,6 @@ export function QuestionScreen({
           </p>
         </div>
       )}
-    </section>
+    </Card>
   )
 }

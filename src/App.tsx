@@ -1,6 +1,7 @@
 import { useState, type ReactElement } from 'react'
 import { Button } from './components/Button.tsx'
 import { BankBadge } from './components/BankBadge.tsx'
+import { Card } from './components/Card.tsx'
 import { FooterNotice } from './components/FooterNotice.tsx'
 import { QuestionScreen } from './components/QuestionScreen.tsx'
 import { ReviewScreen } from './components/ReviewScreen.tsx'
@@ -28,7 +29,7 @@ export default function App(): ReactElement {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <main className="flex flex-1 flex-col items-start gap-6 px-6 py-8">
+      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-stretch gap-6 px-4 py-8 sm:px-6">
         <h1 className="text-fluid-lg font-bold text-blue-800">Heeler Pub Quiz</h1>
         <BankBadge kind={game.state.bankKind} />
         <StorageNotice notice={game.storageNotice} />
@@ -132,7 +133,7 @@ function RoundIntro({
 }): ReactElement {
   useKeyboard({ onAdvance: onBegin })
   return (
-    <section className="flex flex-col gap-4" aria-labelledby="intro-heading">
+    <Card aria-labelledby="intro-heading" className="flex flex-col gap-4">
       <p className="text-fluid-sm font-semibold uppercase tracking-wide text-orange-700">
         Round {roundNumber}
       </p>
@@ -143,7 +144,7 @@ function RoundIntro({
       <Button variant="primary" className="self-start" onClick={onBegin}>
         Begin round
       </Button>
-    </section>
+    </Card>
   )
 }
 
@@ -163,7 +164,7 @@ function RoundBreak({
   useKeyboard({ onAdvance: onNext })
   const lastRound = roundNumber >= roundCount
   return (
-    <section className="flex flex-col gap-4" aria-labelledby="break-heading">
+    <Card aria-labelledby="break-heading" className="flex flex-col gap-4">
       <h2 id="break-heading" className="text-fluid-xl font-bold">
         Standings after round {roundNumber} of {roundCount}
       </h2>
@@ -171,7 +172,7 @@ function RoundBreak({
       <Button variant="primary" className="self-start" onClick={onNext}>
         {lastRound ? 'See the final standings' : 'Continue to the next round'}
       </Button>
-    </section>
+    </Card>
   )
 }
 
@@ -197,7 +198,7 @@ function FinalScreen({
   // game, so one stray keypress wiped the final standings with no undo. A cold
   // read caught it. New game now takes a deliberate two-step confirm instead.
   return (
-    <section className="flex flex-col gap-4" aria-labelledby="final-heading">
+    <Card aria-labelledby="final-heading" className="flex flex-col gap-4">
       <h2 id="final-heading" className="text-fluid-xl font-bold">
         Final standings
       </h2>
@@ -220,6 +221,6 @@ function FinalScreen({
           New game
         </Button>
       )}
-    </section>
+    </Card>
   )
 }

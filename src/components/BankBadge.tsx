@@ -17,14 +17,14 @@ import type { BankKind } from '../content/types.ts'
 export function BankBadge({ kind }: { kind: BankKind }): ReactElement | null {
   if (kind === 'fixtures') {
     return (
-      <p className="inline-block rounded-lg border-2 border-orange-600 bg-orange-100 px-3 py-1 text-fluid-sm font-semibold text-orange-700">
+      <p className="inline-block rounded-full border-[3px] border-orange-600 bg-orange-100 px-4 py-1 text-fluid-sm font-bold text-orange-700">
         Fixture questions — invented for testing, not from the show
       </p>
     )
   }
   if (kind === 'preview') {
     return (
-      <p className="inline-block rounded-lg border-2 border-blue-700 bg-blue-100 px-3 py-1 text-fluid-sm font-semibold text-blue-800">
+      <p className="inline-block rounded-full border-[3px] border-blue-700 bg-blue-100 px-4 py-1 text-fluid-sm font-bold text-blue-800">
         Preview questions — real quality, for review only, never shipped
       </p>
     )

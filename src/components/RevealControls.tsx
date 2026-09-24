@@ -56,7 +56,7 @@ export function RevealControls({
           <label className="flex flex-col gap-1 text-fluid-sm">
             <span>What is wrong with this question?</span>
             <input
-              className={`${TARGET_SIZE} rounded-lg border-2 border-ink/40 px-3 py-2 text-fluid-base`}
+              className={`${TARGET_SIZE} rounded-2xl border-[3px] border-ink/25 bg-white px-4 py-2 text-fluid-base`}
               type="text"
               value={note}
               onChange={(event) => setNote(event.target.value)}
