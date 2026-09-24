@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Onesies",
+  "excerpt": "Bluey takes the cheetah onesie and Bingo takes the zebra; they swap, and Bingo has become one with the onesie, acting like a feral cheetah.",
+  "episode": "Onesies",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived cheetah" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Onesies/Script", "note": "Onesies transcript has Bingo in the cheetah onesie chasing the family as a feral cheetah" }
+  }
+}

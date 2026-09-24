@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Turtleboy",
+  "excerpt": "Bingo notices a toy turtle (which she names Turtleboy) left on the bird-nest swing, and keeps hiding it so others cannot take it.",
+  "episode": "Turtleboy",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Turtleboy" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Turtleboy/Script", "note": "Turtleboy transcript has Bingo name the toy Turtleboy and repeatedly hide it" }
+  }
+}

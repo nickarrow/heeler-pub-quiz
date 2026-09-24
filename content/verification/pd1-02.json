@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Christmas_Swim",
+  "excerpt": "Bluey is thrilled to get a big teddy called Bartlebee, who she introduces to the whole family.",
+  "episode": "Christmas Swim",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Bartlebee" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Christmas_Swim/Script", "note": "Christmas Swim transcript and Appearances name the new toy Bartlebee (debut)" }
+  }
+}

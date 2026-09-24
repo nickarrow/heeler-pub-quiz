@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Bob_Bilby",
+  "excerpt": "It's Bingo's turn to bring the Bob Bilby puppet home from Kindy and record their weekend together.",
+  "episode": "Bob Bilby",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Bob Bilby" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Bob_Bilby/Script", "note": "Bob Bilby transcript opens with Bingo bringing the class mascot puppet home for the weekend" }
+  }
+}

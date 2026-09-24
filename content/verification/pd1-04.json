@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Claw",
+  "excerpt": "On the second go, they won a star ball and Grey Dancer! Later Bluey gives Bandit Grey Dancer to trade for a coin.",
+  "episode": "The Claw",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Grey Dancer" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/The_Claw/Script", "note": "The Claw transcript names Grey Dancer as the ballerina toy won and traded" }
+  }
+}

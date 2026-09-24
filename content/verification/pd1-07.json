@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Show_and_Tell",
+  "excerpt": "She shows off a crab claw; the seller shows her how to pull the tendon to make the claw move.",
+  "episode": "Show and Tell",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived a crab claw" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Show_and_Tell/Script", "note": "Show and Tell transcript has Bingo bring a crab claw and learn to pull its tendon to make it click" }
+  }
+}

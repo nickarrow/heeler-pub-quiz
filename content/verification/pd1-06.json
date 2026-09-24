@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Mr_Monkeyjocks",
+  "excerpt": "Only Mr Monkeyjocks, a monkey wearing jocks, is left in the chuck basket; the episode ends with a sick child given a Mr Monkeyjocks.",
+  "episode": "Mr Monkeyjocks",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived Mr Monkeyjocks" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Mr_Monkeyjocks/Script", "note": "Mr Monkeyjocks transcript names the monkey-in-jocks toy left in the chuck basket" }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Copycat",
+  "excerpt": "He sends Bluey to fetch a shoebox and tea towel, which he uses to make a little bed for the injured bird before driving to the vet.",
+  "episode": "Copycat",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived a shoebox" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Copycat/Script", "note": "Copycat transcript has Bandit use a shoebox and tea towel as a bed for the budgie" }
+  }
+}

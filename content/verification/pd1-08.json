@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Pass_the_Parcel",
+  "excerpt": "At the very end, she hands it to Bingo, who wags her tail excitedly as she wins a birdie kite.",
+  "episode": "Pass the Parcel",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived a birdie kite" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Dirt", "note": "The birdie kite Bingo wins is later seen in the tree in Dirt, corroborating the prize" }
+  }
+}

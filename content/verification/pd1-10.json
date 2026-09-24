@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://blueypedia.fandom.com/wiki/Stickbird",
+  "excerpt": "The stick looks like a bird's head, so they build a bird out of sand and use the stick for the head; older kids later take the stick.",
+  "episode": "Stickbird",
+  "checks": {
+    "rederivation": { "agreed": true, "method": "isolated sub-agent, prompt+passage only, answer withheld; derived a stick" },
+    "crossAnchor": { "sourceUrl": "https://blueypedia.fandom.com/wiki/Stickbird/Script", "note": "Stickbird transcript has the sand bird built around a found stick used for its head" }
+  }
+}
