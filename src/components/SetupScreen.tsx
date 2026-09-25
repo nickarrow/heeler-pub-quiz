@@ -166,7 +166,7 @@ export function SetupScreen({
         </Button>
         {!canStart ? (
           <p className="text-fluid-sm text-ink/70">
-            Enter a name for at least {MIN_TEAMS} teams. Blank names are not allowed.
+            Pop in a name for at least {MIN_TEAMS} teams to get started. Blank names are not allowed.
           </p>
         ) : null}
       </form>

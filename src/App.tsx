@@ -36,7 +36,7 @@ export default function App(): ReactElement {
     <div className="relative flex min-h-screen flex-col">
       <Scenery calm={calmScenery} />
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-stretch gap-6 px-4 py-8 sm:px-6">
-        <h1 className="text-fluid-lg font-bold text-blue-800">Heeler Pub Quiz</h1>
+        <Wordmark />
         <BankBadge kind={game.state.bankKind} />
         <StorageNotice notice={game.storageNotice} />
 
@@ -44,6 +44,29 @@ export default function App(): ReactElement {
       </main>
 
       <FooterNotice />
+    </div>
+  )
+}
+
+// The wordmark (restyle move 5). A plain, coloured, gently tilted setting of the
+// name in our rounded font — deliberately NOT a recreation of the show's
+// hand-lettered logo (design.md §7 bans title-card lettering). It stays a single
+// <h1> so its accessible name is exactly "Heeler Pub Quiz"; the tilts are static
+// transforms, not motion, and each colour was contrast-checked on the sky the
+// header sits on (ink 9.68:1, blue-700 4.36:1 as large text >=3, orange-700
+// 6.04:1). The tagline is the "generic dog-breed wink" the design settled on,
+// kept well clear of the rights holders' catchphrases.
+function Wordmark(): ReactElement {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <h1 className="text-fluid-xl font-black leading-none tracking-tight">
+        <span className="text-ink">Heeler </span>
+        <span className="inline-block -rotate-3 text-blue-700">Pub </span>
+        <span className="inline-block rotate-2 text-orange-700">Quiz</span>
+      </h1>
+      <p className="text-fluid-sm font-bold uppercase tracking-wide text-orange-700">
+        A very good unofficial fan quiz
+      </p>
     </div>
   )
 }
