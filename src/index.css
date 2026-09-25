@@ -112,6 +112,36 @@ body {
   border-radius: 2px;
 }
 
+/* Playful motion (restyle move 4). Two small keyframes: a springy card entrance
+   and a quick score pop. Both are applied through Tailwind's motion-safe:
+   variant AND collapsed by the reduced-motion block below, so there are two
+   independent guards — a reader who asks for less motion gets none. The
+   overshoot easing (cubic-bezier past 1) is what reads as "bouncy" rather than
+   "slid in". Nothing here is on a timing- or safety-critical path: the countdown
+   ring is driven by real state, not by these. */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes score-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.28);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 /* Reduced motion: honour the user's preference. There is little motion in the
    app, but any transition or animation collapses to none when asked. */
 @media (prefers-reduced-motion: reduce) {

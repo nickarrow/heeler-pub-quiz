@@ -20,6 +20,7 @@ import { Card } from './Card.tsx'
 import { LiveRegion } from './LiveRegion.tsx'
 import { RevealControls } from './RevealControls.tsx'
 import { ScoringControls } from './ScoringControls.tsx'
+import { TimerRing } from './TimerRing.tsx'
 
 const EXTEND_SECONDS = 15
 
@@ -129,10 +130,11 @@ export function QuestionScreen({
       {!revealed ? (
         <div className="flex flex-wrap items-center gap-4">
           <span
+            role="timer"
             aria-label={`${countdown.remaining} seconds remaining`}
-            className="text-fluid-xl font-bold tabular-nums"
+            className="flex-none"
           >
-            {countdown.remaining}s
+            <TimerRing remaining={countdown.remaining} total={timerLengthSeconds} />
           </span>
           <Button onClick={() => (countdown.running ? countdown.pause() : countdown.resume())}>
             {countdown.running ? 'Pause' : 'Resume'}

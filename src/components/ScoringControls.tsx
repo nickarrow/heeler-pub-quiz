@@ -107,7 +107,10 @@ function ListStepper({
       >
         -
       </button>
-      <span className="w-16 text-center text-fluid-base font-bold tabular-nums">
+      <span
+        key={points}
+        className="w-16 text-center text-fluid-base font-bold tabular-nums motion-safe:animate-[score-pop_260ms_ease-out]"
+      >
         {points} / {max}
       </span>
       <button
