@@ -35,7 +35,7 @@ export default function App(): ReactElement {
   return (
     <div className="relative flex min-h-screen flex-col">
       <Scenery calm={calmScenery} />
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-stretch gap-6 px-4 py-8 sm:px-6">
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-stretch gap-6 px-4 py-8 sm:px-6">
         <Wordmark />
         <BankBadge kind={game.state.bankKind} />
         <StorageNotice notice={game.storageNotice} />
