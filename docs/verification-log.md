@@ -1348,3 +1348,69 @@ untested-rules concern already listed, so they were folded in rather than double
   rounds (20 questions, 0 failures) but not all 120.
 - **Screen-reader conformance and TV-overscan**, unchanged from increment 6; not re-claimed here.
 - **CI and local sharing a runtime** beyond the observed green runs on the pushed commits.
+
+## 24 September 2026 — the restyle: leaning into the look
+
+A visual pass over the whole app to lean into a warm, playful, Bluey-adjacent feel, after the owner blessed a
+standalone look-and-feel mock. Delivers it in five moves plus two owner-requested layout fixes, on seven `style:`
+commits (all presentation; no bank, no deploy, no game logic touched), each pushed and CI-green. The hard constraint
+throughout, from `design.md` §7: evoke the feeling with colour, shape, warmth, motion and voice — never the show's
+assets. No character art, no title-card lettering, no theme music, no screenshots. Everything below was observed in a
+real browser through Playwright MCP, or computed in a script, except where it says otherwise.
+
+### The five moves
+
+1. **Palette and a card surface** (`840751b`). Warmed the increment-6 blue/orange/cream into a sunnier earthy set —
+   warm navy ink, brighter primary blue, plus mustard and grassy-green accents and a raised card surface. Tokens only.
+2. **Rounded-square shape language** (`a3f5fc8`). A shared `Card` (32px radius, soft offset shadow) wraps every screen;
+   a centred column; chunky pill buttons with a pressed shelf-shadow; rounded inputs, steppers, standings rows (with a
+   mustard rank chip) and badges; the settled-answer box became the grassy-green surface.
+3. **Sunny backdrop and flat scenery** (`e426b73`). A sky-to-cream gradient on the body and an original inline-SVG
+   layer of sun, clouds and rolling hills — decorative (`aria-hidden`, `pointer-events-none`, `-z-10`), self-contained
+   with no image request or CDN. Full on setup, intro, standings and the final; it fades to 40 percent behind the live
+   question and reveal so it never competes with the prompt (the owner's call).
+4. **Playful motion** (`9a2ae25`). A springy card entrance, a score-pop on the stepper, and the countdown redrawn as a
+   draining ring with the number kept in the centre. The ring is driven by real state (remaining / total), never a CSS
+   loop, so it cannot disagree with the number or the countdown.
+5. **Wordmark and warmer copy** (`c5f881b`). The title as a plain, coloured, gently tilted setting of the name in the
+   rounded font — set type, deliberately not a recreation of the hand-lettered logo — kept as one `<h1>` so its
+   accessible name stays "Heeler Pub Quiz". An unofficial-fan tagline, clear of the rights holders' catchphrases.
+
+Then two owner fixes after seeing it run: **widen the column** `max-w-3xl` → `max-w-5xl` (`83d8dd2`), because the
+narrow column left empty sky and stacked prompts too vertically; and **tighten the vertical rhythm** (`e419ae4`) so the
+tallest screen, the reveal, stops pushing Void/Dispute/Save below the fold on a laptop.
+
+### Accessibility held, and observed
+
+The restyle kept every accessibility property the room was built on, and none of it is asserted by trust:
+
+- **Contrast recomputed for every new pairing**, in a script, and recorded in the `index.css` comment. All body text
+  clears 4.5:1; large text and UI clear 3:1. Notable checks: ink on cream 11.35:1, ink on the green answer surface
+  11.12:1 (its muted line 4.74:1), the wordmark on the sky (ink 9.68:1, blue-700 4.36:1 as large text, orange-700
+  6.04:1). The bright orange-600 measured 2.88:1 on the sky and was deliberately kept out of text; the fixture badge
+  improved from ~4.38:1 to 6.96:1.
+- **44x44 targets kept** — measured live at 47–55px on the wide screen and 47px narrow, never below 44.
+- **Visible focus ring intact** — a 2.4px solid outline on the focused control, observed on Tab.
+- **Reduced motion collapses everything** — under an emulated `prefers-reduced-motion: reduce`, the card entrance
+  animation reads `none` and the ring transition collapses to instant, while the ring still shows the correct
+  proportion because that is a value, not an animation. Two independent guards: `motion-safe:` on each animation and the
+  global media block.
+- **Behaviour unchanged** — all button text, ARIA roles and names, the bank badges, and the exhaustion copy are
+  untouched, which is why all 111 tests stayed green across every move (build and lint green throughout).
+- **No horizontal overflow** at 1920 or at 390; the reveal (the tallest screen) fits within a 1080p viewport with room,
+  and at 1366x768 full-screen its actionable buttons are within the fold.
+
+### The bank and the deploy were not touched
+
+The restyle changed only presentation. Verified by a default production build with the real answers grepped out of the
+bundle — fixtures still ship by default, no real question leaked — and by the diff: no bank file, no `deploy.yml`, no
+game logic changed. The increment-8 deploy switch and the twelve-round real bank are exactly as they were.
+
+### Not verified in this pass
+
+- **Screen-reader conformance**, unchanged from increment 6 and not re-claimed. The machine half confirms the
+  accessibility tree; a screen-reader user's experience needs a person.
+- **The look on a real television at three metres.** Confirmed legibility in a 1920x1080 browser and by the owner on
+  their screen during the mock and the live moves; an actual TV at distance was not in this pass.
+- **The two fluid type step-downs on the reveal in every prompt length.** Measured on representative prompts; a
+  pathologically long prompt with four teams could still scroll, which is acceptable and non-blocking.
