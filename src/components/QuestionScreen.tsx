@@ -117,13 +117,20 @@ export function QuestionScreen({
   useKeyboard(handlers)
 
   return (
-    <Card aria-labelledby="question-heading" className="flex flex-col gap-6">
+    <Card aria-labelledby="question-heading" className="flex flex-col gap-4">
       <LiveRegion message={announcement} />
       <p className="text-fluid-sm font-semibold uppercase tracking-wide text-orange-700">
         Round {roundNumber}: {round.title} — question {questionNumber} of {questionCount}
       </p>
 
-      <h2 id="question-heading" className="text-fluid-xl font-bold">
+      {/* The prompt is the hero while the room is answering, so it is the largest
+          thing on screen. Once revealed, attention moves to the answer and the
+          scoring, and the reveal screen is the tallest — so the prompt steps down
+          a size to keep the whole reveal on one screen without scrolling. */}
+      <h2
+        id="question-heading"
+        className={`font-bold ${revealed ? 'text-fluid-lg' : 'text-fluid-xl'}`}
+      >
         {question.prompt}
       </h2>
 
@@ -152,9 +159,9 @@ export function QuestionScreen({
           Keys: Space or right arrow reveals, P pauses, E extends, S skips.
         </p>
       ) : (
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2 rounded-3xl border-[3px] border-green-800/50 bg-green-100 p-5">
-            <p className="text-fluid-lg">
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1.5 rounded-3xl border-[3px] border-green-800/50 bg-green-100 p-4">
+            <p className="text-fluid-base">
               <span className="font-bold">Answer: </span>
               <AnswerText answer={question.answer} />
             </p>

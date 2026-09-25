@@ -23,7 +23,7 @@ export function Card({
   return (
     <section
       aria-labelledby={ariaLabelledby}
-      className={`w-full rounded-[32px] border-[3px] border-ink/10 bg-card p-6 shadow-card motion-safe:animate-[pop-in_420ms_cubic-bezier(0.34,1.56,0.64,1)_both] sm:p-8 ${className}`}
+      className={`w-full rounded-[32px] border-[3px] border-ink/10 bg-card p-5 shadow-card motion-safe:animate-[pop-in_420ms_cubic-bezier(0.34,1.56,0.64,1)_both] sm:p-6 ${className}`}
     >
       {children}
     </section>
